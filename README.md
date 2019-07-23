@@ -1,5 +1,5 @@
 # learning-python
-Repositories of Python Basic Learning notes.
+Repository of Python Basic Learning notes.
 
 Books that i read: 
 1. Think Python by Allen Downey
