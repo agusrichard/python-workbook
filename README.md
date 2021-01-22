@@ -1,4 +1,4 @@
-# learning-python
+# Python Workbook
 Repository of Python Basic Learning notes.
 
 Books that i read: 
