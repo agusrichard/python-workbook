@@ -1,0 +1,33 @@
+import functools
+
+
+def do_ten_times(func):
+    """Repeats func ten times"""
+
+    @functools.wraps(func)
+    def wrapper():
+        for i in range(10):
+            func()
+
+    return wrapper
+
+
+@do_ten_times
+def say_hi():
+    print("Hiiiii....")
+
+
+print(say_hi.__name__)
+say_hi()
+
+# say_hi
+# Hiiiii....
+# Hiiiii....
+# Hiiiii....
+# Hiiiii....
+# Hiiiii....
+# Hiiiii....
+# Hiiiii....
+# Hiiiii....
+# Hiiiii....
+# Hiiiii....
