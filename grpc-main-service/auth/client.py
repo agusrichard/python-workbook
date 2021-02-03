@@ -16,7 +16,7 @@ class AuthClient:
         print(f'Register request: {register_request}')
         return self.stub.Register(register_request)
 
-    def login_user(self, username, password):
+    def login(self, username, password):
         login_request = pb2.LoginRequest(username=username, password=password)
         print(f'Login request: {login_request}')
         return self.stub.Login(login_request)
