@@ -14,10 +14,8 @@ class TodoClient:
         request = pb2.CreateTodoRequest(title=title,
                                         description=description,
                                         userID=user_id)
-        print(f'Create todo request', request)
         return self.stub.CreateTodo(request)
 
     def get_todos(self, user_id):
         request = pb2.GetTodosRequest(userID=user_id)
-        print(f'Get todos request', request)
         return self.stub.GetTodos(request)

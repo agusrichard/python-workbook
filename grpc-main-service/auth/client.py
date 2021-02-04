@@ -13,15 +13,12 @@ class AuthClient:
     def register(self, username, password):
         register_request = pb2.RegisterRequest(username=username,
                                                password=password)
-        print(f'Register request: {register_request}')
         return self.stub.Register(register_request)
 
     def login(self, username, password):
         login_request = pb2.LoginRequest(username=username, password=password)
-        print(f'Login request: {login_request}')
         return self.stub.Login(login_request)
 
     def validate_token(self, token):
         validate_token_request = pb2.ValidateTokenRequest(token=token)
-        print(f'Validate token request', validate_token_request)
         return self.stub.ValidateToken(validate_token_request)

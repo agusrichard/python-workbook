@@ -1,3 +1,4 @@
+import json
 from flask import Blueprint, g, jsonify, request
 
 from todo.client import TodoClient
@@ -14,10 +15,9 @@ def create_todo():
         title = request.json.get('title')
         description = request.json.get('description')
         client = TodoClient()
-        result = client.create_todo(title=title,
-                                    description=description,
-                                    user_id=user_data.get('ID'))
-        print("result", result)
+        client.create_todo(title=title,
+                           description=description,
+                           user_id=user_data.get('ID'))
         return jsonify({'success': True, 'message': 'Success to create todo'})
     except:
         return jsonify({
@@ -29,4 +29,18 @@ def create_todo():
 @todo_blueprint.route('/get', methods=['GET'])
 @token_required
 def get_todos():
-    return jsonify({'success': True, 'message': 'Get todos'})
+    try:
+        user_data = g.user_data
+        client = TodoClient()
+        result = client.get_todos(user_id=user_data.get('ID'))
+        return jsonify({
+            'success': True,
+            'message': 'Success to get todos',
+            'data': json.loads(result.data)
+        })
+    except:
+        return jsonify({
+            'success': False,
+            'message': 'Please provide the required fields',
+            'data': []
+        })
