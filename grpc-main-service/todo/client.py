@@ -19,3 +19,13 @@ class TodoClient:
     def get_todos(self, user_id):
         request = pb2.GetTodosRequest(userID=user_id)
         return self.stub.GetTodos(request)
+
+    def update_todo(self, id, title, description):
+        request = pb2.UpdateTodoRequest(id=id,
+                                        title=title,
+                                        description=description)
+        return self.stub.UpdateTodo(request)
+
+    def delete_todo(self, id):
+        request = pb2.DeleteTodoRequest(id=id)
+        return self.stub.DeleteTodo(request)

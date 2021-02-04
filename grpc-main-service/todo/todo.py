@@ -14,16 +14,14 @@ def create_todo():
         user_data = g.user_data
         title = request.json.get('title')
         description = request.json.get('description')
+        print(user_data, title, description)
         client = TodoClient()
-        client.create_todo(title=title,
-                           description=description,
-                           user_id=user_data.get('ID'))
-        return jsonify({'success': True, 'message': 'Success to create todo'})
-    except:
-        return jsonify({
-            'success': False,
-            'message': 'Please provide the required fields'
-        })
+        result = client.create_todo(title=title,
+                                    description=description,
+                                    user_id=user_data.get('ID'))
+        return jsonify({'success': True, 'message': result.message})
+    except Exception as err:
+        return jsonify({'success': False, 'message': result.message})
 
 
 @todo_blueprint.route('/get', methods=['GET'])
@@ -35,12 +33,49 @@ def get_todos():
         result = client.get_todos(user_id=user_data.get('ID'))
         return jsonify({
             'success': True,
-            'message': 'Success to get todos',
+            'message': result.message,
             'data': json.loads(result.data)
         })
     except:
         return jsonify({
             'success': False,
-            'message': 'Please provide the required fields',
+            'message': result.message,
             'data': []
+        })
+
+
+@todo_blueprint.route('/update', methods=['PUT'])
+@token_required
+def update_todo():
+    try:
+        id = request.json.get('id')
+        title = request.json.get('title')
+        description = request.json.get('description')
+        client = TodoClient()
+        result = client.update_todo(title=title,
+                                    description=description,
+                                    id=id)
+        return jsonify({'success': True, 'message': result.message})
+    except:
+        return jsonify({
+            'success': False,
+            'message': result.message,
+            'data': []
+        })
+
+
+@todo_blueprint.route('/delete/<int:id>', methods=['DELETE'])
+@token_required
+def delete_todo(id):
+    try:
+        client = TodoClient()
+        result = client.delete_todo(id)
+        return jsonify({
+            'success': False,
+            'message': result.message,
+        })
+    except:
+        return jsonify({
+            'success': False,
+            'message': result.message,
         })
