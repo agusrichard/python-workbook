@@ -20,7 +20,7 @@ def create_todo():
                                     description=description,
                                     user_id=user_data.get('ID'))
         return jsonify({'success': True, 'message': result.message})
-    except Exception as err:
+    except:
         return jsonify({'success': False, 'message': result.message})
 
 
