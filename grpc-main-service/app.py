@@ -8,4 +8,5 @@ app.register_blueprint(auth_blueprint, url_prefix='/auth')
 app.register_blueprint(todo_blueprint, url_prefix='/todo')
 
 if __name__ == '__main__':
+    print('Running flask app')
     app.run(debug=True)
