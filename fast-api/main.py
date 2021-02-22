@@ -1,24 +1,21 @@
 from fastapi import FastAPI
-from enum import Enum
-
-class Crushes(str, Enum):
-    sekar = 'sekar'
-    saskia = 'saskia'
-    arifa = 'arifa'
-
 
 app = FastAPI()
 
-@app.get('/crushes/{crush_name}')
-async def get_crush(crush_name: Crushes):
-    if crush_name == Crushes.sekar:
-        return {'crush': 'Sekardayu Hana Pradiani', 'message': 'She\'ll getting married soon'}
-    
-    if crush_name == Crushes.saskia:
-        return {'crush': 'Saskia Nurul Azhima', 'message': 'Why she chose someone uglier than me? Weird shit'}
-    
-    return {'crush': 'Arifa Rachma', 'message': 'I dont\'t know her, but she is pretty!'}
+fake_db = [{'id': num, 'message': f'message {num}'} for num in range(10)]
 
-@app.get('/files/{file_path:path}')
-async def get_file(file_path: str):
-    return {'message': file_path}
+# Using query parameters
+@app.get('/items1')
+async def get_items1(skip: int = 0, limit: int = 10):
+    print('take', limit)
+    return fake_db[skip:limit+skip]
+
+# Using query paramaeters and path parameters
+@app.get('/items/{user_id}/{item_id}')
+async def get_items2(user_id: int, item_id: int, skip: int = 0, limit: int = 10):
+    return {
+        'user_id': user_id,
+        'item_id': item_id,
+        'skip': skip,
+        'limit': limit
+    }
