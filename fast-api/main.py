@@ -1,30 +1,61 @@
-from fastapi import FastAPI
-from pydantic import BaseModel
-from typing import Optional, Dict
-
-class User(BaseModel):
-    id: int
-    email: str
-    username: Optional[str] = None
-    fullname: Optional[str] = None
-    age: Optional[int] = None
-
+from fastapi import FastAPI, Query
+from typing import Optional, List
 
 app = FastAPI()
 
-@app.post('/user')
-async def post_user(user: User):
-    return {'user': user}
-
-@app.post('/item/{item_id}')
-async def post_item(user: User, item_id: int):
+# Additional validation to make sure the string is not exceeding 100 characters
+@app.get('/items/{item_id}')
+async def get_items(item_id: int, query: Optional[str] = Query(None, max_length=100)):
     return {
-        'user': user,
-        'item': item_id
+        'item_id': item_id,
+        'query': query
     }
 
-@app.get('/q')
-async def get_q(q: Optional[bool] = None):
-    if q:
-        return {'data': 'Sekardayu Hana Pradiani'}
-    return {'data': 'Saskia Nurul Azhima'}
+@app.get('/menus')
+async def get_menus(query: Optional[str] = Query(None, min_length=5, max_length=100, regex='^sekar')):
+    return {
+        'query': query
+    }
+
+@app.get('/read_items')
+async def read_items(query: str = Query('sekar', min_length=5, max_length=100)):
+    return {
+        'query': query
+    }
+
+# Let's create the same handler using query but required
+@app.get('/get_items1')
+async def get_items1(query: str = Query(..., min_length=5)):
+    return {
+        'query': query
+    }
+
+# Query parameters which appear multiple times in the URL
+@app.get('/get_items2')
+async def get_items2(query: Optional[List[str]] = Query(None)):
+    return {
+        'query': query
+    }
+
+# Let's change it so the FastAPI won't check the content type of the list
+@app.get('/get_items3')
+async def get_items3(query:list = Query([])):
+    return {
+        'query': query
+    }
+
+# Give us a better description about parameters we have to provide
+@app.get('/get_items4')
+async def get_items4(query:Optional[str] = Query(
+    None, title='Sekardayu', description='She is getting married you know!', min_length=5
+)):
+    return {
+        'query': query
+    }
+
+# Using an alias for query parameter
+@app.get('/get_items5')
+async def get_items5(query:Optional[str] = Query(None, alias='item-id')):
+    return {
+        'query': query
+    }
