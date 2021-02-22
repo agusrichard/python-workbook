@@ -1,21 +1,30 @@
 from fastapi import FastAPI
+from pydantic import BaseModel
+from typing import Optional, Dict
+
+class User(BaseModel):
+    id: int
+    email: str
+    username: Optional[str] = None
+    fullname: Optional[str] = None
+    age: Optional[int] = None
+
 
 app = FastAPI()
 
-fake_db = [{'id': num, 'message': f'message {num}'} for num in range(10)]
+@app.post('/user')
+async def post_user(user: User):
+    return {'user': user}
 
-# Using query parameters
-@app.get('/items1')
-async def get_items1(skip: int = 0, limit: int = 10):
-    print('take', limit)
-    return fake_db[skip:limit+skip]
-
-# Using query paramaeters and path parameters
-@app.get('/items/{user_id}/{item_id}')
-async def get_items2(user_id: int, item_id: int, skip: int = 0, limit: int = 10):
+@app.post('/item/{item_id}')
+async def post_item(user: User, item_id: int):
     return {
-        'user_id': user_id,
-        'item_id': item_id,
-        'skip': skip,
-        'limit': limit
+        'user': user,
+        'item': item_id
     }
+
+@app.get('/q')
+async def get_q(q: Optional[bool] = None):
+    if q:
+        return {'data': 'Sekardayu Hana Pradiani'}
+    return {'data': 'Saskia Nurul Azhima'}
