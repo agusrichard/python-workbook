@@ -1,61 +1,64 @@
-from fastapi import FastAPI, HTTPException, status, Request
-from fastapi.responses import JSONResponse
-from fastapi.encoders import jsonable_encoder
-from pydantic import BaseModel, EmailStr
 from typing import Optional
-from datetime import datetime
-from uuid import uuid4, UUID
+from fastapi import FastAPI, Depends, Header, HTTPException, status, Body
+from pydantic import BaseModel
+
 
 app = FastAPI()
 
-# Custom exception
-class UnicornException(Exception):
-    def __init__(self, name: str):
-        self.name = name
+async def common_parameters(query: Optional[str] = None, skip: int = 0, limit: int = 10):
+    return {'query': query, 'skip': skip, 'limit': limit}
 
-# The handler for our custom exception
-@app.exception_handler(UnicornException)
-async def unicorn_exception_handler(request: Request, exc: UnicornException):
-    return JSONResponse(
-        status_code=418,
-        content={'message': f'Oops! {exc.name} did something. There goes a rainbow...'}
-    )
+class CommonQueryParams:
+    def __init__(self, query: Optional[str] = None, skip: int = 0, limit: int = 10):
+        self.query = query
+        self.skip = skip
+        self.limit = limit
+
+    def get_query(self):
+        return self.query
 
 
-@app.get('/items/{item_id}', tags=['items'])
-async def get_item(item_id: int):
-    lists = [i for i in range(10)]
-    print(lists)
+@app.get('/items')
+async def get_items(commons: dict = Depends(common_parameters)):
+    return commons
 
-    if item_id == 0:
-        raise UnicornException(f'{item_id}')
+@app.get('/users')
+async def get_users(commons: CommonQueryParams = Depends(CommonQueryParams)):
+    print(commons.get_query())
+    return commons
 
-    if item_id not in lists:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='Item is not found', headers={'X-Error': 'There goes my error'})
-    return {'item': lists[item_id]}
+@app.get('/menus')
+async def get_menus(commons: CommonQueryParams = Depends()):
+    return commons
 
-class User(BaseModel):
-    email: EmailStr
-    password: str
 
-@app.post('/users', tags=['users'], summary='Create user oho')
-async def create_user(user: User):
-    return {
-        'user': user
-    }
-
+# =================================================================
 class Item(BaseModel):
     name: str
-    timestamp: datetime
+    price: float
     description: Optional[str] = ''
 
-fake_db_items = dict()
 
-@app.post('/items', tags=['items'], description='Use this to create an item')
-async def create_item(item: Item):
-    id: UUID = uuid4()
-    fake_db_items[str(id)] = jsonable_encoder(item)
-    print(fake_db_items)
+async def body_extractor(body_item: Item):
+    return {'item': body_item}
+
+async def body_query_extractor(item: dict = Depends(body_extractor), query: Optional[str] = None):
     return {
-        'item': item
+        'item': item,
+        'query': query
+    }
+
+@app.post('/items')
+async def create_item(inpt: dict = Depends(body_query_extractor)):
+    return inpt
+
+# =================================================================
+async def verify_token(token: str = Header(...)):
+    if token != 'sekar':
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail='You are not allowed, because you are not Sekar. I dont love you!')
+
+@app.post('/users', dependencies=[Depends(verify_token)])
+async def create_user(email: str = Body(..., embed=True)):
+    return {
+        'email': email
     }
