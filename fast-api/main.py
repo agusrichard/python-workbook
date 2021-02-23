@@ -1,58 +1,30 @@
-from fastapi import FastAPI, status, Form, File, UploadFile
-from fastapi.responses import HTMLResponse
-from pydantic import EmailStr
-from typing import List
+from fastapi import FastAPI, HTTPException, status, Request
+from fastapi.responses import JSONResponse
 
 app = FastAPI()
 
-@app.get('/items', status_code=status.HTTP_200_OK)
-async def get_item(item_name: str):
-    return {'item_name': item_name}
+# Custom exception
+class UnicornException(Exception):
+    def __init__(self, name: str):
+        self.name = name
 
-@app.post('/users')
-async def create_user(email: EmailStr = Form(...), password: str = Form(...)):
-    return {
-        'email': email,
-        'password': password
-    }
-
-@app.post('/files')
-async def create_file(file: bytes = File(...)):
-    return {
-        'filesize': len(file)
-    }
-
-# Upload single file
-@app.post('/uploadfile')
-async def create_upload_file(file: UploadFile = File(...)):
-    readed = await file.read()
-    print(type(readed))
-    return {
-        'filename': file.filename
-    }
-
-# Upload multiple data
-@app.post('/multiplefiles')
-async def upload_multiple_files(files: List[UploadFile] = File(...)):
-    return {'filenames': [file.filename for file in files]}
-
-@app.get("/")
-async def main():
-    content = """
-    <body>
-        <form action="/multiplefiles" enctype="multipart/form-data" method="post">
-            <input name="files" type="file" multiple>
-            <input type="submit">
-        </form>
-    </body>
-    """
-    return HTMLResponse(content=content)
+# The handler for our custom exception
+@app.exception_handler(UnicornException)
+async def unicorn_exception_handler(request: Request, exc: UnicornException):
+    return JSONResponse(
+        status_code=418,
+        content={'message': f'Oops! {exc.name} did something. There goes a rainbow...'}
+    )
 
 
-# Using form and file together
-@app.post('/form-files')
-async def create_form_files(username: str = Form(...), files: List[UploadFile] = File(...)):
-    return {
-        'username': username,
-        'files': [file.content_type for file in files]
-    }
+@app.get('/items/{item_id}')
+async def get_item(item_id: int):
+    lists = [i for i in range(10)]
+    print(lists)
+
+    if item_id == 0:
+        raise UnicornException(f'{item_id}')
+
+    if item_id not in lists:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='Item is not found', headers={'X-Error': 'There goes my error'})
+    return {'item': lists[item_id]}
