@@ -1,62 +1,58 @@
-from typing import Optional, List
-from pydantic import BaseModel, EmailStr
-from fastapi import FastAPI
-from uuid import UUID, uuid4
+from fastapi import FastAPI, status, Form, File, UploadFile
+from fastapi.responses import HTMLResponse
+from pydantic import EmailStr
+from typing import List
 
-# app instantiation
 app = FastAPI()
 
-# User models definitions
-class UserBase(BaseModel):
-    email: str
-    username: Optional[str] = ''
-    fullname: Optional[str] = ''
+@app.get('/items', status_code=status.HTTP_200_OK)
+async def get_item(item_name: str):
+    return {'item_name': item_name}
 
-class UserIn(UserBase):
-    password: str
+@app.post('/users')
+async def create_user(email: EmailStr = Form(...), password: str = Form(...)):
+    return {
+        'email': email,
+        'password': password
+    }
 
-class UserOut(UserBase):
-    id: UUID
+@app.post('/files')
+async def create_file(file: bytes = File(...)):
+    return {
+        'filesize': len(file)
+    }
 
-class UserInDB(UserOut):
-    hashed_password: str
+# Upload single file
+@app.post('/uploadfile')
+async def create_upload_file(file: UploadFile = File(...)):
+    readed = await file.read()
+    print(type(readed))
+    return {
+        'filename': file.filename
+    }
 
+# Upload multiple data
+@app.post('/multiplefiles')
+async def upload_multiple_files(files: List[UploadFile] = File(...)):
+    return {'filenames': [file.filename for file in files]}
 
-@app.post('/users1')
-async def create_user1(user_in: UserIn):
-    return user_in
-
-@app.post('/users2', response_model=UserOut)
-async def create_user2(user: UserIn):
-    user_dict = user.dict()
-    user_dict.update({'id': uuid4()})
-    return user_dict
-
-# Extra Models --- It's better to have several models to define request and response
-def fake_password_hasher(password):
-    return 'sekardayu' + password
-
-def fake_save_user(userin: UserIn):
-    hashed_password = fake_password_hasher(userin.password)
-    user = UserInDB(**userin.dict(), hashed_password=hashed_password, id=uuid4())
-    print('User saved! Not really')
-    return user
-
-@app.post('/users3', response_model=UserOut)
-async def create_user3(user: UserIn):
-    user = fake_save_user(user)
-    return user
-
-
-# For item
-class Item(BaseModel):
-    name: str
-    description: Optional[str] = ''
-    price: float
-    tax: float = 0.1
-    tags: List[str] = []
+@app.get("/")
+async def main():
+    content = """
+    <body>
+        <form action="/multiplefiles" enctype="multipart/form-data" method="post">
+            <input name="files" type="file" multiple>
+            <input type="submit">
+        </form>
+    </body>
+    """
+    return HTMLResponse(content=content)
 
 
-@app.post('/items', response_model=Item, response_model_exclude_unset=True)
-async def create_item(item: Item):
-    return item
+# Using form and file together
+@app.post('/form-files')
+async def create_form_files(username: str = Form(...), files: List[UploadFile] = File(...)):
+    return {
+        'username': username,
+        'files': [file.content_type for file in files]
+    }
