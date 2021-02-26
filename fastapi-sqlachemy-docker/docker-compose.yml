@@ -4,7 +4,7 @@ services:
     build: .
     command: bash -c "alembic upgrade head && uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload"
     volumes:
-      - app-data:/app
+      - "./:/app"
     ports:
       - "8000:8000"
     depends_on: 
@@ -30,8 +30,6 @@ services:
     depends_on:
       - db
 volumes:
-  app-data:
-    driver: local
   db-data:
     driver: local
 

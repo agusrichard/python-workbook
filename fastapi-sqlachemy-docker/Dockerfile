@@ -12,6 +12,8 @@ WORKDIR /app
 COPY . /app
 
 # Install dependencies
+RUN apt-get update
+RUN apt-get install -y python-alembic
 RUN pip install -r /app/requirements.txt
 
 EXPOSE 8000
