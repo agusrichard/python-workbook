@@ -16,9 +16,7 @@ app.add_middleware(DBSessionMiddleware, db_url=os.getenv('DATABASE_URL'))
 
 @app.post('/users', response_model=UserResponse)
 def create_user(user: UserBase):
-    print('user dict', user.dict())
     db_user = UserModel(username=user.username, fullname=user.fullname)
-    print('db_user', db_user)
     db.session.add(db_user)
     db.session.commit()
     return db_user
