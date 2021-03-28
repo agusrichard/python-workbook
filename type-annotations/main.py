@@ -1,29 +1,13 @@
-# The thing is type annotation does not affecting anything at runtime
-# the purpose is for readibility of code
-age: int = 23
-print(age)
-age = 'Twenty three'
-print(age)
+import argparse
 
-# :et's see the difference between using type annotations and without
-def do_combine_1(x, y, times):
-    return (x + y) *times
+parser = argparse.ArgumentParser(description='Run internal command of the service')
+parser.add_argument('main_command',help='Main command' )
+parser.add_argument('-email', '--email', help='User email')
+parser.add_argument('-password', '--password', help='User password')
 
-print(do_combine_1(1, 2, 3))
-print(do_combine_1('hello', 'world', 3))
+args = parser.parse_args()
 
-# Now change the previous code by using type annotations
-def do_combine_2(x: str, y: str, times: int) -> str:
-    return (x + y + ' ') * times
-
-print(do_combine_2('sekar', 'dayu', 5))
-
-# For primitive types, the tasks is particularly easy
-# but we can have the same thing if we use non primitive types as such list, dict or set
-from typing import List
-
-def print_names(names: List[str]) -> None:
-    for name in names:
-        print(name)
-
-print_names(['sekar', 'saskia', 'arifa'])
+if args.main_command == 'admin':
+    print(args)
+elif args.main_command == 'run':
+    print('running')
