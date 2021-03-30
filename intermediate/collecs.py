@@ -31,7 +31,6 @@ print(dd)
 
 # deque
 dq = deque()
-
 dq.append(1)
 dq.append(2)
 print(dq)
