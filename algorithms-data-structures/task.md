@@ -8,3 +8,5 @@
 - Minimax Algorithm
 - Implement your own LinkedList with all of its methods
 - Implement your own Stack and Queue with all of its methods
+- Implement Radix sort algorithm
+- HashSet and HashMap
