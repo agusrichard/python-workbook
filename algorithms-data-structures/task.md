@@ -10,3 +10,4 @@
 - Implement your own Stack and Queue with all of its methods
 - Implement Radix sort algorithm
 - HashSet and HashMap
+- Trees
