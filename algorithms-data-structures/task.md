@@ -11,3 +11,11 @@
 - Implement Radix sort algorithm
 - HashSet and HashMap
 - Trees
+- Graph
+  - Directed
+  - Undirected
+  - Acylic
+  - Deep First Search
+  - Kruskal's Algorithm
+  - Greedy Algorithm
+  - Dijkstra’s algorithm
