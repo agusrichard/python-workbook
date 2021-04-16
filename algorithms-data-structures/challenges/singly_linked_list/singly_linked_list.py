@@ -52,23 +52,22 @@ class SinglyLinkedList:
             yield value
 
     def __getitem__(self, index: int) -> any:
+        found_node = self.__find_node_by_index(index)
+        return found_node.get_item()
+
+    def __setitem__(self, index: int, value: any) -> void:
+        found_node = self.__find_node_by_index(index)
+        found_node.set_item(value)
+        return
+
+    def __find_node_by_index(self, index) -> SinglyNode:
         if index < 0 or index > self.__num_items - 1:
             raise IndexError("SinglyLinkedList index is out of scope")
         current_node = self.__head.get_next()
         for i in range(index):
             current_node = current_node.get_next()
 
-        return current_node.get_item()
-
-    def __setitem__(self, index: int, value: any) -> void:
-        if index < 0 or index > self.__num_items - 1:
-            raise IndexError("SinglyLinkedList assignment index is out of scope")
-        current_node = self.__head.get_next()
-        for i in range(index):
-            current_node = current_node.get_next()
-
-        current_node.set_item(value)
-        return
+        return current_node
 
     def __add__(self, other: SinglyLinkedList) -> void:
         if type(self) != type(other):
@@ -97,6 +96,56 @@ class SinglyLinkedList:
 
         return result
 
+    def __eq__(self, other: SinglyLinkedList) -> bool:
+        if type(self) != type(other):
+            return False
+
+        if self.__num_items != other.__num_items:
+            return False
+
+        for i in range(self.__num_items):
+            if self[i] != other[i]:
+                return False
+
+        return True
+
+    def is_empty(self) -> bool:
+        return self.__num_items == 0
+
+    def insert(self, index, value: any) -> void:
+        node = SinglyNode()
+        node.set_item(value)
+
+        if index == 0:
+            tobe_replaced_node = self.__find_node_by_index(index)
+            self.__head.set_next(node)
+            node.set_next(tobe_replaced_node)
+        else:
+            previous_tobe_replaced_node = self.__find_node_by_index(index - 1)
+            tobe_replaced_node = previous_tobe_replaced_node.get_next()
+            previous_tobe_replaced_node.set_next(node)
+            node.set_next(tobe_replaced_node)
+
+        self.__num_items += 1
+        return
+
+    def remove(self, index) -> any:
+        if index == 0:
+            tobe_deleted_node = self.__head.get_next()
+            following_tobe_deleted_node = tobe_deleted_node.get_next()
+            self.__head.set_next(following_tobe_deleted_node)
+        else:
+            previous_tobe_deleted_node = self.__find_node_by_index(index - 1)
+            tobe_deleted_node = previous_tobe_deleted_node.get_next()
+            following_tobe_deleted_node = tobe_deleted_node.get_next()
+            previous_tobe_deleted_node.set_next(following_tobe_deleted_node)
+
+        value = tobe_deleted_node.get_item()
+        del tobe_deleted_node
+        self.__num_items -= 1
+
+        return value
+
     @property
     def num_items(self) -> int:
         return self.__num_items
@@ -107,4 +156,12 @@ class SinglyLinkedList:
 
 
 if __name__ == "__main__":
-    pass
+    linkedlist1 = SinglyLinkedList([1, 2, 3])
+    linkedlist1.insert(1, 99)
+    linkedlist1.insert(3, 55)
+    linkedlist1.insert(0, 100)
+    print(linkedlist1)
+    linkedlist1.remove(3)
+    print(linkedlist1)
+    linkedlist1.remove(0)
+    print(linkedlist1)
