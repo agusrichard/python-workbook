@@ -69,7 +69,7 @@ class SinglyLinkedList:
 
         return current_node
 
-    def __add__(self, other: SinglyLinkedList) -> void:
+    def __add__(self, other: SinglyLinkedList) -> SinglyLinkedList:
         if type(self) != type(other):
             raise TypeError(f"Concatenate undefined for {type(self)} and {type(other)}")
 
@@ -80,7 +80,7 @@ class SinglyLinkedList:
         for item in other:
             linkedlist.append(item)
 
-        return
+        return linkedlist
 
     def __str__(self) -> str:
         if self.__num_items == 0:
@@ -109,6 +109,9 @@ class SinglyLinkedList:
 
         return True
 
+    def __len__(self):
+        return self.__num_items
+
     def is_empty(self) -> bool:
         return self.__num_items == 0
 
@@ -130,6 +133,9 @@ class SinglyLinkedList:
         return
 
     def remove(self, index) -> any:
+        if self.__num_items == 0:
+            raise RuntimeError("Attempt to remove an item from empty SinglyLinkedList")
+
         if index == 0:
             tobe_deleted_node = self.__head.get_next()
             following_tobe_deleted_node = tobe_deleted_node.get_next()
@@ -146,6 +152,15 @@ class SinglyLinkedList:
 
         return value
 
+    def pop(self) -> any:
+        previous_last_node = self.__find_node_by_index(self.__num_items - 2)
+        last_node = previous_last_node.get_next()
+        value = last_node.get_item()
+        previous_last_node.set_next(SinglyNode())
+        del last_node
+
+        return value
+
     @property
     def num_items(self) -> int:
         return self.__num_items
@@ -156,12 +171,6 @@ class SinglyLinkedList:
 
 
 if __name__ == "__main__":
-    linkedlist1 = SinglyLinkedList([1, 2, 3])
-    linkedlist1.insert(1, 99)
-    linkedlist1.insert(3, 55)
-    linkedlist1.insert(0, 100)
-    print(linkedlist1)
-    linkedlist1.remove(3)
-    print(linkedlist1)
-    linkedlist1.remove(0)
-    print(linkedlist1)
+    linkedlist = SinglyLinkedList()
+    linkedlist.remove(0)
+    # print(linkedlist)
