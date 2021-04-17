@@ -4,12 +4,12 @@ from singly_linked_list import SinglyLinkedList
 
 
 class TestSinglyLinkedList:
-    def test_num_items_success(self):
+    def test_num_nodes_success(self):
         for i in range(10):
             lst = list(range(i))
             linkedlist = SinglyLinkedList(lst)
 
-            assert linkedlist.num_items == i
+            assert linkedlist.num_nodes == i
 
     def test_indexing_success(self):
         linkedlist = SinglyLinkedList(list(range(10)))
@@ -25,7 +25,7 @@ class TestSinglyLinkedList:
 
     def test_empty(self):
         linkedlist = SinglyLinkedList()
-        assert linkedlist.num_items == 0
+        assert linkedlist.num_nodes == 0
         assert list(linkedlist) == []
         assert str(linkedlist) == "SinglyLinkedList([])"
         assert linkedlist.is_empty()
@@ -36,10 +36,10 @@ class TestSinglyLinkedList:
         for i in range(len(lst)):
             assert linkedlist[i] == lst[i]
 
-    def test_num_items_raised_error_when_do_assignment(self):
+    def test_num_nodes_raised_error_when_do_assignment(self):
         with pytest.raises(RuntimeError):
             linkedlist = SinglyLinkedList([1, 2, 3])
-            linkedlist.num_items = 0
+            linkedlist.num_nodes = 0
 
     def test_str(self):
         for i in range(10):
@@ -56,7 +56,7 @@ class TestSinglyLinkedList:
         assert linkedlist[1] == 2
         linkedlist.append(10)
         assert linkedlist[2] == 10
-        assert linkedlist.num_items == 3
+        assert linkedlist.num_nodes == 3
         assert len(linkedlist) == 3
 
     def test_append_start_filled(self):
