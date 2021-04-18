@@ -23,7 +23,7 @@ class SinglyNode:
         return self.__value == None
 
     def __str__(self) -> str:
-        return f"SinglyNode({self.get_value()})"
+        return f"SinglyNode({self.__value})"
 
 
 class SinglyLinkedList:
@@ -60,7 +60,7 @@ class SinglyLinkedList:
         found_node.set_value(value)
         return
 
-    def __find_node_by_index(self, index) -> SinglyNode:
+    def __find_node_by_index(self, index: int) -> SinglyNode:
         if index < 0 or index > self.__num_nodes - 1:
             raise IndexError("SinglyLinkedList index is out of scope")
         current_node = self.__head.get_next()
