@@ -109,6 +109,13 @@ class SinglyLinkedList:
 
         return True
 
+    def __contains__(self, item: any) -> bool:
+        for element in self:
+            if element == item:
+                return True
+
+        return False
+
     def __len__(self):
         return self.__num_nodes
 

@@ -108,3 +108,13 @@ class TestSinglyLinkedList:
         linkedlist = SinglyLinkedList()
         with pytest.raises(RuntimeError):
             linkedlist.remove(0)
+
+    def test_contains_success(self):
+        lst = list(range(10))
+        linkedlist = SinglyLinkedList(lst)
+        for i in lst:
+            assert i in linkedlist
+
+    def test_contains_negative(self):
+        linkedlist = SinglyLinkedList([1, 2, 3, 4])
+        assert 99 not in linkedlist
