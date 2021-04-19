@@ -33,11 +33,14 @@ class DoublyNode:
         return f"DoublyNode({self.__value})"
 
 
-class DoublyLinkedList:
+class CircularLinkedList:
     def __init__(self, contents: list = []):
         self.__head = DoublyNode()
         self.__tail = DoublyNode()
         self.__head.set_next(self.__tail)
+        self.__head.set_previous(self.__tail)
+        self.__tail.set_next(self.__head)
+        self.__tail.set_previous(self.__head)
         self.__num_nodes = 0
 
         if len(contents) != 0:
@@ -51,6 +54,7 @@ class DoublyLinkedList:
         self.__tail.set_next(node)
         self.__tail = node
         self.__tail.set_previous(tobe_changed_tail)
+        self.__tail.set_next(self.__head)
         self.__num_nodes += 1
 
     def __iter__(self) -> Generator[any, None, None]:
@@ -59,6 +63,20 @@ class DoublyLinkedList:
             value = current_node.get_value()
             current_node = current_node.get_next()
             yield value
+
+    def __str__(self) -> str:
+        if self.__num_nodes == 0:
+            return "CircularLinkedList([])"
+
+        result = "CircularLinkedList(["
+        for item in self:
+            result += repr(item)
+            result += ", "
+
+        result = result[:-2]
+        result = result + "])"
+
+        return result
 
     def __getitem__(self, index: int) -> any:
         found_node = self.__find_node_by_index(index)
@@ -85,27 +103,13 @@ class DoublyLinkedList:
 
         return current_node
 
-    def __str__(self) -> str:
-        if self.__num_nodes == 0:
-            return "DoublyLinkedList([])"
-
-        result = "DoublyLinkedList(["
-        for item in self:
-            result += repr(item)
-            result += ", "
-
-        result = result[:-2]
-        result = result + "])"
-
-        return result
-
-    def is_empty(self) -> bool:
+    def is_empty(self):
         return self.__num_nodes == 0
 
-    def __len__(self) -> int:
+    def __len__(self):
         return self.__num_nodes
 
-    def __eq__(self, other: DoublyLinkedList) -> bool:
+    def __eq__(self, other: CircularLinkedList) -> bool:
         if type(self) != type(other):
             return False
 
@@ -129,7 +133,7 @@ class DoublyLinkedList:
         if type(self) != type(other):
             raise TypeError(f"Concatenate undefined for {type(self)} and {type(other)}")
 
-        linkedlist = DoublyLinkedList()
+        linkedlist = CircularLinkedList()
         for item in self:
             linkedlist.append(item)
 
@@ -159,7 +163,9 @@ class DoublyLinkedList:
 
     def remove(self, index) -> any:
         if self.__num_nodes == 0:
-            raise RuntimeError("Attempt to remove an item from empty DoublyNode")
+            raise RuntimeError(
+                "Attempt to remove an item from empty CircularLinkedList"
+            )
 
         if index == 0:
             tobe_deleted_node = self.__head.get_next()
@@ -197,7 +203,4 @@ class DoublyLinkedList:
 
 
 if __name__ == "__main__":
-    linkedlist = DoublyLinkedList([1, 2, 3, 4, 5])
-    popped = linkedlist.pop()
-    print(popped)
-    print(linkedlist)
+    pass

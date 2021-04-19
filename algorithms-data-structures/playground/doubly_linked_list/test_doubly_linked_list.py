@@ -54,11 +54,14 @@ class TestDoublyLinkedList:
             linkedlist[20]
 
     def test_index_assignment_success(self):
-        lst = list(range(5))
-        linkedlist = DoublyLinkedList(lst)
-        linkedlist[3] = 99
-        lst[3] = 99
-        assert linkedlist[3] == lst[3]
+        lst1 = list(range(10))
+        lst2 = sorted(lst1)
+        linkedlist = CircularLinkedList(lst1)
+        for i in range(len(lst1)):
+            linkedlist[i] = lst2[i]
+            assert linkedlist[i] == lst2[i]
+
+        assert list(linkedlist) == lst2
 
     def test_index_assignment_out_of_index(self):
         lst = list(range(5))
