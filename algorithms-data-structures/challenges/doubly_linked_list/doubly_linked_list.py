@@ -125,6 +125,68 @@ class DoublyLinkedList:
 
         return False
 
+    def __add__(self, other: DoublyNode) -> DoublyNode:
+        if type(self) != type(other):
+            raise TypeError(f"Concatenate undefined for {type(self)} and {type(other)}")
+
+        linkedlist = DoublyLinkedList()
+        for item in self:
+            linkedlist.append(item)
+
+        for item in other:
+            linkedlist.append(item)
+
+        return linkedlist
+
+    def insert(self, index, value: any) -> void:
+        node = DoublyNode()
+        node.set_value(value)
+
+        if index == 0:
+            tobe_replaced_node = self.__find_node_by_index(index)
+            self.__head.set_next(node)
+            node.set_next(tobe_replaced_node)
+            node.set_previous(self.__head)
+        else:
+            previous_tobe_replaced_node = self.__find_node_by_index(index - 1)
+            tobe_replaced_node = previous_tobe_replaced_node.get_next()
+            previous_tobe_replaced_node.set_next(node)
+            tobe_replaced_node.set_previous(node)
+            node.set_next(tobe_replaced_node)
+
+        self.__num_nodes += 1
+        return
+
+    def remove(self, index) -> any:
+        if self.__num_nodes == 0:
+            raise RuntimeError("Attempt to remove an item from empty DoublyNode")
+
+        if index == 0:
+            tobe_deleted_node = self.__head.get_next()
+            following_tobe_deleted_node = tobe_deleted_node.get_next()
+            self.__head.set_next(following_tobe_deleted_node)
+        else:
+            previous_tobe_deleted_node = self.__find_node_by_index(index - 1)
+            tobe_deleted_node = previous_tobe_deleted_node.get_next()
+            following_tobe_deleted_node = tobe_deleted_node.get_next()
+            previous_tobe_deleted_node.set_next(following_tobe_deleted_node)
+
+        value = tobe_deleted_node.get_value()
+        del tobe_deleted_node
+        self.__num_nodes -= 1
+
+        return value
+
+    def pop(self) -> any:
+        previous_last_node = self.__find_node_by_index(self.__num_nodes - 2)
+        last_node = previous_last_node.get_next()
+        value = last_node.get_value()
+        previous_last_node.set_next(DoublyNode())
+
+        del last_node
+        self.__num_nodes -= 1
+        return value
+
     @property
     def num_nodes(self):
         return self.__num_nodes
@@ -135,7 +197,7 @@ class DoublyLinkedList:
 
 
 if __name__ == "__main__":
-    linkedlist = DoublyLinkedList(list(range(10)))
-    print(linkedlist[2])
-    print(linkedlist[8])
+    linkedlist = DoublyLinkedList([1, 2, 3, 4, 5])
+    popped = linkedlist.pop()
+    print(popped)
     print(linkedlist)

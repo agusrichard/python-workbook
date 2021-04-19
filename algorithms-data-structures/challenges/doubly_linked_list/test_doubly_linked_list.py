@@ -94,3 +94,60 @@ class TestDoublyLinkedList:
     def test_contains_negative(self):
         linkedlist = DoublyLinkedList([1, 2, 3, 4])
         assert 99 not in linkedlist
+
+    def test_append_start_empty(self):
+        linkedlist = DoublyLinkedList()
+        for i in range(10):
+            linkedlist.append(i)
+
+    def test_append_start_filled(self):
+        linkedlist = DoublyLinkedList([1, 2, 3])
+        for i in range(10):
+            linkedlist.append(i)
+
+    def test_concatenate_success(self):
+        linkedlist1 = DoublyLinkedList([0, 1, 2])
+        linkedlist2 = DoublyLinkedList([3, 4, 5])
+        new_linkedlist = linkedlist1 + linkedlist2
+        assert list(new_linkedlist) == [0, 1, 2, 3, 4, 5]
+
+    def test_concatenate_empty_and_filled(self):
+        linkedlist1 = DoublyLinkedList()
+        linkedlist2 = DoublyLinkedList([1, 2, 3])
+        new_linkedlist = linkedlist1 + linkedlist2
+        assert list(new_linkedlist) == [1, 2, 3]
+
+    def test_concatenate_empty_and_filled(self):
+        linkedlist1 = DoublyLinkedList()
+        linkedlist2 = DoublyLinkedList()
+        new_linkedlist = linkedlist1 + linkedlist2
+        assert list(new_linkedlist) == []
+
+    def test_insert_from_empty(self):
+        linkedlist = DoublyLinkedList()
+        with pytest.raises(IndexError):
+            linkedlist.insert(0, 0)
+
+    def test_insert_filled_index_0(self):
+        linkedlist = DoublyLinkedList([1, 2, 3, 4, 5])
+        linkedlist.insert(0, 99)
+        assert linkedlist[0] == 99
+        assert len(linkedlist) == 6
+
+    def test_insert_filled_index_last(self):
+        linkedlist = DoublyLinkedList([1, 2, 3, 4, 5])
+        linkedlist.insert(4, 99)
+        assert linkedlist[4] == 99
+        assert len(linkedlist) == 6
+
+    def test_remove_from_empty(self):
+        linkedlist = DoublyLinkedList()
+        with pytest.raises(RuntimeError):
+            linkedlist.remove(0)
+
+    def test_pop(self):
+        linkedlist = DoublyLinkedList([1, 2, 3, 4, 5])
+        popped = linkedlist.pop()
+        assert popped == 5
+        assert len(linkedlist) == 4
+        assert list(linkedlist) == [1, 2, 3, 4]

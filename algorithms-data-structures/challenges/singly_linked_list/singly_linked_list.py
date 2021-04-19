@@ -164,8 +164,9 @@ class SinglyLinkedList:
         last_node = previous_last_node.get_next()
         value = last_node.get_value()
         previous_last_node.set_next(SinglyNode())
-        del last_node
 
+        del last_node
+        self.__num_nodes -= 1
         return value
 
     @property
