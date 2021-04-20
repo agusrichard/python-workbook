@@ -56,7 +56,7 @@ class TestDoublyLinkedList:
     def test_index_assignment_success(self):
         lst1 = list(range(10))
         lst2 = sorted(lst1)
-        linkedlist = CircularLinkedList(lst1)
+        linkedlist = DoublyLinkedList(lst1)
         for i in range(len(lst1)):
             linkedlist[i] = lst2[i]
             assert linkedlist[i] == lst2[i]
