@@ -2,60 +2,58 @@ from __future__ import annotations
 
 
 class Node:
-    def __init__(self):
-        self.__value: int = None
-        self.__left: Node = None
-        self.__right: Node = None
+    def __init__(self, value):
+        self.value = value
+        self.left = None
+        self.right = None
 
     def is_empty(self) -> bool:
-        return self.__value == None
-
-    def set_value(self, value: int) -> void:
-        self.__value = value
-
-    def set_left(self, node: Node) -> void:
-        self.__left = node
-
-    def set_right(self, node: Node) -> void:
-        self.__right = node
-
-    def get_value(self) -> int:
-        return self.__value
-
-    def get_left(self) -> Node:
-        return self.__left
-
-    def get_right(self) -> Node:
-        return self.__right
+        return self.value == None
 
     def __str__(self):
-        return f"Node({self.__value})"
+        return f"Node({self.value})"
 
 
 class BinarySearchTree:
     def __init__(self, contents: list = []):
-        self.__root = None
-        self.__num_nodes = 0
+        self.root = None
 
         if len(contents) != 0:
             for item in contents:
-                self.insert(self.__root, item)
+                self.insert(item)
 
-    def insert(self, node: Node, item: int) -> void:
-        print(node)
+    def insert(self, item: int) -> void:
+        self.root = self.__insert(self.root, item)
+
+    @staticmethod
+    def __insert(node: None, value: int) -> Node:
         if node == None:
-            node = Node()
-            node.set_value(item)
-            return node
-
-        if item < node.get_value():
-            node.set_left(self.insert(self, node.get_left(), item))
+            return Node(value)
+        if value < node.value:
+            node.left = BinarySearchTree.__insert(node.left, value)
         else:
-            node.set_right(self.insert(self, node.get_right(), item))
+            node.right = BinarySearchTree.__insert(node.right, value)
 
         return node
+
+    def inorder_traversal(self):
+        return self.__inorder(self.root)
+
+    @staticmethod
+    def __inorder(root):
+        if root is not None:
+            # Traverse left
+            yield from BinarySearchTree.__inorder(root.left)
+
+            yield root.value
+
+            # Traverse right
+            yield from BinarySearchTree.__inorder(root.right)
 
 
 if __name__ == "__main__":
     bst = BinarySearchTree([1, 2, 3])
-    print(bst)
+    print(bst.root)
+    print(bst.inorder_traversal())
+    for i in bst.inorder_traversal():
+        print(i)
