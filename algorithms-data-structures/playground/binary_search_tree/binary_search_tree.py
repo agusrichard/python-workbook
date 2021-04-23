@@ -16,14 +16,14 @@ class Node:
 
 class BinarySearchTree:
     def __init__(self, contents: list = []):
-        self.root = None
+        self.__root = None
 
         if len(contents) != 0:
             for item in contents:
                 self.insert(item)
 
-    def insert(self, item: int) -> void:
-        self.root = self.__insert(self.root, item)
+    def insert(self, value: int) -> void:
+        self.__root = self.__insert(self.__root, value)
 
     @staticmethod
     def __insert(node: None, value: int) -> Node:
@@ -37,23 +37,31 @@ class BinarySearchTree:
         return node
 
     def inorder_traversal(self):
-        return self.__inorder(self.root)
+        return self.__inorder_traversal(self.__root)
 
     @staticmethod
-    def __inorder(root):
+    def __inorder_traversal(root):
         if root is not None:
-            # Traverse left
-            yield from BinarySearchTree.__inorder(root.left)
+            yield from BinarySearchTree.__inorder_traversal(root.left)
 
             yield root.value
 
-            # Traverse right
-            yield from BinarySearchTree.__inorder(root.right)
+            yield from BinarySearchTree.__inorder_traversal(root.right)
+
+    def __iter__(self):
+        return self.__inorder_traversal(self.__root)
+
+    # This contains method is not optimized. since we have to generate
+    # the whole generator then check it one by one
+    # it's better to use inorder traversal method to do the search
+    def __contains__(self, value: int):
+        for item in self:
+            if item == value:
+                return True
 
 
 if __name__ == "__main__":
     bst = BinarySearchTree([1, 2, 3])
-    print(bst.root)
     print(bst.inorder_traversal())
     for i in bst.inorder_traversal():
         print(i)
