@@ -34,7 +34,7 @@ class TestBinarySearchTree:
             assert value == lst[index]
 
     def test_iter_filled_random_number(self):
-        random_numbers = np.random.randint(10, size=10)
+        random_numbers = np.random.randint(100, size=10)
         random_numbers.sort()
         bst = BinarySearchTree(random_numbers)
         for index, value in enumerate(bst):
@@ -47,7 +47,7 @@ class TestBinarySearchTree:
             assert item in bst
 
     def test_contains_random(self):
-        random_numbers = np.random.randint(10, size=10)
+        random_numbers = np.random.randint(100, size=10)
         bst = BinarySearchTree(random_numbers)
         for item in random_numbers:
             assert item in bst
