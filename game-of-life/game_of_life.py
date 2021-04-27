@@ -47,15 +47,15 @@ class GameofLife:
 
         # Get to how many alive neighbors
         for i in range(-1, 2):
+            if ((x + i) < 0 or ((x + i) >= self.grid.shape[0])):
+                continue
             for j in range(-1, 2):
-                try:
-                    if i == 0 and j == 0:
-                        continue
-                    elif self.grid[x + i, y + j]:
-                        alive_neighbors += 1
-                except:
+                if ((y + j) < 0 or (y + j) >= self.grid.shape[1]):
                     continue
-
+                if i == 0 and j == 0:
+                        continue
+                elif self.grid[x + i, y + j]:
+                    alive_neighbors += 1
         # Updating the cell's state
         if current_state and alive_neighbors < 2:                                       # dies as if by underpopulation
             return False
