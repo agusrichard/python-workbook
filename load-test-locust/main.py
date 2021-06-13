@@ -1,17 +1,9 @@
-from locust import HttpUser, task, between
+from locust import HttpUser, between
+
+from locust_tasks.light import LightTask
+from locust_tasks.medium import MediumTask
 
 
-class QuickStartUser(HttpUser):
+class RunLoadTest(HttpUser):
     wait_time = between(1, 2)
-
-    @task
-    def light(self):
-        self.client.get('/light')
-
-    @task
-    def medium(self):
-        self.client.get('/medium')
-
-    @task
-    def heavy(self):
-        self.client.get('/heavy')
+    tasks = [LightTask, MediumTask]
