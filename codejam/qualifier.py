@@ -20,17 +20,21 @@ def make_table(rows: List[List[Any]], labels: Optional[List[Any]] = None, center
     border_top = '┬'.join(['─' * length for length in cols_length])
     result += '┌' + border_top + '┐' + '\n'
 
-    print('cols_length', cols_length)
-
     for index, row in enumerate(labels_n_rows):
         if labels is not None and index == 0:
-            row_of_strings = [f' {item:<{cols_length[ind] - 2}} ' for ind, item in enumerate(row)]
+            if centered:
+                row_of_strings = [str(item).center(cols_length[ind], ' ') for ind, item in enumerate(row)]
+            else:
+                row_of_strings = [f' {item:<{cols_length[ind] - 2}} ' for ind, item in enumerate(row)]
             joined = '│'.join(row_of_strings)
             result += '│' + joined + '│' + '\n'
             border_label = '┼'.join(['─' * length for length in cols_length])
             result += '├' + border_label + '┤' + '\n'
             continue
-        row_of_strings = [f' {item:<{cols_length[ind] - 2}} ' for ind, item in enumerate(row)]
+        if centered:
+            row_of_strings = [str(item).center(cols_length[ind], ' ') for ind, item in enumerate(row)]
+        else:
+            row_of_strings = [f' {item:<{cols_length[ind] - 2}} ' for ind, item in enumerate(row)]
         joined = '│'.join(row_of_strings)
         result += '│' + joined + '│' + '\n'
 
@@ -44,12 +48,13 @@ def make_table(rows: List[List[Any]], labels: Optional[List[Any]] = None, center
 if __name__ == '__main__':
     table = make_table(
         rows=[
-            ["Lemon"],
-            ["Sebastiaan"],
-            ["KutieKatj9"],
-            ["Jake"],
-            ["Not Joe"]
-        ]
+            ["Lemon", 18_3285, "Owner"],
+            ["Sebastiaan", 18_3285.1, "Owner"],
+            ["KutieKatj", 15_000, "Admin"],
+            ["Jake", "MoreThanU", "Helper"],
+            ["Joe", -12, "Idk Tbh"]
+        ],
+        labels=["User", "Messages", "Role"]
     )
 
     print(table)
