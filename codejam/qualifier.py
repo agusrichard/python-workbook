@@ -42,19 +42,3 @@ def make_table(rows: List[List[Any]], labels: Optional[List[Any]] = None, center
     result += '└' + border_bottom + '┘' + '\n'
 
     return result
-
-
-
-if __name__ == '__main__':
-    table = make_table(
-        rows=[
-            ["Lemon", 18_3285, "Owner"],
-            ["Sebastiaan", 18_3285.1, "Owner"],
-            ["KutieKatj", 15_000, "Admin"],
-            ["Jake", "MoreThanU", "Helper"],
-            ["Joe", -12, "Idk Tbh"]
-        ],
-        labels=["User", "Messages", "Role"]
-    )
-
-    print(table)
