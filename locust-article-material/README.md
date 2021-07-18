@@ -39,7 +39,7 @@ locustfile.py
 
 ```python
 import time
-from locustfile import HttpUser, task, between
+from locust_tests.locustfile import HttpUser, task, between
 
 
 class QuickstartUser(HttpUser):
@@ -84,7 +84,7 @@ class QuickstartUser(HttpUser):
     - `constant_pacing`: for an adaptive time that ensures the task runs (at most) once every X seconds
   - Snippet how to use `wait_time`:
     ```python
-    from locustfile import User, task, between
+    from locust_tests.locustfile import User, task, between
     
     class MyUser(User):
         wait_time = between(0.5, 10)
@@ -131,7 +131,7 @@ class QuickstartUser(HttpUser):
 - How to add tasks:
   - using `@task` decorator
     ```python
-    from locustfile import User, task, constant
+    from locust_tests.locustfile import User, task, constant
     
     class MyUser(User):
         wait_time = constant(1)
@@ -146,7 +146,7 @@ class QuickstartUser(HttpUser):
     my_task would be 3 times more likely to be executed than another_task.
 
     ```python
-    from locustfile import User, constant
+    from locust_tests.locustfile import User, constant
     
     def my_task(user):
         pass
@@ -159,7 +159,7 @@ class QuickstartUser(HttpUser):
   By tagging tasks using the @tag decorator, you can be picky about what tasks are executed during the test using the --tags and --exclude-tags arguments.
   - Snippet
     ```python
-    from locustfile import User, constant, task, tag
+    from locust_tests.locustfile import User, constant, task, tag
     
     class MyUser(User):
         wait_time = constant(1)
@@ -189,7 +189,7 @@ class QuickstartUser(HttpUser):
 ### Events
 - `test_start` and `test_stop` <br />
   ```python
-    from locustfile import events
+    from locust_tests.locustfile import events
     
     @events.test_start.add_listener
     def on_test_start(environment, **kwargs):
@@ -203,8 +203,8 @@ class QuickstartUser(HttpUser):
 - `init`
   The init event is triggered at the beginning of each Locust process. This is especially useful in distributed mode where each worker process (not each user) needs a chance to do some initialization. For example, let’s say you have some global state that all users spawned from this process will need:
   ```python
-  from locustfile import events
-  from locustfile.runners import MasterRunner
+  from locust_tests.locustfile import events
+  from locust_tests.locustfile import MasterRunner
   
   @events.init.add_listener
   def on_locust_init(environment, **kwargs):
@@ -217,7 +217,7 @@ class QuickstartUser(HttpUser):
 ### HttpUser
 
 ```python
-from locustfile import HttpUser, task, between
+from locust_tests.locustfile import HttpUser, task, between
 
 
 class MyUser(HttpUser):
@@ -256,7 +256,7 @@ class MyUser(HttpUser):
             response.success()
     
     # We can throw the exception and catch it somewehere else
-    from locustfile.exception import RescheduleTask
+    from locust_tests.locustfile import RescheduleTask
     ...
     with self.client.get("/does_not_exist/", catch_response=True) as response:
         if response.status_code == 404:
@@ -365,7 +365,7 @@ For small tests, keeping all of the test code in a single locustfile.py should w
 - Controllin the exit ode of the Locust process
   ```python
   import logging
-  from locustfile import events
+  from locust_tests.locustfile import events
   
   @events.quitting.add_listener
   def _(environment, **kw):
@@ -412,7 +412,8 @@ For small tests, keeping all of the test code in a single locustfile.py should w
 - The files will be named example_stats.csv, example_failures.csv and example_history.csv (when using --csv=example). The first two files will contain the stats and failures for the whole test run, with a row for every stats entry (URL endpoint) and an aggregated row. The example_history.csv will get new rows with the current (10 seconds sliding window) stats appended during the whole test run. By default only the Aggregate row is appended regularly to the history stats, but if Locust is started with the --csv-full-history flag, a row for each stats entry (and the Aggregate) is appended every time the stats are written (once every 2 seconds by default).
 - In python file
   ```python
-  import locustfile.stats
+
+from locust_tests import locustfile
   locust.stats.CSV_STATS_INTERVAL_SEC = 5 # default is 1 second
   locust.stats.CSV_STATS_FLUSH_INTERVAL_SEC = 60 # Determines how often the data is flushed to disk, default is 10 seconds
   ```
@@ -420,7 +421,7 @@ For small tests, keeping all of the test code in a single locustfile.py should w
 ### Extending Locust using event hooks
 
 ```python
-from locustfile import events
+from locust_tests.locustfile import events
 
 
 @events.request.add_listener
@@ -459,7 +460,7 @@ def my_request_handler(request_type, name, response_time, response_length, respo
 - Adding web routes
   You should now be able to start locust and browse to http://127.0.0.1:8089/added_page
   ```python
-  from locustfile import events
+  from locust_tests.locustfile import events
   
   @events.init.add_listener
   def on_locust_init(web_ui, **kw):
@@ -470,8 +471,8 @@ def my_request_handler(request_type, name, response_time, response_length, respo
 - Run a background greenlet <br />
   For example, you can monitor the fail ratio of your test and stop the run if it goes above some threshold:
   ```python
-  from locustfile import events
-  from locustfile.runners import STATE_STOPPING, STATE_STOPPED, STATE_CLEANUP, WorkerRunner
+  from locust_tests.locustfile import events
+  from locust_tests.locustfile import STATE_STOPPING, STATE_STOPPED, STATE_CLEANUP, WorkerRunner
   
   def checker(environment):
       while not environment.runner.state in [STATE_STOPPING, STATE_STOPPED, STATE_CLEANUP]:

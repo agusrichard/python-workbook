@@ -34,6 +34,43 @@ Locust is an easy to use, scriptable and scalable performance testing tool.
 - If we need some feature or fix not yet part of a release, we can use this to install <br />
   `pip3 install -e git://github.com/locustio/locust.git@master#egg=locus`
   
+### Quick Start
+locustfile.py
+```python
+import time
+from locust import HttpUser, task, between
+
+class QuickstartUser(HttpUser):
+    wait_time = between(1, 2.5)
+
+    @task
+    def hello_world(self):
+        self.client.get("/hello")
+        self.client.get("/world")
+
+    @task(3)
+    def view_items(self):
+        for item_id in range(10):
+            self.client.get(f"/item?id={item_id}", name="/item")
+            time.sleep(1)
+
+    def on_start(self):
+        self.client.post("/login", json={"username":"foo", "password":"bar"})
+```
+
+**Explanation:**
+- We can import code just like any other python module
+- Define a class for the simulated users. Which inherits HttpUser which gives us access to client attribute and let us to make http call.
+- Our class defines a wait_time that will make the simulated users wait between 1 and 2.5 seconds after each task (see below) is executed.
+- Methods decorated with @task are the core of your locust file. For every running user, Locust creates a greenlet (micro-thread), that will call those methods.
+- Tasks are picked at random, but you can give them different weighting. The above configuration will make Locust three times more likely to pick view_items than hello_world.
+- The self.client attribute makes it possible to make HTTP calls that will be logged by Locust.
+- n the view_items task we load 10 different URLs by using a variable query parameter. In order to not get 10 separate entries in Locust’s statistics - since the stats is grouped on the URL
+- Additionally we’ve declared an on_start method. A method with this name will be called for each simulated user when they start.
+- The above code is in `locustfile.py`. To run it: `locust`.
+- If the locust file is located somewhere else, we can specify this: `locust -f locust_files/my_locust_file.py`
+
+
 ### Writing a Locustfile
 - User class <br />
   Locust will spawn one instance of the User class for each user that is being simulated.
