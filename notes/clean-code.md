@@ -4,6 +4,7 @@
 
 ## List of Contents:
 ### 1. [Python Clean Code: 6 Best Practices to Make Your Python Functions More Readable](#content-1)
+### 2. [Clean Code in Python](#content-2)
 
 
 </br>
@@ -305,5 +306,109 @@
 ---
 
 
+## [Clean Code in Python](https://blog.devgenius.io/clean-code-in-python-8251eea292fa) <span id="content-2"></span>
+
+### Introduction
+- Clean code is a set of principles that seeks code to be:
+  - Readable
+  - Maintainable
+  - Extendable
+- The philosophy of Python aims to make the code “Pythonic”.
+
+### The Python Zen
+- Beautiful is better than ugly.
+- Explicit is better than implicit.
+- Simple is better than complex.
+- Complex is better than complicated.
+- Flat is better than nested.
+- Sparse is better than dense.
+- Readability counts.
+- Special cases aren’t special enough to break the rules. Although practicality beats purity.
+- Errors should never pass silently. Unless explicitly silenced.
+- In the face of ambiguity, refuse the temptation to guess.
+- There should be one — and preferably only one — obvious way to do it. Although that way may not be obvious at first unless you’re Dutch.
+- Now is better than never. Although never is often better than *right* now.
+- If the implementation is hard to explain, it’s a bad idea.
+- If the implementation is easy to explain, it may be a good idea.
+- Namespaces are one honking great idea — let’s do more of those!
+
+### How to write clean code:
+- PEP8 is a proposal for a style guide for Python code, it is optional, however it makes it easier to write better code, improving readability and quality.
+- DRY (Don’t Repeat Yourself)
+- KISS (Keep it simple stupid). The KISS principle intends to make code development as simple as possible.
+- Any fool can write code that a computer can understand. Good programmers write code that humans can understand. — Martin Fowler
+
+### What can we do?
+- To write Pythonic code, we must know the features provided by the proper language, functionalities that allow us to easily understand and improve the readability as well.
+- Use decorators: </br>
+  ```python
+  def operations(function):
+    def wrapper(*args, **kwargs):
+      try:
+        print("Numbers:", *args)
+        response = function(*args, **kwargs)
+        print("Result:", response)
+        return response
+      except Exception as err:
+        print(err)
+        
+    return wrapper
+
+  @operations
+  def subtraction(num_a, num_b):
+    return num_a - num_b
+
+  @operations
+  def division(num_a, num_b):
+    return num_a / num_b
+
+  subtraction(5, 2)
+  division(5, 2)
+  ```
+- Context managers: </br>
+  ```python
+  # Read a File
+
+  file = open("path_file", mode="r")
+  print(file.read())
+  file.close()
+
+  # Using context managers
+
+  with open("path_file", mode="r") as file:
+    print(file.read())
+  ```
+- Dunder Methods: </br>
+  ```python
+  class User:
+    def __init__(self, name, age):
+      self.name = name
+      self.age = age
+     
+    def __repr__(self):
+        return f'User: {self.name}'
+    
+    def __gt__(self, other_user):
+        if self.age > other_user.age:
+          print(f"{self.name} is older than {other_user.name}")
+        else:
+          print(f"{self.name} is younger than {other_user.name}")
+          
+  esteban = User("Esteban", 26)
+  cristian = User("Cristian", 24)
+
+  print(esteban)
+  # Output: User: Esteban
+
+  esteban > cristian
+  # Output: Esteban is older than Cristian
+  ```
+
+</br>
+
+---
+
+
 ## References:
 - https://towardsdatascience.com/python-clean-code-6-best-practices-to-make-your-python-functions-more-readable-7ea4c6171d60
+- https://blog.devgenius.io/clean-code-in-python-8251eea292fa
