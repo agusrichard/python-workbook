@@ -5,6 +5,7 @@
 ## List of Contents:
 ### 1. [Python Clean Code: 6 Best Practices to Make Your Python Functions More Readable](#content-1)
 ### 2. [Clean Code in Python](#content-2)
+### 3. [Clean Code Python](#content-3)
 
 
 </br>
@@ -300,6 +301,8 @@
 - Don’t try to be perfect when starting to write code. Start with writing down complicated code that matches your thoughts.
 - Then as your code grows, ask yourself whether your function violates any of the practices mentioned above. If yes, refactor it. Test it. Then move on to the next function.
 
+**[⬆ back to top](#list-of-contents)**
+
 
 </br>
 
@@ -404,11 +407,190 @@
   # Output: Esteban is older than Cristian
   ```
 
+**[⬆ back to top](#list-of-contents)**
+
 </br>
 
 ---
 
+## [Clean Code Python](https://github.com/zedr/clean-code-python/blob/master/README.md) <span id="content-3"></span>
 
+> Thank you to the author for writing such an awesome summary
+### Introduction
+- It's a guide to producing readable, reusable, and refactorable software in Python.
+- Not every principle herein has to be strictly followed, and even fewer will be universally agreed upon. These are guidelines and nothing more, but they are ones codified over many years of collective experience by the authors of Clean Code.
+
+### Variables
+- Use meaningful and pronounceable variable names </br>
+  ```python
+  # Bad
+  import datetime
+
+
+  ymdstr = datetime.date.today().strftime("%y-%m-%d")
+  ```
+  ```python
+  # Good
+  import datetime
+
+  
+  current_date: str = datetime.date.today().strftime("%y-%m-%d")
+  ```
+- Use the same vocabulary for the same type of variable </br>
+  ```python
+  # Bad
+  def get_user_info(): pass
+  def get_client_data(): pass
+  def get_customer_record(): pass
+  ```
+  ```python
+  # Good
+  def get_user_info(): pass
+  def get_user_data(): pass
+  def get_user_record(): pass
+  ```
+  ```python
+  from typing import Union, Dict, Text
+
+  class Record:
+      pass
+
+
+  class User:
+      info : str
+
+      @property
+      def data(self) -> Dict[Text, Text]:
+          return {}
+
+      def get_record(self) -> Union[Record, None]:
+          return Record()
+  ```
+- Use searchable names
+  - By not naming variables that end up being meaningful for understanding our program, we hurt our readers.
+  - Example: </br>
+  ```python
+  # Bad
+  import time
+
+
+  # What is the number 86400 for again?
+  time.sleep(86400)
+  ```
+  ```python
+  # Good
+  import time
+
+
+  # Declare them in the global namespace for the module.
+  SECONDS_IN_A_DAY = 60 * 60 * 24
+  time.sleep(SECONDS_IN_A_DAY)
+  ```
+- Use explanatory variables </br>
+  ```python
+  # Bad
+  import re
+
+
+  address = "One Infinite Loop, Cupertino 95014"
+  city_zip_code_regex = r"^[^,\\]+[,\\\s]+(.+?)\s*(\d{5})?$"
+
+  matches = re.match(city_zip_code_regex, address)
+  if matches:
+      print(f"{matches[1]}: {matches[2]}")  # bad because we don't know what matches[1] and matches[2] stand for just by directly looking at them
+  ```
+  ```python
+  # Not bad
+  import re
+
+
+  address = "One Infinite Loop, Cupertino 95014"
+  city_zip_code_regex = r"^[^,\\]+[,\\\s]+(.+?)\s*(\d{5})?$"
+  matches = re.match(city_zip_code_regex, address)
+
+  if matches:
+      city, zip_code = matches.groups() # we increased the dependency to re, by using this second function
+      print(f"{city}: {zip_code}")
+  ```
+  ```python
+  # Good
+  import re
+
+
+  address = "One Infinite Loop, Cupertino 95014"
+  city_zip_code_regex = r"^[^,\\]+[,\\\s]+(?P<city>.+?)\s*(?P<zip_code>\d{5})?$"
+
+  matches = re.match(city_zip_code_regex, address)
+  if matches:
+      print(f"{matches['city']}, {matches['zip_code']}")
+  ```
+- Avoid Mental Mapping
+  - Don’t force the reader of your code to translate what the variable means. Explicit is better than implicit. </br>
+  - Example:
+  ```python
+  # Bad
+  seq = ("Austin", "New York", "San Francisco") # we don't know what seq for
+
+  for item in seq:
+      #do_stuff()
+      #do_some_other_stuff()
+
+      # Wait, what's `item` again?
+      print(item)
+  ```
+  ```python
+  # Good
+  locations = ("Austin", "New York", "San Francisco")
+
+  for location in locations:
+      #do_stuff()
+      #do_some_other_stuff()
+      # ...
+      print(location)
+  ```
+- Don't add unneeded context
+  - If your class/object name tells you something, don't repeat that in your variable name. </br>
+  ```python
+  # Bad
+  class Car:
+    car_make: str
+    car_model: str
+    car_color: str
+  ```
+  ```python
+  # Good
+  class Car:
+    make: str
+    model: str
+    color: str
+  ```
+- Use default arguments instead of short circuiting or conditionals </br>
+  ```python
+  # Tricky
+  import hashlib
+
+
+  def create_micro_brewery(name):
+      name = "Hipster Brew Co." if name is None else name
+      slug = hashlib.sha1(name.encode()).hexdigest()
+      # etc.
+  ```
+  ```python
+  # Good
+  from typing import Text
+  import hashlib
+
+
+  def create_micro_brewery(name: Text = "Hipster Brew Co."):
+      slug = hashlib.sha1(name.encode()).hexdigest()
+      # etc.
+  ```
+
+
+</br>
+
+---
 ## References:
 - https://towardsdatascience.com/python-clean-code-6-best-practices-to-make-your-python-functions-more-readable-7ea4c6171d60
 - https://blog.devgenius.io/clean-code-in-python-8251eea292fa
+- https://github.com/zedr/clean-code-python/blob/master/README.md
