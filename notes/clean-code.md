@@ -586,6 +586,240 @@
       # etc.
   ```
 
+### Functions
+- Function arguments (2 or fewer ideally)
+  - Limiting the amount of function parameters is incredibly important because it makes testing your function easier.
+  - Zero arguments is the ideal case. One or two arguments is ok, and three should be avoided.
+  ```python
+  # Bad
+  def create_menu(title, body, button_text, cancellable):
+      pass
+  ```
+  ```python
+  # Java-esque
+  class Menu:
+      def __init__(self, config: dict):
+          self.title = config["title"]
+          self.body = config["body"]
+          # ...
+
+  menu = Menu(
+      {
+          "title": "My Menu",
+          "body": "Something about my menu",
+          "button_text": "OK",
+          "cancellable": False
+      }
+  )
+  ```
+  ```python
+  # Also
+  from typing import Text
+
+
+  class MenuConfig:
+      """A configuration for the Menu.
+
+      Attributes:
+          title: The title of the Menu.
+          body: The body of the Menu.
+          button_text: The text for the button label.
+          cancellable: Can it be cancelled?
+      """
+      title: Text
+      body: Text
+      button_text: Text
+      cancellable: bool = False
+
+
+  def create_menu(config: MenuConfig) -> None:
+      title = config.title
+      body = config.body
+      # ...
+
+
+  config = MenuConfig()
+  config.title = "My delicious menu"
+  config.body = "A description of the various items on the menu"
+  config.button_text = "Order now!"
+  # The instance attribute overrides the default class attribute.
+  config.cancellable = True
+
+  create_menu(config)
+  ```
+  ```python
+  # Fancy
+  from typing import NamedTuple
+
+
+  class MenuConfig(NamedTuple):
+      """A configuration for the Menu.
+
+      Attributes:
+          title: The title of the Menu.
+          body: The body of the Menu.
+          button_text: The text for the button label.
+          cancellable: Can it be cancelled?
+      """
+      title: str
+      body: str
+      button_text: str
+      cancellable: bool = False
+
+
+  def create_menu(config: MenuConfig):
+      title, body, button_text, cancellable = config
+      # ...
+
+
+  create_menu(
+      MenuConfig(
+          title="My delicious menu",
+          body="A description of the various items on the menu",
+          button_text="Order now!"
+      )
+  )
+  ```
+  ```python
+  # Even fancier
+  from typing import Text
+  from dataclasses import astuple, dataclass
+
+
+  @dataclass
+  class MenuConfig:
+      """A configuration for the Menu.
+
+      Attributes:
+          title: The title of the Menu.
+          body: The body of the Menu.
+          button_text: The text for the button label.
+          cancellable: Can it be cancelled?
+      """
+      title: Text
+      body: Text
+      button_text: Text
+      cancellable: bool = False
+
+  def create_menu(config: MenuConfig):
+      title, body, button_text, cancellable = astuple(config)
+      # ...
+
+
+  create_menu(
+      MenuConfig(
+          title="My delicious menu",
+          body="A description of the various items on the menu",
+          button_text="Order now!"
+      )
+  )
+  ```
+  ```python
+  from typing import TypedDict, Text
+
+
+  class MenuConfig(TypedDict):
+      """A configuration for the Menu.
+
+      Attributes:
+          title: The title of the Menu.
+          body: The body of the Menu.
+          button_text: The text for the button label.
+          cancellable: Can it be cancelled?
+      """
+      title: Text
+      body: Text
+      button_text: Text
+      cancellable: bool
+
+
+  def create_menu(config: MenuConfig):
+      title = config["title"]
+      # ...
+
+
+  create_menu(
+      # You need to supply all the parameters
+      MenuConfig(
+          title="My delicious menu",
+          body="A description of the various items on the menu",
+          button_text="Order now!",
+          cancellable=True
+      )
+  )
+  ```
+
+### Functions should do one thing
+- When functions do more than one thing, they are harder to compose, test, and reason about.
+- When you can isolate a function to just one action, they can be refactored easily and your code will read much cleaner.
+  ```python
+  # bad
+  from typing import List
+
+
+  class Client:
+      active: bool
+
+
+  def email(client: Client) -> None:
+      pass
+
+
+  def email_clients(clients: List[Client]) -> None:
+      """Filter active clients and send them an email.
+      """
+      for client in clients:
+          if client.active:
+              email(client)
+  ```
+  ```python
+  # Good
+  from typing import List
+
+
+  class Client:
+      active: bool
+
+
+  def email(client: Client) -> None:
+      pass
+
+
+  def get_active_clients(clients: List[Client]) -> List[Client]:
+      """Filter active clients.
+      """
+      return [client for client in clients if client.active]
+
+
+  def email_clients(clients: List[Client]) -> None:
+      """Send an email to a given list of clients.
+      """
+      for client in get_active_clients(clients):
+          email(client)
+  ```
+  ```python
+  from typing import Generator, Iterator
+
+
+  class Client:
+      active: bool
+
+
+  def email(client: Client):
+      pass
+
+
+  def active_clients(clients: Iterator[Client]) -> Generator[Client, None, None]:
+      """Only active clients"""
+      return (client for client in clients if client.active)
+
+
+  def email_client(clients: Iterator[Client]) -> None:
+      """Send an email to a given list of clients.
+      """
+      for client in active_clients(clients):
+          email(client)
+  ```
 
 </br>
 
