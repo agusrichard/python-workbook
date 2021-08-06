@@ -821,6 +821,293 @@
           email(client)
   ```
 
+### Function names should say what they do
+  ```python
+  # Bad
+  class Email:
+      def handle(self) -> None:
+          pass
+
+  message = Email()
+  # What is this supposed to do again?
+  message.handle()
+  ```
+  ```python
+  class Email:
+      def send(self) -> None:
+          """Send this message"""
+
+  message = Email()
+  message.send()
+  ```
+
+### Functions should only be one level of abstraction
+  ```python
+  # Bad
+
+  def parse_better_js_alternative(code: str) -> None:
+      regexes = [
+          # ...
+      ]
+
+      statements = code.split('\n')
+      tokens = []
+      for regex in regexes:
+          for statement in statements:
+              pass
+
+      ast = []
+      for token in tokens:
+          pass
+
+      for node in ast:
+          pass
+  ```
+  ```python
+  from typing import Tuple, List, Text, Dict
+
+
+  REGEXES: Tuple = (
+     # ...
+  )
+
+
+  def parse_better_js_alternative(code: Text) -> None:
+      tokens: List = tokenize(code)
+      syntax_tree: List = parse(tokens)
+
+      for node in syntax_tree:
+          pass
+
+
+  def tokenize(code: Text) -> List:
+      statements = code.split()
+      tokens: List[Dict] = []
+      for regex in REGEXES:
+          for statement in statements:
+              pass
+
+      return tokens
+
+
+  def parse(tokens: List) -> List:
+      syntax_tree: List[Dict] = []
+      for token in tokens:
+          pass
+
+      return syntax_tree
+  ```
+
+### Don't use flags as function parameters
+- Don't use boolean flag as a parameter if you will check it inside our function
+  ```python
+  # Bad
+  from typing import Text
+  from tempfile import gettempdir
+  from pathlib import Path
+
+
+  def create_file(name: Text, temp: bool) -> None:
+      if temp:
+          (Path(gettempdir()) / name).touch()
+      else:
+          Path(name).touch()
+  ```
+  ```python
+  from typing import Text
+  from tempfile import gettempdir
+  from pathlib import Path
+
+
+  def create_file(name: Text) -> None:
+      Path(name).touch()
+
+
+  def create_temp_file(name: Text) -> None:
+      (Path(gettempdir()) / name).touch()
+  ```
+
+### Avoid side effects
+- A function produces a side effect if it does anything other than take a value in and return another value or values.
+- A side effect could be writing to a file, modifying some global variable, or accidentally wiring all your money to a stranger.
+- Don't have several functions and classes that write to a particular file - rather, have one (and only one) service that does it.
+- The main point is to avoid common pitfalls like sharing state between objects without any structure, using mutable data types that can be written to by anything, or using an instance of a class, and not centralizing where your side effects occur.
+- Bad </br>
+  ```python
+  # type: ignore
+
+  # This is a module-level name.
+  # It's good practice to define these as immutable values, such as a string.
+  # However...
+  fullname = "Ryan McDermott"
+
+  def split_into_first_and_last_name() -> None:
+      # The use of the global keyword here is changing the meaning of the
+      # the following line. This function is now mutating the module-level
+      # state and introducing a side-effect!
+      global fullname
+      fullname = fullname.split()
+
+  split_into_first_and_last_name()
+
+  # MyPy will spot the problem, complaining about 'Incompatible types in
+  # assignment: (expression has type "List[str]", variable has type "str")'
+  print(fullname)  # ["Ryan", "McDermott"]
+
+  # OK. It worked the first time, but what will happen if we call the
+  # function again?
+  ```
+- Good </br>
+  ```python
+  from typing import List, AnyStr
+
+
+  def split_into_first_and_last_name(name: AnyStr) -> List[AnyStr]:
+      return name.split()
+
+  fullname = "Ryan McDermott"
+  name, surname = split_into_first_and_last_name(fullname)
+
+  print(name, surname)  # => Ryan McDermott
+  ```
+- Also good
+  ```python
+  from typing import Text
+  from dataclasses import dataclass
+
+
+  @dataclass
+  class Person:
+      name: Text
+
+      @property
+      def name_as_first_and_last(self) -> list:
+          return self.name.split()
+
+
+  # The reason why we create instances of classes is to manage state!
+  person = Person("Ryan McDermott")
+  print(person.name)  # => "Ryan McDermott"
+  print(person.name_as_first_and_last)  # => ["Ryan", "McDermott"]
+  ```
+
+
+### Don't repeat yourself (DRY)
+- Avoid duplicate code
+- Getting the abstraction right is critical. Bad abstractions can be worse than duplicate code
+- Bad </br>
+  ```python
+  from typing import List, Text, Dict
+  from dataclasses import dataclass
+
+  @dataclass
+  class Developer:
+      def __init__(self, experience: float, github_link: Text) -> None:
+          self._experience = experience
+          self._github_link = github_link
+          
+      @property
+      def experience(self) -> float:
+          return self._experience
+      
+      @property
+      def github_link(self) -> Text:
+          return self._github_link
+      
+  @dataclass
+  class Manager:
+      def __init__(self, experience: float, github_link: Text) -> None:
+          self._experience = experience
+          self._github_link = github_link
+          
+      @property
+      def experience(self) -> float:
+          return self._experience
+      
+      @property
+      def github_link(self) -> Text:
+          return self._github_link
+      
+
+  def get_developer_list(developers: List[Developer]) -> List[Dict]:
+      developers_list = []
+      for developer in developers:
+          developers_list.append({
+          'experience' : developer.experience,
+          'github_link' : developer.github_link
+              })
+      return developers_list
+
+  def get_manager_list(managers: List[Manager]) -> List[Dict]:
+      managers_list = []
+      for manager in managers:
+          managers_list.append({
+          'experience' : manager.experience,
+          'github_link' : manager.github_link
+              })
+      return managers_list
+
+  ## create list objects of developers
+  company_developers = [
+      Developer(experience=2.5, github_link='https://github.com/1'),
+      Developer(experience=1.5, github_link='https://github.com/2')
+  ]
+  company_developers_list = get_developer_list(developers=company_developers)
+
+  ## create list objects of managers
+  company_managers = [
+      Manager(experience=4.5, github_link='https://github.com/3'),
+      Manager(experience=5.7, github_link='https://github.com/4')
+  ]
+  company_managers_list = get_manager_list(managers=company_managers)
+  ```
+- Good </br>
+  ```python
+  from typing import List, Text, Dict
+  from dataclasses import dataclass
+
+  @dataclass
+  class Employee:
+      def __init__(self, experience: float, github_link: Text) -> None:
+          self._experience = experience
+          self._github_link = github_link
+          
+      @property
+      def experience(self) -> float:
+          return self._experience
+      
+      @property
+      def github_link(self) -> Text:
+          return self._github_link
+      
+
+
+  def get_employee_list(employees: List[Employee]) -> List[Dict]:
+      employees_list = []
+      for employee in employees:
+          employees_list.append({
+          'experience' : employee.experience,
+          'github_link' : employee.github_link
+              })
+      return employees_list
+
+  ## create list objects of developers
+  company_developers = [
+      Employee(experience=2.5, github_link='https://github.com/1'),
+      Employee(experience=1.5, github_link='https://github.com/2')
+  ]
+  company_developers_list = get_employee_list(employees=company_developers)
+
+  ## create list objects of managers
+  company_managers = [
+      Employee(experience=4.5, github_link='https://github.com/3'),
+      Employee(experience=5.7, github_link='https://github.com/4')
+  ]
+  company_managers_list = get_employee_list(employees=company_managers)
+  ```
+  
+
+
 </br>
 
 ---
