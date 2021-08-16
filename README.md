@@ -1,5 +1,5 @@
 # Python Workbook
-Repository of Python Basic Learning notes.
+Repository of Python learning notes.
 
 Books that i read: 
 1. Think Python by Allen Downey
