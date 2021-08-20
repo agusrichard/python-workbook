@@ -5,6 +5,7 @@
 ## List of Contents:
 ### 1. [5 Powerful Python One-Liners You Should Know](#content-1)
 ### 2. [11 Python Tricks to Boost Your Python Skills Significantly](#content-2)
+### 3. [3 Useful Python f-string Tricks You Probably Don’t Know](#content-3)
 
 
 </br>
@@ -202,5 +203,174 @@
 </br>
 
 ---
+
+## [3 Useful Python f-string Tricks You Probably Don’t Know](https://betterprogramming.pub/3-useful-python-f-string-tricks-you-probably-dont-know-f908f7ed6cf5) <span id="content-3"></span>
+
+### Introduction
+- How we do it the old way and new way:
+  ![How we do it the old way and new way](https://miro.medium.com/max/700/1*kkgkA8RkrR2PzuvoDYC7pw.png)
+- Simply prefix your string with an f or F and then followed by single, double, or even triple quotes to create your string, e.g., f"Hello, Python!".
+
+
+### 1. F-string for Debugging
+- Simple huh?
+  ```python
+  viewer = "🐊"
+  owner = "🐼"
+  editor = "🐓"
+
+  print(viewer)
+  print(owner)
+  print(editor)
+  ```
+- Sometimes we are confused about which variable is printed. This how we can improve debugging process:
+  ```python
+  print(f"{viewer=}")
+  print(f"{owner=}")
+  print(f"{editor=}")
+
+  # Stdout:
+
+  # viewer = "🐊"
+  # owner = "🐼"
+  # editor = "🐓"
+  ```
+- Furthermore, using f-string this way preserves whitespaces, which can be helpful during our debugging process when we are in the midst of looking at confusing terminal logs.
+  ```python
+  print(f"{viewer=     }")
+  print(f"{owner     =}")
+  print(f"{editor     =      }")
+
+  # Stdout:
+
+  # viewer=     '🐊'
+  # owner     ='🐼'
+  # editor     =      '🐓'
+  ```
+
+### 2. String Formatting
+- How to format float:
+  ```python
+  # The "old" ways of updating float to 2 decimal places
+  float_variable = 3.141592653589793
+
+  print("%.2f" % float_variable)
+  print("{:.2f}".format(float_variable))
+
+  # Stdout:
+
+  # 3.14
+  # 3.14
+
+  # The new way with f-string
+  float_variable = 3.141592653589793
+
+  print(f"{float_variable:.2f}")
+
+  # Stdout:
+  # 3.14
+  ```
+- Formatting currency:
+  ```python
+  money = 3_142_671.76 # 💡 This is the same as 3142671.76
+
+  print(f"${money:,.2f}")
+
+  # Stdout:
+  # $3,142,671.76
+  ```
+- Formatting datetime:
+  ```python
+  from datetime import datetime
+
+
+  now = datetime.now()
+
+  # The usual way
+  formatted_datetime_now = now.strftime('%d-%B-%Y')
+  print(formatted_datetime_now)
+
+  # F-string way
+  formatted_datetime_now = f"{now:%d-%B-%Y}"
+  print(formatted_datetime_now)
+
+  # Stdout
+  # 05-July-2021
+  ```
+- Padding your int variables with leading zeroes or whitespaces
+  ```python
+  # Output length of 20, and pad the rest with zeroes
+
+  int_variable = 1_234_567
+  print(f'{int_variable:020}')
+
+  # Stdout
+  # 00000000000001234567
+
+
+  # Output length of 24, and pad the rest with zeroes
+  int_variable = 30
+  print(f'{int_variable:024}')
+
+  # Stdout
+  # 000000000000000000000030
+  ```
+  ```python
+  # Output length of 10, and pad the rest with leading whitesplace
+  int_variable = 20_21
+  print(f'{int_variable:10d}')
+
+  # Stdout
+  # '      2021'
+
+
+  # Output length of 5, and pad the rest with leading whitesplace
+  print(f"{int_variable:5d}")
+
+  # Stdout
+  # ' 2021'
+  ```
+
+
+### Conversion
+- Convert your string to ASCII representation
+  ```python
+  owl = '🦉'
+  print(f'{owl!a}')
+
+  # Stdout
+  # '\U0001f989'
+  ```
+- A repr() alternative with f-string
+  ```python
+  from datetime import datetime
+
+
+  now = datetime.now()
+
+  # Using repr()
+  print(repr(now))
+
+
+  # F-string way
+  print(f'{now!r}')
+
+  # Stdout
+  # datetime.datetime(2021, 7, 5, 13, 2, 34, 672383)
+
+  repr(now) == f'{now!r}'
+  # True
+  ```
+
+
+
+**[⬆ back to top](#list-of-contents)**
+
+</br>
+
+---
+
 ## References:
 - https://levelup.gitconnected.com/5-powerful-python-one-liners-you-should-know-469b9c4737c7
+- https://python.plainenglish.io/11-python-tricks-to-boost-your-python-skills-significantly-1a5221dfa5c7
+- https://betterprogramming.pub/3-useful-python-f-string-tricks-you-probably-dont-know-f908f7ed6cf5
