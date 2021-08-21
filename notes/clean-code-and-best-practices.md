@@ -8,7 +8,7 @@
 ### 3. [Clean Code Python](#content-3)
 ### 4. [Python beyond beginner stage](#content-4)
 ### 5. [Advanced Python: Consider These 10 Elements When You Define Python Functions](#content-5)
-
+### 6. [How To Write Clean Code in Python](#content-6)
 
 </br>
 
@@ -1615,9 +1615,165 @@
 
 ---
 
+## [How To Write Clean Code in Python](https://betterprogramming.pub/how-to-write-clean-code-in-python-5d67746133f2) <span id="content-6"></span>
+
+
+### Introduction
+- Clean code is code that is easy to understand and easy to change or maintain
+- As code is more often read than written, constantly reminding ourselves to practice writing clean code is crucial in our career.
+
+### TL;DR
+- Be consistent when naming things
+- Eliminate room for confusion when naming things
+- Avoid double negatives
+- Write self-explanatory code
+- Do not abuse comments
+
+
+### 1. Name Things Properly
+- If I name it like this, could it possibly mean something else or confuse other people?
+- The general idea here is to always eliminate any room for confusion while naming anything.
+- Example:
+  ```python
+  # For example, you're naming a variable that represents the user’s membership expiration:
+
+  # Example 1
+  # ^^^^^^^^^
+  # Don't
+  expired = True
+
+  # Do
+  is_expired = True
+
+  # Example 2
+  # ^^^^^^^^^
+  # Don't
+  expire = '2021-04-17 03:25:37.403283'
+
+  # Do
+  expiration_date = '2021-04-17 03:25:37.403283' # OR
+  expiration_date_string = '2021-04-17 03:25:37.403283'
+  ```
+- Nothing should be named solely based on your individual preferences.
+- Example:
+  ```python
+  # For example if the existing project names a Response object as "res" already:
+
+  # Existing functions
+  # ^^^^^^^^^^^^^^^^^^
+  def existing_function(res, var): 
+    # Do something...
+    pass 
+
+  def another_existing_function(res, var): 
+    # Do something...
+    pass 
+
+  # Example 1
+  # ^^^^^^^^^
+  # Don't
+  def your_new_function(response, var): 
+    # Do something...
+    pass 
+
+  # Do
+  def your_new_function(res, var): 
+    # Do something...
+    pass 
+  ```
+- Extra tips when choosing names:
+  - Variables are nouns
+  - Functions that do something are verbs (i.e. def compute_user_score()).
+  - Boolean variables or functions returning boolean are questions (i.e. def is_valid()).
+  - Names should be descriptive but not overly verbose (i.e. def compute_fibonacci() rather than def compute_fibonacci_with_dynamic_programming()).
+
+
+### 2. Avoid Double Negatives
+- Example:
+  ```python
+  # Example to check if a user's membership is valid or not:
+
+  # Don't
+  is_invalid = False
+  if not is_invalid:
+      print("User's membership is valid!")
+
+  # Do
+  is_valid = True
+  if not is_valid:
+      print("User's membership is invalid!")
+  ```
+- If you have to read it more than once to be sure, it smells.
+
+
+### Write Self-Explanatory Code
+- Engineers need to write self-explanatory code that makes sense to people.
+- We should try to capture a complicated piece of logic in a descriptive and self-reading variable.
+- Example:
+  ```python
+  # Don't write long conditionals
+  if meeting and (current_time > meeting.start_time) and (user.permission == 'admin' or user.permission == 'moderator') and (not meeting.is_cancelled):
+       print('# Do something...')
+
+  # Do capture them in multiple variables that reads like English
+  is_meeting_scheduled = meeting and not meeting.is_cancelled
+  has_meeting_started = current_time > meeting.start_time
+  has_user_permission = user.permission == 'admin' or user.permission == 'moderator'
+  if is_meeting_scheduled and has_meeting_started and has_user_permission:
+      print('# Do something...')
+  ```
+- Whenever you feel the need to write a comment, you should always re-evaluate the code you have just written to see how it could be made clearer.
+- Example of when to write comments:
+  ```python
+  # Example of getting an email returned from a 3rd party API:
+
+  # Example 1
+  # ^^^^^^^^^
+  # Do
+  raw_string = get_user_info()
+  email = raw_string.split('|', maxsplit=2)[-1]  # NOTE: raw_string e.g. "Magic Rock|jerry@example.com"
+  ```
+  ```python
+  # Example of a function calling a random time.sleep():
+
+  # Example 2
+  # ^^^^^^^^^
+  # Don't
+  def create_user(user_ids):
+      for id in user_ids:
+          make_xyz_api_request(id)
+          time.sleep(2)
+
+  # Do
+  def create_user(user_ids):
+      for id in user_ids:
+          make_xyz_api_request(id)
+          time.sleep(2) # NOTE: service 'xyz' has a rate limit of 100 requests/min, so we should slow our requests down
+  ```
+- Always put yourself in others’ shoes (i.e. “How would the others interpret my code?”).
+
+
+### How Do I Apply This Knowledge?
+- No one is capable of writing clean code from day one. As a matter of fact, everyone starts by writing “bad” or “ugly” code.
+- Besides practicing, here are the things that work for me:
+  - Keep asking yourself questions like “Is there a better way of writing it? Is this confusing for others to read?”
+  - Take part in code reviews.
+  - Explore other well-written code bases. If you want some examples of well-written, clean, and Pythonic code, check out the Python requests library.
+  - Talk to people, discuss or exchange opinions, and you will learn a lot more quickly.
+
+
+
+
+**[⬆ back to top](#list-of-contents)**
+
+</br>
+
+---
+
 ## References:
 - https://towardsdatascience.com/python-clean-code-6-best-practices-to-make-your-python-functions-more-readable-7ea4c6171d60
 - https://blog.devgenius.io/clean-code-in-python-8251eea292fa
 - https://github.com/zedr/clean-code-python/blob/master/README.md
 - https://towardsdatascience.com/python-beyond-beginner-stage-good-practices-and-tools-75ddd55b445d
 - https://betterprogramming.pub/advanced-python-consider-these-10-elements-when-you-define-python-functions-61c0be8a10ed
+- https://betterprogramming.pub/how-to-write-clean-code-in-python-5d67746133f2
