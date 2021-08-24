@@ -6,6 +6,7 @@
 ### 1. [5 Powerful Python One-Liners You Should Know](#content-1)
 ### 2. [11 Python Tricks to Boost Your Python Skills Significantly](#content-2)
 ### 3. [3 Useful Python f-string Tricks You Probably Don’t Know](#content-3)
+### 4. [10 Advanced Python Tricks To Write Faster, Cleaner Code](#content-4)
 
 
 </br>
@@ -370,7 +371,196 @@
 
 ---
 
+## [10 Advanced Python Tricks To Write Faster, Cleaner Code](https://medium.com/pythonland/10-advanced-python-tricks-to-write-faster-cleaner-code-f9ee76fa878f) <span id="content-4"></span>
+
+### 1. Using slotted classes
+- In a slotted class we explicitly define the fields that our class is allowed to have using the magic field name __slots__.
+- Advantages:
+  - Objects created from the class will take up slightly less memory
+  - It’s faster to access class attributes
+  - You can’t randomly add new attributes to objects of a slotted class
+- Example:
+  ```python
+  >>> class Card:
+  ...     __slots__ = 'rank', 'suite'
+  ...     def __init__(self, rank, suite):
+  ...             self.rank = rank
+  ...             self.suite = suite
+  ... 
+  >>> qh = Card('queen', 'hearts')
+  ```
+- You can't create some random new attributes, certainly good to prevent errors.
+
+
+### 2. Get the size of an object
+- With sys.getsizeof() you can check the memory usage of a Python object.
+- Example:
+  ```python
+  import sys
+
+  mylist = range(0, 10000)
+  print(sys.getsizeof(mylist))
+  # 48
+  ```
+- A range, which is a generator object, is much more memory efficient than using an actual list of numbers. It generates a new number if requested, instead of actually storing all the numbers.
+- Unfortunately, sys.getsizeof() only works well for built-in data types. For custom data types and more profiling tools, you should check out a package called Pympler, which offers a function called asizeof() .
+
+
+### 3. Using tuples instead of lists
+- A Python tuple is one of Python’s three built-in sequence data types, the others being lists and range objects.
+- A Python tuple shares many properties with a list:
+  - It can hold multiple values in a single variable
+  - It’s ordered: the order of items is preserved
+  - A tuple can have duplicate values
+  - It’s indexed: you can access items numerically
+  - A tuple can have an arbitrary length
+- There are differences though:
+  - A tuple is immutable; it can not be changed once you defined it.
+  - A tuple is defined using optional parentheses () instead of square brackets []
+  - Because tuples are immutable, and thus hashable, they can act as the key in a dictionary
+- If you don’t need to modify your list, consider a tuple.
+
+
+### 4. Conditional statements (Inline if/else)
+- Example:
+  ```python
+  >>> def get_status(error):
+  ...     return 'OK' if not error else 'We have a problem'
+  ...
+  >>> get_status(error=True)
+  'We have a problem'
+  >>> get_status(error=False)
+  'OK'
+  ```
+
+### 5. Else statements and loops
+- Syntax:
+  ```python
+  # for loop
+  for x in <some iterable>:
+      ...
+  else:
+      ....
+
+  # while loop
+  while <some condition>:
+      ...
+  else:
+      ...
+  ```
+- The else part is executed by default (when the iterable is exhausted) unless the loop is ‘broken’ with a break statement.
+
+### 6. Sorting Objects by Multiple Keys
+- Example:
+  ```python
+  import operator
+
+  people.sort(key=operator.itemgetter('age'))
+  people.sort(key=operator.itemgetter('name'))
+  ```
+- We first sort by age, and then by name. With operator.itemgetter() we get the age and name fields from each dictionary inside the list in a concise way.
+
+### 7. Comprehensions
+- Basic syntax:
+  ```python
+  [ expression for item in list if conditional ]
+  ```
+- Example:
+  ```python
+  mylist = [i for i in range(10)]
+  print(mylist)
+  # [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+
+  squares = [x**2 for x in range(10)]
+  print(squares)
+  # [0, 1, 4, 9, 16, 25, 36, 49, 64, 81]
+
+  def some_function(a):
+    return (a + 5) / 2
+  my_formula = [some_function(i) for i in range(10)]
+  print(my_formula)
+  # [2.5, 3.0, 3.5, 4.0, 4.5, 5.0, 5.5, 6.0, 6.5, 7.0]
+
+  filtered = [i for i in range(20) if i%2==0]
+  print(filtered)
+  # [0, 2, 4, 6, 8, 10, 12, 14, 16, 18]
+  ```
+
+
+### 8. Data classes
+- There are several advantages over regular classes or other alternatives like returning multiple values or dictionaries:
+  - a data class requires a minimal amount of code
+  - you can compare data classes because __eq__ is implemented for you
+  - you can easily print a data class for debugging because __repr__ is implemented as well
+  - data classes require type hints, reducing the chances of bugs
+- Example:
+  ```python
+  from dataclasses import dataclass
+
+  @dataclass
+  class Card:
+      rank: str
+      suit: str
+      
+  card = Card("Q", "hearts")
+
+  print(card == card)
+  # True
+
+  print(card.rank)
+  # 'Q'
+
+  print(card)
+  Card(rank='Q', suit='hearts')
+  ```
+- You can combine the slotted classes technique from #1 with data classes to create a data class with a fixed set of fields.
+
+
+### 9. Merging dictionaries
+- Example:
+  ```python
+  dict1 = { 'a': 1, 'b': 2 }
+  dict2 = { 'b': 3, 'c': 4 }
+  merged = { **dict1, **dict2 }
+
+  print (merged)
+  # {'a': 1, 'b': 3, 'c': 4}
+
+  # Python >= 3.9 only
+  merged = dict1 | dict2
+
+  print (merged)
+  # {'a': 1, 'b': 3, 'c': 4}
+  ```
+
+### 10. Using and knowing itertools
+- Itertools is a built-in library that offers a number of iterator building blocks.
+- Example:
+  ```python
+  >>> # Calculate all profucs of an input
+  >>> list(itertools.product('abc', repeat=2))
+  [('a', 'a'), ('a', 'b'), ('a', 'c'), 
+   ('b', 'a'), ('b', 'b'), ('b', 'c'), 
+   ('c', 'a'), ('c', 'b'), ('c', 'c')]
+   
+  >>> # Calculate all permutations
+  >>> list(itertools.permutations('abc'))
+  [('a', 'b', 'c'), ('a', 'c', 'b'), ('b', 'a', 'c'), 
+   ('b', 'c', 'a'), ('c', 'a', 'b'), ('c', 'b', 'a')]
+
+  >>> # Take elements for iterator as long as predicate is True
+  >>> list(itertools.takewhile(lambda x: x<5, [1,4,6,4,1]))
+  [1, 4]
+  ```
+
+
+**[⬆ back to top](#list-of-contents)**
+
+</br>
+
+---
 ## References:
 - https://levelup.gitconnected.com/5-powerful-python-one-liners-you-should-know-469b9c4737c7
 - https://python.plainenglish.io/11-python-tricks-to-boost-your-python-skills-significantly-1a5221dfa5c7
 - https://betterprogramming.pub/3-useful-python-f-string-tricks-you-probably-dont-know-f908f7ed6cf5
+- https://medium.com/pythonland/10-advanced-python-tricks-to-write-faster-cleaner-code-f9ee76fa878f
