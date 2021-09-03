@@ -8,3 +8,4 @@
 ### 4. [Functional Programming](./functional-programming.md)
 ### 5. [Tips and Tricks](./tips-tricks.md)
 ### 6. [Anti Patterns](./anti-patterns.md)
+### 7. [Testing](./testing.md)
