@@ -1,15 +1,16 @@
 # Tips and Tricks in Python
 
-</br>
+<br />
 
 ## List of Contents:
 ### 1. [5 Powerful Python One-Liners You Should Know](#content-1)
 ### 2. [11 Python Tricks to Boost Your Python Skills Significantly](#content-2)
 ### 3. [3 Useful Python f-string Tricks You Probably Don’t Know](#content-3)
 ### 4. [10 Advanced Python Tricks To Write Faster, Cleaner Code](#content-4)
+### 5. [Python tricks I wish I knew earlier](#content-5)
 
 
-</br>
+<br />
 
 ---
 
@@ -80,7 +81,7 @@
 
 **[⬆ back to top](#list-of-contents)**
 
-</br>
+<br />
 
 ---
 
@@ -201,7 +202,7 @@
 
 **[⬆ back to top](#list-of-contents)**
 
-</br>
+<br />
 
 ---
 
@@ -367,7 +368,7 @@
 
 **[⬆ back to top](#list-of-contents)**
 
-</br>
+<br />
 
 ---
 
@@ -553,14 +554,56 @@
   [1, 4]
   ```
 
+**[⬆ back to top](#list-of-contents)**
+
+<br />
+
+---
+
+## [Python tricks I wish I knew earlier](https://preettheman.medium.com/python-tricks-i-wish-i-knew-earlier-aab07dec3bd4) <span id="content-5"></span>
+
+### Getting Random Data
+- Example:
+  ```python
+  set1 = [ 1, 2, 3, 4, 5 ]
+  random.sample(set1, 2)
+  ```
+
+### Changing Your While Loops
+- Example:
+  ```python
+  # First
+  while True:
+    #code down here
+  
+  # Second
+  while 1:
+    #code down here
+  ```
+
+### Exchanging Variables
+- Example:
+  ```python
+  set1 = [ 1, 2, 3, 4, 5 ]set2 = [ 3, 4, 5, 6, 7 ]
+  set1, set2 = set2, set1
+  ```
+
+### Loading Packages As You Need Them
+- This is self explanatory
+
+### Updating Python
+- Using the latest version would certainly help to speed our code
 
 **[⬆ back to top](#list-of-contents)**
 
-</br>
+<br />
 
 ---
+
+
 ## References:
 - https://levelup.gitconnected.com/5-powerful-python-one-liners-you-should-know-469b9c4737c7
 - https://python.plainenglish.io/11-python-tricks-to-boost-your-python-skills-significantly-1a5221dfa5c7
 - https://betterprogramming.pub/3-useful-python-f-string-tricks-you-probably-dont-know-f908f7ed6cf5
 - https://medium.com/pythonland/10-advanced-python-tricks-to-write-faster-cleaner-code-f9ee76fa878f
+- https://preettheman.medium.com/python-tricks-i-wish-i-knew-earlier-aab07dec3bd4

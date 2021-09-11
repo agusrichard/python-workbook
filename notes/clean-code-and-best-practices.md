@@ -1,6 +1,6 @@
 # Python Clean Code
 
-</br>
+<br />
 
 ## List of Contents:
 ### 1. [Python Clean Code: 6 Best Practices to Make Your Python Functions More Readable](#content-1)
@@ -9,8 +9,9 @@
 ### 4. [Python beyond beginner stage](#content-4)
 ### 5. [Advanced Python: Consider These 10 Elements When You Define Python Functions](#content-5)
 ### 6. [How To Write Clean Code in Python](#content-6)
+### 7. [Best Practices To Follow While Creating Classes In Python](#content-7)
 
-</br>
+<br />
 
 ---
 
@@ -29,7 +30,7 @@
   - use descriptive names
 
 ### Get Started
-- Look at this mouthful code: </br>
+- Look at this mouthful code: <br />
   ```python
   import xml.etree.ElementTree as ET
   import zipfile
@@ -100,7 +101,7 @@
 - A function should be small because it is easier to know what the function does.
 - How small is small? There should rarely be more than 20 lines of code in one function.
 - This indent level should not be greater than one or two
-- Refactored: </br>
+- Refactored: <br />
   ```python
   import zipfile
 
@@ -113,7 +114,7 @@
 
 ### Do One Task
 - A function should complete only one task, not multiple tasks.
-- Refactored: </br>
+- Refactored: <br />
   ```python
   download_zip_data_from_google_drive(url, output_path)
 
@@ -126,7 +127,7 @@
 
 ### One Level of Abstraction
 - The level of abstraction is the amount of complexity by which a system is viewed or programmed. The higher the level, the less detail. The lower the level, the more detail. — PCMag
-- Before: </br>
+- Before: <br />
   ```python
   from typing import List 
 
@@ -140,7 +141,7 @@
 
       return all_docs
   ```
-- After being refactored: </br>
+- After being refactored: <br />
   ```python
   from typing import List 
 
@@ -162,7 +163,7 @@
   ```
 
 ### Duplication
-- This code contains duplication: </br>
+- This code contains duplication: <br />
   ```python
   t_train = []
   for file in tweets_train_files:
@@ -175,7 +176,7 @@
       test_doc_1 =[r.text for r in ET.parse(join(path_test, file)).getroot()[0]]
       t_test.append(' '.join(t for t in test_doc_1))
   ```
-- Refactored: </br>
+- Refactored: <br />
   ```python
   from typing import Tuple, List
 
@@ -209,7 +210,7 @@
 ### Have Fewer than 4 Arguments
 - A function should not have more than 3 arguments since it is a sign that the function is performing multiple tasks.
 - If a function has more than 3 arguments, consider turning it into a class.
-- One way to cluster our functions is by using class. This is how it's done: </br>
+- One way to cluster our functions is by using class. This is how it's done: <br />
   ```python
   import xml.etree.ElementTree as ET
   import zipfile
@@ -306,7 +307,7 @@
 **[⬆ back to top](#list-of-contents)**
 
 
-</br>
+<br />
 
 ---
 
@@ -345,7 +346,7 @@
 
 ### What can we do?
 - To write Pythonic code, we must know the features provided by the proper language, functionalities that allow us to easily understand and improve the readability as well.
-- Use decorators: </br>
+- Use decorators: <br />
   ```python
   def operations(function):
     def wrapper(*args, **kwargs):
@@ -370,7 +371,7 @@
   subtraction(5, 2)
   division(5, 2)
   ```
-- Context managers: </br>
+- Context managers: <br />
   ```python
   # Read a File
 
@@ -383,7 +384,7 @@
   with open("path_file", mode="r") as file:
     print(file.read())
   ```
-- Dunder Methods: </br>
+- Dunder Methods: <br />
   ```python
   class User:
     def __init__(self, name, age):
@@ -411,7 +412,7 @@
 
 **[⬆ back to top](#list-of-contents)**
 
-</br>
+<br />
 
 ---
 
@@ -423,7 +424,7 @@
 - Not every principle herein has to be strictly followed, and even fewer will be universally agreed upon. These are guidelines and nothing more, but they are ones codified over many years of collective experience by the authors of Clean Code.
 
 ### Variables
-- Use meaningful and pronounceable variable names </br>
+- Use meaningful and pronounceable variable names <br />
   ```python
   # Bad
   import datetime
@@ -438,7 +439,7 @@
   
   current_date: str = datetime.date.today().strftime("%y-%m-%d")
   ```
-- Use the same vocabulary for the same type of variable </br>
+- Use the same vocabulary for the same type of variable <br />
   ```python
   # Bad
   def get_user_info(): pass
@@ -470,7 +471,7 @@
   ```
 - Use searchable names
   - By not naming variables that end up being meaningful for understanding our program, we hurt our readers.
-  - Example: </br>
+  - Example: <br />
   ```python
   # Bad
   import time
@@ -488,7 +489,7 @@
   SECONDS_IN_A_DAY = 60 * 60 * 24
   time.sleep(SECONDS_IN_A_DAY)
   ```
-- Use explanatory variables </br>
+- Use explanatory variables <br />
   ```python
   # Bad
   import re
@@ -527,7 +528,7 @@
       print(f"{matches['city']}, {matches['zip_code']}")
   ```
 - Avoid Mental Mapping
-  - Don’t force the reader of your code to translate what the variable means. Explicit is better than implicit. </br>
+  - Don’t force the reader of your code to translate what the variable means. Explicit is better than implicit. <br />
   - Example:
   ```python
   # Bad
@@ -551,7 +552,7 @@
       print(location)
   ```
 - Don't add unneeded context
-  - If your class/object name tells you something, don't repeat that in your variable name. </br>
+  - If your class/object name tells you something, don't repeat that in your variable name. <br />
   ```python
   # Bad
   class Car:
@@ -566,7 +567,7 @@
     model: str
     color: str
   ```
-- Use default arguments instead of short circuiting or conditionals </br>
+- Use default arguments instead of short circuiting or conditionals <br />
   ```python
   # Tricky
   import hashlib
@@ -934,7 +935,7 @@
 - A side effect could be writing to a file, modifying some global variable, or accidentally wiring all your money to a stranger.
 - Don't have several functions and classes that write to a particular file - rather, have one (and only one) service that does it.
 - The main point is to avoid common pitfalls like sharing state between objects without any structure, using mutable data types that can be written to by anything, or using an instance of a class, and not centralizing where your side effects occur.
-- Bad </br>
+- Bad <br />
   ```python
   # type: ignore
 
@@ -959,7 +960,7 @@
   # OK. It worked the first time, but what will happen if we call the
   # function again?
   ```
-- Good </br>
+- Good <br />
   ```python
   from typing import List, AnyStr
 
@@ -997,7 +998,7 @@
 ### Don't repeat yourself (DRY)
 - Avoid duplicate code
 - Getting the abstraction right is critical. Bad abstractions can be worse than duplicate code
-- Bad </br>
+- Bad <br />
   ```python
   from typing import List, Text, Dict
   from dataclasses import dataclass
@@ -1063,7 +1064,7 @@
   ]
   company_managers_list = get_manager_list(managers=company_managers)
   ```
-- Good </br>
+- Good <br />
   ```python
   from typing import List, Text, Dict
   from dataclasses import dataclass
@@ -1110,7 +1111,7 @@
   
 **[⬆ back to top](#list-of-contents)**
 
-</br>
+<br />
 
 ---
 
@@ -1287,7 +1288,7 @@
 
 **[⬆ back to top](#list-of-contents)**
 
-</br>
+<br />
 
 ---
 
@@ -1611,7 +1612,7 @@
 
 **[⬆ back to top](#list-of-contents)**
 
-</br>
+<br />
 
 ---
 
@@ -1760,13 +1761,144 @@
   - Take part in code reviews.
   - Explore other well-written code bases. If you want some examples of well-written, clean, and Pythonic code, check out the Python requests library.
   - Talk to people, discuss or exchange opinions, and you will learn a lot more quickly.
+  
+**[⬆ back to top](#list-of-contents)**
 
+<br />
+
+---
+
+## [Best Practices To Follow While Creating Classes In Python](https://medium.com/pythoneers/best-practices-to-follow-while-creating-classes-in-python-4497bc8535dc) <span id="content-7"></span>
+
+### Introduction
+- A Class in oop Works as a blueprint for the object. if we define a car as a class then different brands or types of cars will be objects.
+
+### 1. Use Inheritance Instead of redefining variables
+- Inheritance is one of the four pillars of OOP. It is the process by which one class inherits the properties of another class. The Class that inherits properties from another class is called child and the other one is called the Parent class.
+- Inheritance can help us to reduce the code and make it look more readable and professional.
+- Example:
+  ```python
+  class Employee:
+    def __init__(self,name,age,exp,salary):
+      self.name = name
+      self.age = age
+      self.exp = exp
+      self.salary = salary
+      
+  class Developers(Employee):
+    def __init__(self,name,age,exp,salary,level):      
+        super().__init__(name,age,exp,salary)                        
+        self.level = level
+   
+  class Deginers(Employee):
+    def __init__(self,name,age,exp,salary,level):      
+      super().__init__(name,age,exp,salary)                        
+      self.level = level
+  ```
+
+### 2. Class vs Static vs Instance Method (Use Wisely)
+- In python, you can define three kinds of methods. Static, Class, and Instance.
+- Instance Methods are simple methods that you create while creating classes. These methods are concerned with individual instance objects. These methods are defined Like this: def do_something(self): , here self refers to the instance object that calls the method.
+- Class Methods are different kinds of methods. They are bound to the class, not with the object of the class. These methods can access and modify the state of the class. It requires the class as a parameter to the method. To create a class method we use @classmethoddecorator. It can be used to do factory tasks.
+- Static Methods are concerned with a particular state of the class. They can not access or modify the state of the class. Static methods do not take any specific parameter as input. To create a static method we use @staticmethod , It can be used to do utility tasks.
+- The difference between both is that class methods allow you to access or update attributes related to the class, while static methods are only concerned with an instance or the class itself.
+- Example:
+  ```python
+  class A(object):
+      def foo(self, x):
+          print(f"executing foo({self}, {x})")
+  
+      @classmethod
+      def class_foo(cls, x):
+          print(f"executing class_foo({cls}, {x})")
+  
+      @staticmethod
+      def static_foo(x):
+          print(f"executing static_foo({x})")
+  a = A()
+  ```
+
+### 3. use @property
+- The Property decorator is a built-in decorator in python that helps to define properties without explicitly calling the property() function. It can also offer the functionality to define getters and setters.
+- Example:
+  ```python
+  class Data:
+      def __init__(self, fname, lname):
+          self.fname = fname
+          self.lname = lname
+      
+      @property
+      def name(self):
+          print("Getter")
+          return f"{self.fname} {self.lname}"
+      
+      @name.setter
+      def name(self, name):
+          print("Setter")
+          self.fname, self.lname = name.split()
+          
+  obj = Data("Jack", "Davidson")
+  print("Student Name:", obj.name)
+  obj.name = "Jake Davidson"
+  print("After setting:", obj.name)
+  
+  '''output
+  Getter
+  Student Name: Jack Davidson
+  Setter
+  Getter
+  After setting: Jake Davidson
+  '''
+  ```
+
+### 4. Consider Using __slots__ For Optimization
+- If Most of the time your class is used as a data container for storing data only, then you can use __slots__ it to optimize the performance of the class.
+- In general, When we create a class it is automatically backed by a dictionary __dict__ that is used to store all the information about instance variables inside the class.
+- Example of properties as dictionary:
+  ```python
+  class A:
+     pass
+  a = A()
+  print(a.__dict__)
+  > {}  ##Empty Dictionary will be used to store Values of instances
+  ## Let's assign a value to the instance
+  a.x = 5
+  print(a.__dict__)
+  >{'x': 5}  ## The Instance value gets stored in the dictionary
+  ## Let's Create one more instance
+  b.x = 5
+  print(b.__dict__)
+  print(a.__dict__)
+  >{'x':5}
+  {'y':6}
+  ```
+- As shown in the above example, every time we create a new instance a new dictionary gets created for that instance. suppose if you have to create a thousand instances then thousand dictionaries also get created. It will automatically increase the size of memory.
+- Example of using `__slots__` to specify class' properties
+  ```python
+  class B:
+     __slots__ = ('x','y')
+     pass
+  obj = B()
+  obj.x = 10
+  print(obj.__dict__)
+  ---------OUTPUT------
+  Traceback (most recent call last):
+    File "main.py", line 6, in <module>
+      print(obj.__dict__)
+  AttributeError: 'B' object has no attribute '__dict__'
+  ```
+- If you try to inherit from a class that contains slots then the child class will reset the slots and you will again see dict for storing values of the instance. It is because slots work at each level of class inheritance and if you inherit one class from another then it gets reset after the parent level.
+
+### 5. Magic Methods
+- 1. `__init__`: for class creation
+- 2. `__str__`: It is an object representation method. It returns a printable string representation of any user-defined class.
+- 3. `__add__`: For addition, based on the defined class 
 
 
 
 **[⬆ back to top](#list-of-contents)**
 
-</br>
+<br />
 
 ---
 
