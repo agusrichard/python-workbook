@@ -1,16 +1,19 @@
-# This is a sample Python script.
+import logging
+import os
 
-# Press Shift+F10 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
+dir_path = os.path.dirname(os.path.realpath(__file__))
+filename = os.path.join(dir_path, 'test_log.log')
 
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.INFO)
 
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press Ctrl+F8 to toggle the breakpoint.
+file_handler = logging.FileHandler(filename)
+file_handler.setLevel(logging.INFO)
+file_handler.setFormatter(logging.Formatter('%(asctime)s - %(levelname)s - %(message)s'))
+logger.addHandler(file_handler)
 
+def do_logging():
+    logger.info('test')
 
-# Press the green button in the gutter to run the script.
 if __name__ == '__main__':
-    print_hi('PyCharm')
-
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+    do_logging()
