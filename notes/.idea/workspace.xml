@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="c2ec2f3c-c34d-4acf-aba5-e3ffd35cefaf" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/clean-code-and-best-practices.md" beforeDir="false" afterPath="$PROJECT_DIR$/clean-code-and-best-practices.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/tips-tricks.md" beforeDir="false" afterPath="$PROJECT_DIR$/tips-tricks.md" afterDir="false" />
     </list>

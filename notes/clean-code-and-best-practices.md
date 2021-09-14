@@ -10,6 +10,7 @@
 ### 5. [Advanced Python: Consider These 10 Elements When You Define Python Functions](#content-5)
 ### 6. [How To Write Clean Code in Python](#content-6)
 ### 7. [Best Practices To Follow While Creating Classes In Python](#content-7)
+### 8. [11 Refactoring Patterns To Elevate Your Python Code](#content-8)
 
 <br />
 
@@ -1893,8 +1894,190 @@
 - 1. `__init__`: for class creation
 - 2. `__str__`: It is an object representation method. It returns a printable string representation of any user-defined class.
 - 3. `__add__`: For addition, based on the defined class 
+  
+**[⬆ back to top](#list-of-contents)**
 
+<br />
 
+---
+
+## [11 Refactoring Patterns To Elevate Your Python Code](https://betterprogramming.pub/11-refactoring-patterns-to-elevate-your-python-code-a47dbe5826d) <span id="content-8"></span>
+
+### Introduction
+- Refactoring is a disciplined technique for restructuring an existing body of code, altering its internal structure without changing its external behavior.
+- Refactoring is a disciplined technique for restructuring an existing body of code, altering its internal structure, that may also cause its external behavior to change.
+-  If you can add a small or large amount of functionality to an application, framework, package, or code set, you are refactoring that code set.
+
+### 1. Remove Unneeded Comments
+
+### 2. Assign Constants to Variables
+- Putting constants into variables enables them to be located in one place. If they are located in one place, it is of much lower cost to change them and lower cost to maintain the code set. 
+- Example:
+  ```python
+  ELEMENT_TYPES = ['Classification','Regression', 'Clustering']
+  CLSFID = 0
+  REGRID = 1
+  CLSTID = 3
+  SCORE_TYPES = ['score','error', 'un-supervised']
+  SCOREID = 0
+  ERRORID = 1
+  UNSUPID = 2
+  ```
+  
+### 3. Bug Fixing or Adding New Code
+- Adding clustering and all associated code adds and changes results in substantial architecture refactoring.
+
+### 4. Modifying Keys in a Dictionary
+- Example (before):
+  ```python
+  ELEMENT_DICTIONARY = {
+      # Classification
+      'accuracy': ('sklearn.metrics', 'accuracy_score', 'score'),
+      'f1_score': ('sklearn.metrics', 'f1_score', 'score'),
+      'hamming_loss': ('sklearn.metrics', 'hamming_loss', 'error'),
+      'log_loss': ('sklearn.metrics', 'log_loss', 'error'),
+      'precision': ('sklearn.metrics', 'precision_score', 'score'),
+      'recall': ('sklearn.metrics', 'recall_score', 'score'),
+      'auc': ('sklearn.metrics', 'roc_auc_score', 'score'),
+  .
+  .
+  .
+  ```
+- Example (after):
+  ```python
+  ELEMENT_SCORES = {
+      ELEMENT_TYPES[CLSFID] : {     # Classification
+          'accuracy': ('sklearn.metrics', 'accuracy_score', SCORE_TYPES[SCOREID]),
+          'f1_score': ('sklearn.metrics', 'f1_score', SCORE_TYPES[SCOREID]),
+          'hamming_loss': ('sklearn.metrics', 'hamming_loss', SCORE_TYPES[ERRORID]),
+          'log_loss': ('sklearn.metrics', 'log_loss', SCORE_TYPES[ERRORID]),
+          'precision': ('sklearn.metrics', 'precision_score', SCORE_TYPES[SCOREID]),
+          'recall': ('sklearn.metrics', 'recall_score', SCORE_TYPES[SCOREID]),
+          'auc': ('sklearn.metrics', 'roc_auc_score', SCORE_TYPES[SCOREID]),
+  .
+  .
+  .
+  ```
+
+### 5. Transforming Duplicate Code Into Decorators
+- Python has an excellent solution for code that has a repetitive pattern at the top or bottom or both. The solution is a wrapper that can go around the differencing middle code, called a decorator in Python.
+- Example:
+  ```python
+  # adapted from pandas-flavor 
+  from pandas.api.extensions import register_dataframe_accessor
+  def register_DataFrame_method(method):
+      """Register a function as a method attached to the 
+      Pandas  DataFrame.
+      Example
+      -------
+      for a function
+          @pf.register_dataframe_method
+          def row_by_value(df, col, value):
+          return df[df[col] == value].squeeze()
+      for a class method
+          @pf.register_dataframe_accessor('Aclass')
+          class Aclass(object):
+          def __init__(self, data):
+          self._data
+          def row_by_value(self, col, value):
+              return self._data[self._data[col] == value].squeeze()
+      """
+  from typing import Callable
+  def inner(*args, **kwargs):
+          class AccessorMethod(object):
+              def __init__(self, pandas_obj):
+                  self._obj = pandas_obj
+              @wraps(method: Callable)
+              def __call__(self, *args, **kwargs):
+                  return method(self._obj, *args, **kwargs)
+          register_dataframe_accessor(method.__name__)(AccessorMethod)
+          return method
+      return inner()
+  ```
+
+### 6. Transforming Python>3.7 Classes Into Python≤3.7 @dataclass
+-` @dataclass` implements a `__init__()` method for argument initialization, a `__repr__()` method for string representation, and the` __eq__()` method for object comparisons.
+- Example:
+  ```python
+  ##########   BEFORE
+  class CrossValidation:
+      def __init__(self, inner_cv, outer_cv,
+                   eval_final_performance, test_size,
+                   calculate_metrics_per_fold,
+                   calculate_metrics_across_folds):
+          self.inner_cv = inner_cv
+          self.outer_cv = outer_cv
+          self.eval_final_performance = eval_final_performance
+          self.test_size = test_size
+          self.calculate_metrics_per_fold = calculate_metrics_per_fold
+          # Todo: if self.outer_cv is LeaveOneOut: Set calculate metrics across folds to True -> Print
+          self.calculate_metrics_across_folds = calculate_metrics_across_folds
+          self.outer_folds = None
+          self.inner_folds = dict()
+  from dataclasses import dataclass
+  ##########   AFTER
+  from dataclasses import dataclass, field
+  from typing import Any, Dict
+  @dataclass
+  class CrossValidation:
+      inner_cv: int
+      outer_cv: int
+      eval_final_performance: float
+      test_size: int
+      calculate_metrics_per_fold: bool
+      # Todo: if outer_cv is LeaveOneOut: Set calculate metrics across folds to True -> Print
+      calculate_metrics_across_folds: bool
+      inner_folds: Dict = field(default_factory=dict) 
+      outer_folds: Any = None
+  ```
+  
+### 7. Eliminate Unnecessary Code Statements
+- If you want to produce clean, readable code, you need to delete unnecessary code and comments.
+
+### 8. Code Hoisting
+- Code hoisting is the child pattern of the eliminate-unnecessary-code-statements pattern.
+- Code hoisting occurs when a statement or statements appear on two or more conditional branches. Those redundant statements are “hoisted” out of the conditional.
+- Example:
+  ```python
+  ##########   BEFORE
+  if self.maximize_metric:
+      # max metric
+      best_config_metric_nr = np.argmax(list_of_scores)
+  else:
+      # min metric
+      best_config_metric_nr = np.argmin(list_of_scores)
+  ##########   AFTER
+  best_config_metric_nr = np.argmin(list_of_scores)
+  if self.maximize_metric:
+      best_config_metric_nr = np.argmax(list_of_scores)
+  ```
+
+### 9. Document the Code
+
+### 10. Put In Type Hints
+- Example:
+  ```python
+  
+  def toContinuousCategory(
+      oX: pd.DataFrame,
+      features: list = [],
+      drop: bool = True,
+      int_: bool = True,
+      float_: bool = True,
+      quantile: bool = True,
+      nbin: int = 10,
+      inplace: bool = True,
+      verbose: bool = True,
+  ) -> pd.DataFrame:
+  ```
+
+### 11. Update the Test Suite
+- Guidelines:
+  - The code must follow PEP-8 format style guidelines.
+  - The test suite must be of 85+% coverage of the code set.
+  - There must be one or more tests for any changed function or method.
+  - There must be one or more tests for any new function, method class, and data class.
+  - The test suite must be automate-able.
 
 **[⬆ back to top](#list-of-contents)**
 

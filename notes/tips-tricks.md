@@ -8,6 +8,7 @@
 ### 3. [3 Useful Python f-string Tricks You Probably Don’t Know](#content-3)
 ### 4. [10 Advanced Python Tricks To Write Faster, Cleaner Code](#content-4)
 ### 5. [Python tricks I wish I knew earlier](#content-5)
+### 6. [32 Advanced Techniques for Better Python Code](#content-6)
 
 
 <br />
@@ -600,6 +601,253 @@
 
 ---
 
+## [32 Advanced Techniques for Better Python Code](https://betterprogramming.pub/thirty-two-advanced-techniques-for-better-python-code-6717226eb611) <span id="content-6"></span>
+
+### Documentation techniques
+- Technique #1: Create a new version, and document major changes
+  - Create a new version, a+1.0.0, if there are a significant amount of architectural changes, a significant amount of code changed, and/or a significant amount of new behavior added.
+  - Create a new subversion, a.b+1.0, if there are minor architectural changes, a minor amount of code changed, and/or a minor amount of new behavior added.
+  - Create a new sub-subversion, a.b.c+1, if adding a minor amount of code and/or there are bug fixes.
+- Technique #2: Document locally any significant addition or change in code
+  ```python
+  class Scorer(object):
+      """
+      Transforms a string literal into a callable instance of a
+      particular metric
+      BHC 1.1.0 - support cluster scoring by add clustering 
+      scores and type
+              - added METRIC_METADATA dictionary
+              - added ML_TYPES = ["Classification", "Regression",
+                                  "Clustering"]
+              - added METRIC_<>ID Postion index of metric 
+                metadata list
+              - added SCORE_TYPES
+              - added SCORE_SIGN
+      """
+  ```
+- Technique #3: Create long and descriptive names for constants, variables, functions, and class methods
+- Technique #4: Transform behaviorally inappropriate comments into behaviorally correct comments to lower maintenance cost and bug generation
+- Technique #5: Add comments to increase the readability of code
+  - Comment before:
+    ```python
+    @staticmethod
+    def get_json(photon_package):
+      """
+      Load JSON file in which the elements for the PHOTON submodule are stored.
+      The JSON files are stored in the framework folder by the name convention 'photon_package.json'
+      Parameters:
+      -----------
+      * 'photon_package' [str]:
+        The name of the photonai submodule
+      Returns:
+      --------
+      JSON file as dict, file path as str
+      """
+      ```
+    - Comment after:
+    ```python
+    @staticmethod
+    def load_json(photon_package: str) -> Any:
+        """
+        load_json Loads JSON file.
+    The class init PipelineElement('name',...)
+        stores the element metadata in a json file.
+    The JSON files are stored in the framework folder
+        by the name convention 'photon_<package>.json'.
+        (example:$HOME/PROJECTS/photon/photonai/base/registry/PhotonCore.json)
+    The file is of format
+        { name-1: ['import-pkg-class-path-1', class-path-1)],
+          name-2: ['import-pkg-class-path-2', class-path-2)],
+         ....}
+    Parameters
+        ----------
+            photon_package:  The name of the photonai package of element metadata
+        Returns
+        -------
+            [file_content, file_name]
+        Notes
+        -------
+        if  JSON file does not exist, then create blank one.
+    """
+    ```
+- Technique #6: Choose a docstring style, and use it consistently throughout the project (package, library, …). We use NumPy Style because it is suited for the detailed documentation of classes, methods, functions, and parameters.
+  - Corrected code with comment:
+    ```python
+    @staticmethod
+    def get_json(photon_package: str) -> Any:
+        """
+        get_json Loads JSON file.
+    The class init PipelineElement('name',...)
+        stores the element metadata in a json file.
+    The JSON files are stored in the framework folder
+        by the name convention 'photon_<package>.json'.
+        (example:$HOME/PROJECTS/photon/photonai/base/registry/PhotonCore.json)
+    The file is of format
+        { name-1: ['import-pkg-class-path-1', class-path-1)],
+          name-2: ['import-pkg-class-path-2', class-path-2)],
+         ....}
+    Parameters
+        ----------
+        photon_package:  The name of the photonai package
+        of element metadata.
+    Returns
+        -------
+        [file_content, file_name]
+    Notes
+        -------
+        If  JSON file does not exist, then create a blank one.
+        """
+    ```
+- Technique #7: Apply PEP-8 naming conventions
+  - Example:
+    ```text
+    Globals:
+    ELEMENT_TYPE -> ML_TYPE
+    ELEMENT_DICTIONARY   ->  METRIC_METADATA
+    variables:
+    machine_learning_type -> element_type
+    ```
+- Technique #8: Add type hinting to every function or class method.
+  - Type hints (note: not strong type checking) make it possible to accomplish bug hunting, finding security holes, and static type checking after the first pass of coding and unit testing.
+  - Example:
+    ```python
+    def is_machine_learning_type(ml_type: str) -> bool:
+    ```
+- Technique #9: Transform irrelevant comments to relevant comments
+  - Example:
+    ```python
+    # Original
+    # register new object
+    PhotonRegister.save("ABC1", "namespace.filename.ABC1", "Transformer")
+    
+    # After
+    # register new element
+    PhotonRegister.register("ABC1", "namespace.filename.ABC1", "Transformer")
+    ```
+- Technique #10: Keep only architectural #todo comments
+- Technique #11: Delete old code that is commented out.
+  - Before:
+    ```python
+    def __post_init__(self):
+        if self.custom_elements_folder:
+            self._load_custom_folder(self.custom_elements_folder)
+    # base_PHOTON_REGISTRIES = ["PhotonCore", "PhotonNeuro"]
+    # PHOTON_REGISTRIES = ["PhotonCore", "PhotonNeuro"]
+    # def __init__(self, custom_elements_folder: str = None):
+    #     if custom_elements_folder:
+    #         self._load_custom_folder()
+    #     else:
+    #         self.custom_elements = None
+    #         self.custom_elements_folder = None
+    #         self.custom_elements_file = None`
+    ```
+  - Before:
+    ```python
+    def __post_init__(self):
+      if self.custom_elements_folder:
+          self._load_custom_folder(self.custom_elements_folder)
+    ```
+  - Lines-of-code (LOC) complexity is reduced by elimination of commented-out old code.
+  
+### Coding Techniques
+- Technique #12: Don’t reinvent the wheel
+  - Before you write a line of code for your idea or task, search for solutions that others have coded.
+- Technique #13: Learn from others’ code.
+- Technique #14: Log; don’t print
+- Technique #15: Do not code global data structures; use parameter files
+- Technique #16: Create a function or method to encapsulate value checking
+  ```python
+  @staticmethod
+  def is_machine_learning_type(ml_type: str) -> bool:
+      """
+      :raises
+      if not known machine_learning_type
+  :param machine_learning_type
+      :return: True
+      """
+      if ml_type in Scorer.ML_TYPES:
+          return True
+      else:
+          logger.error(
+              "Specify valid ml_type to choose best config: {}".format(ml_type)
+          )
+      raise NameError(becomes...)
+  ```
+- Technique #17: Create the package error type
+- Technique #18: Create a raise function with the package error type
+  ```python
+  import logging
+  class PhotoaiError(Exception):
+      pass
+  def raise_PhotoaiError(msg):
+      logger.error(msg)
+      raise PhotoaiError(msg)
+  
+  @staticmethod
+  def is_machine_learning_type(ml_type: str) -> bool:
+      """
+      Parameters:
+      -----------
+      machine_learning_type
+  Returns
+     -----------
+     True
+  Raises
+     -----------
+     if not known machine_learning_type
+     """
+     if ml_type in Scorer.ML_TYPES:
+          return True
+  raise_PhotoaiError(
+          "Specify valid ml_type:{} of [{}]".format(ml_type,
+          Scorer.ML_TYPES))
+  ```
+- Technique #19: Use faulthandler
+- Technique #20: Eliminate global variables — or at least try
+- Technique #21: Eliminate all unused local variables
+  - Usually, your IDE identifies all dangling variables for you. If not, you use locals()and use search.
+- Technique #22: Apply the Python 3.7+ @dataclass decorator before the class definition.
+  - @dataclass decorates a def class definition and automatically generates the five double dunder methods: `__init__()` ,` __repr__()` , `__str__`,`__eq__()`, and `__hash__()`
+  - Example:
+    ```python
+    @dataclass
+    class PhotonRegistry:
+        """
+        Helper class to manage the PHOTON Element Register
+        ...
+        """
+        custom_elements_folder: str = None
+        custom_elements: str = None
+        custom_elements_file: str = None
+        base_PHOTON_REGISTRIES: ClassVar[List[str]] =/
+       ["PhotonCore", "PhotonNeuro"]
+        PHOTON_REGISTRIES: ClassVar[List[str]] =/
+       ["PhotonCore", "PhotonNeuro"]
+    def __post_init__(self):
+        if self.custom_elements_folder:
+            self._load_custom_folder(self.custom_elements_folder)
+    ```
+
+### Testing Techniques
+- Technique #24: Unit tests have 80%+ coverage. We use coverage.
+- Technique #25: Integration tests must have 100% coverage of all external (API) functions, classes, class attributes, and class methods.
+- Technique #26: The developers do not accomplish acceptance testing.
+- Technique #27: Code type hinting checking.
+- Technique #28: Test coverage
+- Technique #29: Performance profiling
+- Technique #29:Check security
+- Technique #29:Code reliability
+
+### Verification Techniques
+- Technique #30: Code review
+- Technique #31: Version control
+- Technique #32: Continuous integration (CI) automation
+
+**[⬆ back to top](#list-of-contents)**
+
+<br />
+
+---
 
 ## References:
 - https://levelup.gitconnected.com/5-powerful-python-one-liners-you-should-know-469b9c4737c7
@@ -607,3 +855,4 @@
 - https://betterprogramming.pub/3-useful-python-f-string-tricks-you-probably-dont-know-f908f7ed6cf5
 - https://medium.com/pythonland/10-advanced-python-tricks-to-write-faster-cleaner-code-f9ee76fa878f
 - https://preettheman.medium.com/python-tricks-i-wish-i-knew-earlier-aab07dec3bd4
+- https://betterprogramming.pub/thirty-two-advanced-techniques-for-better-python-code-6717226eb611
