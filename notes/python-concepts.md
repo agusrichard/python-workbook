@@ -1,13 +1,13 @@
 # Python Concepts
 
-</br>
+<br />
 
 ## List of Contents:
 ### 1. [5 Pairs of Magic Methods in Python That You Should Know](#content-1)
+### 2. [4 Ways To Level Up Your Python Code](#content-2)
 
 
-
-</br>
+<br />
 
 ---
 
@@ -305,11 +305,155 @@
 
   ```
 
+**[⬆ back to top](#list-of-contents)**
+
+<br />
+
+---
+
+## [4 Ways To Level Up Your Python Code](https://betterprogramming.pub/4-ways-to-level-up-your-python-code-f148a50efeea) <span id="content-2"></span>
+
+### 1. Replace range(len()) With enumerate()
+- Using the enumerate() function is a much more elegant and cleaner way.
+- The enumerate function returns an enumerate object that stores each item’s index and value.
+- Example:
+  ```python
+  # Define a collection, such as list:
+  names = ['Nik', 'Jane', 'Katie', 'Jim', 'Luke']
+  
+  # Using the range(len(collection)) method, you'd write:
+  for i in range(len(names)):
+      print(i, names[i])
+  
+  # Using enumerate, you can define this by writing:
+  for idx, name in enumerate(names):
+      print(idx, name)
+      
+  # Both ways of doing this return:
+  # 0 Nik
+  # 1 Jane
+  # 2 Katie
+  # 3 Jim
+  # 4 Luke
+  ```
+- As a bonus, if you wanted your enumerate object to begin somewhere other than 0, you could simply pass your starting value into the start= parameter.
+  ```python
+  # Define a collection, such as list:
+  names = ['Nik', 'Jane', 'Katie', 'Jim', 'Luke']
+  
+  # Using enumerate, you can define this by writing:
+  for idx, name in enumerate(names, start=1):
+      print(idx, name)
+      
+  # This returns:
+  # 1 Nik
+  # 2 Jane
+  # 3 Katie
+  # 4 Jim
+  # 5 Luke
+  ```
+
+### 2. Stop Using Square Brackets To Get Dictionary Items — Use .get()
+- We have a dictionary like this:
+  ```python
+  
+  nik = {
+    'age':32,
+    'gender':'male',
+    'employed':True,
+  }
+  ```
+- For example, attempting to access a non-existent value of 'location' will raise a KeyError:
+- The method will simply return None in the event of a missing key and continue on its happy way!
+- Example:
+  ```python
+  nik = {
+    'age':32,
+    'gender':'male',
+    'employed':True,
+  }
+  
+  print(nik.get('location'))
+  
+  # Returns:
+  # None
+  ```
+
+### 3. Simplify Iterating Over Multiple Lists With Zip()
+- The obvious way:
+  ```python
+  names = ['Nik', 'Jane', 'Melissa', 'Doug']
+  ages = [32, 28, 37, 53]
+  gender = ['Male', 'Female', 'Female', 'Male']
+  
+  # Old boring way:
+  for_looped = []
+  for i in range(len(names)):
+      for_looped.append((names[i], ages[i], gender[i]))
+  
+  print(for_looped)
+  
+  # Returns:
+  # [('Nik', 32, 'Male'), ('Jane', 28, 'Female'), ('Melissa', 37, 'Female'), ('Doug', 53, 'Male')]
+  
+  ```
+- Note: The zip() function returns a zip object, but you can coerce it into different datatypes directly using, say, the list(), tuple(), or dict() functions.
+- Using zip:
+  ```python
+  names = ['Nik', 'Jane', 'Melissa', 'Doug']
+  ages = [32, 28, 37, 53]
+  gender = ['Male', 'Female', 'Female', 'Male']
+  
+  # Zipping through lists with zip()
+  zipped = zip(names, ages, gender)
+  zipped_list = list(zipped)
+  
+  print(zipped_list)
+  
+  # Returns:
+  # [('Nik', 32, 'Male'), ('Jane', 28, 'Female'), ('Melissa', 37, 'Female'), ('Doug', 53, 'Male')]
+  ```
+- Coerce zip object into dictionary. But you could only this with only two collections. Doing this with more than two collections will raise a ValueError:
+  ```python
+  names = ['Nik', 'Jane', 'Melissa', 'Doug']
+  ages = [32, 28, 37, 53]
+  gender = ['Male', 'Female', 'Female', 'Male']
+  
+  ages = dict(zip(names,ages))
+  
+  print(ages)
+  
+  # Returns
+  # {'Nik': 32, 'Jane': 28, 'Melissa': 37, 'Doug': 53}
+  ```
+
+### 4. Use f-strings To Easily Print to the Console
+- Example:
+  ```python
+  some_variable = "HELLO!"
+  
+  print(f"some_variable={some_variable}")
+  
+  # Returns
+  # some_variable=HELLO!
+  ```
+- Another way:
+  ```python
+  
+  some_variable = "HELLO!"
+  
+  print(f"{some_variable=}")
+  
+  # Returns
+  # some_variable=HELLO!
+  ```
 
 **[⬆ back to top](#list-of-contents)**
 
-</br>
+<br />
 
 ---
+
 ## References:
 - https://betterprogramming.pub/5-pairs-of-magic-methods-in-python-you-should-know-f98f0e5356d6
+- https://betterprogramming.pub/4-ways-to-level-up-your-python-code-f148a50efeea

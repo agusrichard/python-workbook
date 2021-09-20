@@ -11,6 +11,7 @@
 ### 6. [How To Write Clean Code in Python](#content-6)
 ### 7. [Best Practices To Follow While Creating Classes In Python](#content-7)
 ### 8. [11 Refactoring Patterns To Elevate Your Python Code](#content-8)
+### 9. [Python Refactoring Tips to Write Code in Pythonic Way](#content-9)
 
 <br />
 
@@ -2085,6 +2086,131 @@
 
 ---
 
+## [Python Refactoring Tips to Write Code in Pythonic Way](https://levelup.gitconnected.com/python-refactoring-tips-to-write-code-in-pythonic-way-6b8ff4375b3a) <span id="content-9"></span>
+
+
+### Introduction
+- Refactoring your code not only makes your code more readable but also reduces the number of unnecessary lines.
+- It’s your responsibility to make your code more readable so that others can read it easily and understand what logic you have implemented to solve any particular problem.
+
+### 1. Pull Statements out of the Loop
+- Example:
+  ```python
+  for address in addresses:
+      city = "New York"
+      location.append(address.street_address, city)
+  ```
+- In the above example, declaring the variable in the loop is unnecessary as the variable’s value is never changed.
+- Since the variable is never changing within the for loop. It's better to write the code like this:
+  ```python
+  city = "New York"
+  for address in addresses:
+      location.append(address.street_address, city)
+  ```
+
+### 2. Merged nested If statements
+- Example:
+  ```python
+  if a > 5:
+      if b < 10:
+          print("Checking conditions")
+  ```
+- Make the nested if into a single statement:
+  ```python
+  if a > 5 and b < 10:
+       print("Checking conditions")
+  ```
+
+### 3. Simplify sequence check
+- Example:
+  ```python
+  if len(list_of_fruits) > 0:
+     fruit_to_eat = choose_fruit(list_of_fruits)
+  ```
+- Improved:
+  ```python
+  if list_of_fruits:
+      fruit_to_eat = choose_fruit(list_of_fruits)
+  ```
+- My personal opinion would be the first example is better because of the explicitness. The second example is a bit implicit about the purpose of the if statement,
+
+### 4. Use Any instead of Loop
+- Here’s the code to check negative numbers:
+  ```python
+  nums = [1,5,7,9,-3, 15]
+  flag = False
+  for num in nums:
+      if num < 0:
+          flag = True
+          break
+  ```
+- Using any to achieve the same result as the above code:
+  ```python
+  nums = [1,5,7,9,-3,15]
+  flag = any(num<0 for num in nums) 
+  ```
+
+### 5. Remove inline variables that are used once only
+- Example:
+  ```python
+  def sum(a, b):
+      total = a + b
+      return total
+  ```
+- To remove the redundant variable declaration from the above example. It's better to write the code like this:
+  ```python
+  def sum(a, b):
+      return a+b 
+  ```
+
+### 6. Replace If statement with If expression
+- Example:
+  ```python
+  if condition:
+      flag = True
+  else:
+      flag = False
+  ```
+- The refactored code. Using inline if expression:
+  ```python
+  flag = True if condition else False
+  ```
+
+### 7. Adding a Guard Clause
+- Example:
+  ```python
+  def do_i_need_hat(self, hat):
+      if isInstance(hat, Hat):
+          weather_outside = getWeatherReport()
+          if weather_outside.is_raining:
+              print("Yes")
+              return True
+          else:
+              return False
+      else:
+          return False
+  ```
+- Refactored by inverting the flow. Bad case or special case needs to be handled first.
+  ```python
+  def do_i_need_hat(self, hat):
+      if not isInstance(hat, Hat):
+          return False
+  if isInstance(hat, Hat):
+          weather_outside = getWeatherReport()
+          if weather_outside.is_raining:
+              print("Yes")
+              return True
+          else:
+              return False
+  ```
+
+
+**[⬆ back to top](#list-of-contents)**
+
+<br />
+
+---
+
 ## References:
 - https://towardsdatascience.com/python-clean-code-6-best-practices-to-make-your-python-functions-more-readable-7ea4c6171d60
 - https://blog.devgenius.io/clean-code-in-python-8251eea292fa
@@ -2092,3 +2218,4 @@
 - https://towardsdatascience.com/python-beyond-beginner-stage-good-practices-and-tools-75ddd55b445d
 - https://betterprogramming.pub/advanced-python-consider-these-10-elements-when-you-define-python-functions-61c0be8a10ed
 - https://betterprogramming.pub/how-to-write-clean-code-in-python-5d67746133f2
+- https://levelup.gitconnected.com/python-refactoring-tips-to-write-code-in-pythonic-way-6b8ff4375b3a
