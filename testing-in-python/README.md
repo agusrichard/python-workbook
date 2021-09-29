@@ -1,14 +1,15 @@
 # Testing in Python
 
-</br>
+<br />
 
 ## List of Contents:
 ### 1. [How To Use unittest to Write a Test Case for a Function in Python](#content-1)
 ### 2. [Unit Testing in Python](#content-2)
+### 3. [Getting Started With Testing in Python](#content-3)
 
 
 
-</br>
+<br />
 
 ---
 
@@ -149,7 +150,7 @@
 
 **[⬆ back to top](#list-of-contents)**
 
-</br>
+<br />
 
 ---
 
@@ -216,10 +217,96 @@
 
 **[⬆ back to top](#list-of-contents)**
 
-</br>
+<br />
+
+---
+
+## [Getting Started With Testing in Python](https://realpython.com/python-testing/) <span id="content-1"></span>
+
+### Testing Your Code
+- Exploratory testing is a form of testing that is done without a plan. In an exploratory test, you’re just exploring the application.
+- Automated testing is the execution of your test plan (the parts of your application you want to test, the order in which you want to test them, and the expected responses) by a script instead of a human.
+- Testing multiple components is known as integration testing.
+- A major challenge with integration testing is when an integration test doesn’t give the right result. It’s very hard to diagnose the issue without being able to isolate which part of the system is failing.
+- A unit test is a smaller test, one that checks that a single component operates in the right way.
+- An integration test checks that components in your application operate with each other.
+- A unit test checks a small component in your application.
+- To write a unit test for the built-in function sum(), you would check the output of sum() against a known output.
+  ```python
+  >>> assert sum([1, 2, 3]) == 6, "Should be 6"
+  ```
+- If the result from sum() is incorrect, this will fail with an AssertionError and the message "Should be 6".
+
+### Choosing a Test Runner
+- There are many test runners available for Python. The one built into the Python standard library is called unittest.
+- The three most popular test runners are:
+  - unittest
+  - nose or nose2
+  - pytest
+- unittest:
+  - requires that: You put your tests into classes as methods and You use a series of special assertion methods in the unittest.TestCase class instead of the built-in assert statement
+  - Example:
+    ```python
+    import unittest
+    
+    
+    class TestSum(unittest.TestCase):
+    
+        def test_sum(self):
+            self.assertEqual(sum([1, 2, 3]), 6, "Should be 6")
+    
+        def test_sum_tuple(self):
+            self.assertEqual(sum((1, 2, 2)), 6, "Should be 6")
+    
+    if __name__ == '__main__':
+        unittest.main()
+    ```
+  - If you execute this at the command line, you’ll see one success (indicated with .) and one failure (indicated with F): `python test_sum_unittest.py`
+- nose:
+  - `nose` is compatible with any tests written using the unittest framework and can be used as a drop-in replacement for the unittest test runner.
+  - The development of nose as an open-source application fell behind, and a fork called nose2 was created. If you’re starting from scratch, it is recommended that you use nose2 instead of nose.
+  - To get started with nose2, install nose2 from PyPI and execute it on the command line. nose2 will try to discover all test scripts named test*.py and test cases inheriting from unittest.TestCase in your current directory:
+  - Install nose2 and us it:
+    ```shell
+    $ pip install nose2
+    $ python -m nose2
+    .F
+    ======================================================================
+    FAIL: test_sum_tuple (__main__.TestSum)
+    ----------------------------------------------------------------------
+    Traceback (most recent call last):
+      File "test_sum_unittest.py", line 9, in test_sum_tuple
+        self.assertEqual(sum((1, 2, 2)), 6, "Should be 6")
+    AssertionError: Should be 6
+    
+    ----------------------------------------------------------------------
+    Ran 2 tests in 0.001s
+    
+    FAILED (failures=1)
+    ```
+- pytest:
+  - pytest supports execution of unittest test cases. The real advantage of pytest comes by writing pytest test cases. pytest test cases are a series of functions in a Python file starting with the name test_.
+  - Great features:
+    - Support for the built-in assert statement instead of using special self.assert*() methods
+    - Support for filtering for test cases
+    - Ability to rerun from the last failing test
+    - An ecosystem of hundreds of plugins to extend the functionality
+  - Example:
+    ```python
+    def test_sum():
+        assert sum([1, 2, 3]) == 6, "Should be 6"
+    
+    def test_sum_tuple():
+        assert sum((1, 2, 2)) == 6, "Should be 6"
+    ```
+
+**[⬆ back to top](#list-of-contents)**
+
+<br />
 
 ---
 
 ## References:
 - https://www.digitalocean.com/community/tutorials/how-to-use-unittest-to-write-a-test-case-for-a-function-in-python
 - https://www.datacamp.com/community/tutorials/unit-testing-python
+- https://realpython.com/python-testing/

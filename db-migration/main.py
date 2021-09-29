@@ -1,16 +1,13 @@
-# This is a sample Python script.
+import os
+import argparse
+from dotenv import load_dotenv
 
-# Press Shift+F10 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
+load_dotenv()
 
+db_string_dev = os.getenv('DB_STRING_DEV')
+db_string_test = os.getenv('DB_STRING_TEST')
+db_string_local = os.getenv('DB_STRING_LOCAL')
 
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press Ctrl+F8 to toggle the breakpoint.
-
-
-# Press the green button in the gutter to run the script.
-if __name__ == '__main__':
-    print_hi('PyCharm')
-
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+migration_command = f"migra --unsafe --schema sr {db_string_dev} {db_string_local} > sr_main-migra-sr.sql"
+print(migration_command)
+os.system(migration_command)

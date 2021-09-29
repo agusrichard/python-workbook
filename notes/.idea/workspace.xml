@@ -2,9 +2,13 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="c2ec2f3c-c34d-4acf-aba5-e3ffd35cefaf" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/../db-migration/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../db-migration/.idea/db-migration.iml" beforeDir="false" afterPath="$PROJECT_DIR$/../db-migration/.idea/db-migration.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../db-migration/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../db-migration/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../db-migration/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/../db-migration/main.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/clean-code-and-best-practices.md" beforeDir="false" afterPath="$PROJECT_DIR$/clean-code-and-best-practices.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/python-concepts.md" beforeDir="false" afterPath="$PROJECT_DIR$/python-concepts.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/testing.md" beforeDir="false" afterPath="$PROJECT_DIR$/testing.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../testing-in-python/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/../testing-in-python/README.md" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
