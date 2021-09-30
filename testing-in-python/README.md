@@ -299,6 +299,16 @@
     def test_sum_tuple():
         assert sum((1, 2, 2)) == 6, "Should be 6"
     ```
+    
+### Writing Your First Test
+- Another implementation of sum function:
+  ```python
+  def sum(arg):
+      total = 0
+      for val in arg:
+          total += val
+      return total
+  ```
 
 **[⬆ back to top](#list-of-contents)**
 
