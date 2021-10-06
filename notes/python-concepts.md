@@ -5,6 +5,7 @@
 ## List of Contents:
 ### 1. [5 Pairs of Magic Methods in Python That You Should Know](#content-1)
 ### 2. [4 Ways To Level Up Your Python Code](#content-2)
+### 3. [10 Advanced Python Concepts To Level Up Your Python Skills](#content-3)
 
 
 <br />
@@ -454,6 +455,41 @@
 
 ---
 
+## [10 Advanced Python Concepts To Level Up Your Python Skills](https://levelup.gitconnected.com/10-advance-python-concepts-to-level-up-your-python-skills-da3d6284ad53) <span id="content-3"></span>
+
+### 1. Exception Handling
+- An exception is a condition that occurs during the execution of the program and interrupts the execution.
+- We use try and exceptblocks to handle exceptions in python. 
+- To handle multiple exceptions at a time we use multiple except blocks.
+- try blocks contain the code which needs to be executed. except blocks contain the code that executes if try fails to execute. 
+- else block only execute when a try block is executed successfully. A finally block always executes, it is independent of other blocks.
+- Example:
+  ```python
+  import sys
+  try:
+    f = open('myfile.txt') 
+    s = f.readline()
+    i = int(s.strip())
+  except OSError as err:
+    print("OS error: {0}".format(err))
+  except ValueError:
+    print("Could not convert data to an integer.")
+  except:
+    print("Unexpected error:", sys.exc_info()[0])
+    raise
+  finally:
+    print("Operation Successfully Done!!")
+  (Example Taken From Official Python Docs)
+  ```
+
+
+**[⬆ back to top](#list-of-contents)**
+
+<br />
+
+---
+
 ## References:
 - https://betterprogramming.pub/5-pairs-of-magic-methods-in-python-you-should-know-f98f0e5356d6
 - https://betterprogramming.pub/4-ways-to-level-up-your-python-code-f148a50efeea
+- https://levelup.gitconnected.com/10-advance-python-concepts-to-level-up-your-python-skills-da3d6284ad53
