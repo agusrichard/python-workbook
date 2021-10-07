@@ -309,6 +309,27 @@
           total += val
       return total
   ```
+- It is convention to ensure each file starts with test_ so all test runners will assume that Python file contains tests to be executed.
+- Some very large projects split tests into more subdirectories based on their purpose or usage.
+- You can import any attributes of the script, such as classes, functions, and variables by using the built-in __import__() function. 
+  ```python
+  target = __import__("my_sum.py")
+  sum = target.sum
+  ```
+- The benefit of using __import__() is that you don’t have to turn your project folder into a package, and you can specify the file name. This is also useful if your filename collides with any standard library packages.
+
+
+### How to Write Assertions
+- The last step of writing a test is to validate the output against a known response. This is known as an assertion.
+- There are some general best practices around how to write assertions:
+  - Make sure tests are repeatable and run your test multiple times to make sure it gives the same result every time
+  - Try and assert results that relate to your input data, such as checking that the result is the actual sum of values in the sum() example
+- When you’re writing tests, it’s often not as simple as looking at the return value of a function. Often, executing a piece of code will alter other things in the environment, such as the attribute of a class, a file on the filesystem, or a value in a database. These are known as side effects and are an important part of testing.
+- If you find that the unit of code you want to test has lots of side effects, you might be breaking the Single Responsibility Principle.
+- Breaking the Single Responsibility Principle means the piece of code is doing too many things and would be better off being refactored.
+- 
+
+
 
 **[⬆ back to top](#list-of-contents)**
 
