@@ -482,6 +482,155 @@
   (Example Taken From Official Python Docs)
   ```
 
+### 2. Collections
+- Collections in python are referred to as containers that are used to store the data.
+- The five most used data structures in the collection module are:
+  - Counter: It takes an iterable and returns a dictionary where the key is an element and value is the count it occurred in the iterable. 
+    - Example:
+      ```python
+      from collections import Counter
+      data = [1,1,1,1,2,3,4,3,3,5,6,7,7]
+      count = Counter(data)
+      print(count)
+      ---------------------------------------------------
+      Counter({1: 4, 3: 3, 7: 2, 2: 1, 4: 1, 5: 1, 6: 1})
+      ```
+  - namedtuple: nametuple is introduced to assign more meaning to each position of a tuple.
+    - Example:
+      ```python
+      from collections import namedtuple
+      Direction = namedtuple('Direction','N,S,E,W')
+      dt = Direction(4,74,0,0)
+      print(dt)
+      ---------------------------------------------
+      Direction(N=4, S=74, E=0, W=0)
+      ```
+  - OrderedDict: An OrderedDict is a kind of dict that remembers the order they are inserted in.
+    - Example:
+      ```python
+      from collections import OrderedDict
+      dictt = OrderedDict()
+      dictt['a'] = 5
+      dictt['d'] = 2
+      dictt['c'] = 1
+      dictt['b'] = 3
+      print(dictt)
+      --------------------------------------------------------
+      OrderedDict([('a', 5), ('d', 2), ('c', 1), ('b', 3)])
+      ```
+  - defaultdict: A defaultdict will return a default value for the key that is not present in the dictionary rather than showing a key error.
+    - Example:
+      ```python
+      from collections import defaultdict
+      dictt = defaultdict(int)
+      dictt['a'] = 2
+      print(dictt['a'])  ## return the value
+      print(dictt['b'])  ## returns the default value
+      -------------------------------
+      2
+      0
+      ```
+  - deque: It is a double-ended queue in which elements can be added and removed from both sides.
+  
+### 3. itertools
+- product(iterable,iterable): cartesian product of two iterables
+- permutation(iterable): all possible ordering with no repeated elements
+- combinations(iterable,n): all possible combinations with specified length with no repetition. here n is the size of the combination tuple.
+- combinations_with_replacement(iterable,n): all possible combinations with specified length with repetition.
+- accumlate(iterable) : returns accumulate the sum of elements of iterable.
+- groupby(iterable,key=FUNC) : return an iterator with consecutive keys and groups from the iterable.
+
+### 4. lambda
+- It is also known as an anonymous function.
+- It has no body and doesn’t require the def keyword for definition.
+- A lambda function can have any number of arguments but only one expression in it. The expression evaluates and returned. It has no return statement.
+- Example:
+  ```python
+  even_or_odd = lambda a: a%2==0
+  numbers = [1,2,3,4,5]
+  even = list(map(even_or_odd,numbers))
+  print(even)
+  ---------------------------------
+  [False, True, False, True, False]
+  ```
+
+### 5. Decorators
+- A decorator is a feature in python that adds some new functionality to existing code without explicitly modifying it.
+- There are two types of decorators — function and class decorators.
+- A decorators function has an @ before the function name.
+- To understand the concept of decorators we first need to understand one thing— Functions in python are class objects. Unlike other objects, they can be defined inside a function, passed as an argument in other functions, and even return as a function.
+- Example:
+  ```python
+  import functools
+  def decorator(func):
+      @functools.wraps(func)
+      def wrapper(*args, **kwargs):
+          a,b = args
+          print(a*b)
+          result = func(*args,**kwargs)
+          print(a/b)
+          return result
+      return wrapper
+  
+  @decorator
+  def add(x,y):
+      return x+y
+  result = add(5,6)
+  print(result)
+  ```
+
+### 6. Generators
+- yield is a keyword in python that is used to return a value from a function without destroying its current state or reference to a local variable.
+- Example:
+  ```python
+  -------------- Fibonacci Series Using Generators ------------
+  def fibon(limit):
+    a,b = 0,1
+    while a < limit:
+        yield a
+        a, b = b, a + b
+  for x in fibon(10):
+     print (x)
+  ```
+
+### 7. Threading and Multiprocessing
+- Threading and multiprocessing both are used to run multiple scripts simultaneously at the same time. A process is an instance of the program, and a thread is an entity in a process.
+- Threading is a technique where multiple threads run at the same time to execute different tasks.
+- Multiprocessing is a technique in which multiple processes run on different CPUs at the same time.
+- Differences between process and thread:
+  ![Process vs thread](https://miro.medium.com/max/1400/1*x79qDXHAfyMSktsuJ7DHeA.png)
+  
+### 8. Dunder Methods
+- Dunder methods or Magic methods are those that have two underscores __ before and after the method.
+- When you try to multiply two numbers using * a sign then the internal __mul__ method is called.
+- Example:
+  ```python
+  num =  5
+  num*6
+  >> 30
+  num.__mul__(6)
+  >>30
+  ```
+  
+### 9. Logging
+- Logging is a process of capturing the flow of code as it executes. Logging helps in debugging the code easily.
+- In python, we have a library logging that helps us to write logs onto a file. There are five levels of logging:
+  - Debug: Used for diagnosing the problem with detailed information.
+  - Info: Confirmation of success.
+  - Warning: when an unexpected situation occurs.
+  - Error: Due to a more serious problem than a warning.
+  - Critical: Critical error after which the program can’t run itself.
+
+### 10. Context Managers
+- Context Managers are a great tool in python that help in resource management.
+- Example:
+  ```python
+  file = open('data.txt','w')
+  try:
+    file.write("Hello")
+  except:
+     file.close()
+  ```
 
 **[⬆ back to top](#list-of-contents)**
 
