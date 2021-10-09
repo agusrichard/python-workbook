@@ -12,6 +12,7 @@
 ### 7. [Best Practices To Follow While Creating Classes In Python](#content-7)
 ### 8. [11 Refactoring Patterns To Elevate Your Python Code](#content-8)
 ### 9. [Python Refactoring Tips to Write Code in Pythonic Way](#content-9)
+### 10. [12 Of My Favorite Python Practices For Better Functions](#content-10)
 
 <br />
 
@@ -2211,6 +2212,16 @@
 
 ---
 
+## [12 Of My Favorite Python Practices For Better Functions](https://towardsdatascience.com/12-of-my-favorite-python-practices-for-better-functions-7a21d18cfb38) <span id="content-10"></span>
+
+
+
+**[⬆ back to top](#list-of-contents)**
+
+<br />
+
+---
+
 ## References:
 - https://towardsdatascience.com/python-clean-code-6-best-practices-to-make-your-python-functions-more-readable-7ea4c6171d60
 - https://blog.devgenius.io/clean-code-in-python-8251eea292fa
@@ -2219,3 +2230,4 @@
 - https://betterprogramming.pub/advanced-python-consider-these-10-elements-when-you-define-python-functions-61c0be8a10ed
 - https://betterprogramming.pub/how-to-write-clean-code-in-python-5d67746133f2
 - https://levelup.gitconnected.com/python-refactoring-tips-to-write-code-in-pythonic-way-6b8ff4375b3a
+- https://towardsdatascience.com/12-of-my-favorite-python-practices-for-better-functions-7a21d18cfb38
