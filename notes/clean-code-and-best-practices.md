@@ -2214,6 +2214,95 @@
 
 ## [12 Of My Favorite Python Practices For Better Functions](https://towardsdatascience.com/12-of-my-favorite-python-practices-for-better-functions-7a21d18cfb38) <span id="content-10"></span>
 
+### Input / Output
+- Ultimately, the destiny of a function is a return, or to alter something.
+- First ask what do we need to get out of the function? This is our output.
+- Example:
+  ```python
+  def mean(x : list):
+      return(mu)
+  ```
+  ```python
+  def mean(x : list):
+      mu = sum(x) / len(x)
+      return(mu)
+  ```
+  
+### Extraction
+- xtraction is simply creating more methods in order to handle multiple things inside of one function without said function being a scavenger hunt for different values that we need.
+- Functions should be simple and have short directives.
+- It is going to be much more difficult to stack-trace a bug if that bug is contained within a function that is a mile long.
+- Example:
+  ```python
+  from numpy import sqrt
+  def norm(x : list):
+      mu = sum(x) / len(x)
+       x2 = [(i-mu) ** 2 for i in x]
+       m = sum(x2) / len(x2)
+       std = sqrt(m)
+        return([(i - mu) / std for i in x])
+  ```
+- Example:
+  ```python
+  def mean(x : list):
+      return(sum(x) / len(x))
+  def std(x : list):
+      mu = sum(x) / len(x)
+      x2 = [(i-mu) ** 2 for i in x]
+      m = sum(x2) / len(x2)
+      return(sqrt(m))
+  def betternorm(x : list):
+      mu = mean(x)
+      st = std(x)
+      return([(i - mu) / st for i in x])
+  ```
+  
+### NAMING
+- Names are important, because in most cases they should tell you the output of the function.
+- This function name is not specific.
+  ```python
+  def pickle(n_pickles : int):
+      pass
+  
+  def jerry_eat_pickle(n_pickles : int):
+    pass
+  ```
+- Functions need to be named with convenient names.
+
+### No Rewriting
+- It is probably a good idea to find some sort of way to not repeat the code that you write over and over again.
+
+### Less Is Superior
+- Less code is always superior to more code.
+- Usually, less code will also have a significant benefit to performance costs. That being said, having less code will also always be easier to read, which is actually more important than performance in many situations.
+
+### RESTRICT TYPES
+- A huge mistake that many beginners make when they start to develop their first Python modules and functions is not restricting the types of their arguments. 
+- Another reason you might want to set your arguments’ types is so that the interpreter is aware of the type that you might be working with in the function prior to the type ever being passed.
+
+### DOC STRINGS!
+- oc strings are absolutely vital — you simply cannot operate effectively without them. As a human, you are bound to forget things. There is no way you could remember what a module of 10,000 lines of code spread across 10 files does in every individual capacity.
+
+### Minimal Nesting
+- Another common rookie mistake in the programming world is too much nesting.
+- Nesting is a term that is used anytime there is a new level of scope declared inside of a given piece of software.
+
+### (Python) Decorators
+
+### Code Your Comments
+- If you have a code file that is 500 lines of code and 500 lines of comments, you are probably using comments wrong.
+- Avoid making obvious remarks, such as:
+  ```python
+  # get parameters
+  parameters = get_params(data)
+  ```
+
+### Use lambda!
+- Another great tip for writing functions is not to write a function at all. Instead, you can write an expression using the lambda key-word.
+- This will effectively turn your Python function into a 1-line statement that can be mapped to arrays.
+
+### Avoid KWARGS (as possible)
+- They are incredibly useful, especially for things like parameters we use for plotting or machine-learning software.
 
 
 **[⬆ back to top](#list-of-contents)**
