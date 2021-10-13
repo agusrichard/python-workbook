@@ -6,7 +6,7 @@ from selenium.webdriver.support import expected_conditions as EC
 
 
 base_path = os.path.dirname(os.path.abspath(__file__))
-driver_path = os.path.join(base_path, 'driver')
+driver_path = os.path.join(base_path, '../driver')
 print(driver_path)
 os.environ['PATH'] += f':{driver_path}'
 print(os.environ.get('PATH'))

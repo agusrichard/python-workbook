@@ -5,7 +5,7 @@ from selenium.webdriver.support.ui import Select
 from selenium.webdriver.common.action_chains import ActionChains
 
 base_path = os.path.dirname(os.path.abspath(__file__))
-driver_path = os.path.join(base_path, 'driver')
+driver_path = os.path.join(base_path, '../driver')
 print(driver_path)
 os.environ['PATH'] += f':{driver_path}'
 print(os.environ.get('PATH'))
@@ -48,7 +48,7 @@ selenium_commands_dropdown_element = Select(driver.find_element_by_id('selenium_
 for elem in selenium_commands_dropdown_element.options:
     ActionChains(driver).key_down(Keys.CONTROL).click(elem).key_up(Keys.CONTROL).perform()
 
-images_path = os.path.join(base_path, 'images', 'image.jpg')
+images_path = os.path.join(base_path, '../images', 'image.jpg')
 upload_file_element = driver.find_element_by_id('photo')
 upload_file_element.send_keys(images_path)
 

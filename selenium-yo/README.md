@@ -41,6 +41,10 @@
       )
   )
   ```
+- Typing keys with keyboard:
+  ```python
+  sum1.send_keys(Keys.NUMPAD2, Keys.NUMPAD1)
+  ```
 
 ## References:
 - https://www.techlistic.com/p/selenium-practice-form.html
