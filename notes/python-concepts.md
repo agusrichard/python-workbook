@@ -6,6 +6,7 @@
 ### 1. [5 Pairs of Magic Methods in Python That You Should Know](#content-1)
 ### 2. [4 Ways To Level Up Your Python Code](#content-2)
 ### 3. [10 Advanced Python Concepts To Level Up Your Python Skills](#content-3)
+### 4. [6 Alternatives to Classes in Python](#content-4)
 
 
 <br />
@@ -638,7 +639,368 @@
 
 ---
 
+## [6 Alternatives to Classes in Python](https://betterprogramming.pub/6-alternatives-to-classes-in-python-6ecb7206377) <span id="content-4"></span>
+
+### Plain Classes
+- You should use type annotations
+- Example:
+  ```python
+  from typing import Optional
+  
+  
+  class Position:
+      MIN_LATITUDE = -90
+      MAX_LATITUDE = 90
+      MIN_LONGITUDE = -180
+      MAX_LONGITUDE = 180
+  
+      def __init__(
+          self, longitude: float, latitude: float, address: Optional[str] = None
+      ):
+          self.longitude = longitude
+          self.latitude = latitude
+          self.address = address
+  
+      @property
+      def latitude(self) -> float:
+          """Getter for latitude."""
+          return self._latitude
+  
+      @latitude.setter
+      def latitude(self, latitude: float) -> None:
+          """Setter for latitude."""
+          if not (Position.MIN_LATITUDE <= latitude <= Position.MAX_LATITUDE):
+              raise ValueError(f"latitude was {latitude}, but has to be in [-90, 90]")
+          self._latitude = latitude
+  
+      @property
+      def longitude(self) -> float:
+          """Getter for longitude."""
+          return self._longitude
+  
+      @longitude.setter
+      def longitude(self, longitude: float) -> None:
+          """Setter for longitude."""
+          if not (Position.MIN_LONGITUDE <= longitude <= Position.MAX_LONGITUDE):
+              raise ValueError(f"longitude was {longitude}, but has to be in [-180, 180]")
+          self._longitude = longitude
+  
+  
+  pos1 = Position(49.0127913, 8.4231381, "Parkstraße 17")
+  pos2 = Position(42.1238762, 9.1649964)
+  
+  
+  def get_distance(p1: Position, p2: Position) -> float:
+      pass
+  ```
+
+### 1. Tuples
+- They have a very low memory overhead, so we can address the elements by index very quickly.
+- The problem with tuples is that you have no names for member attributes. You have to remember what each index represents
+- Tuples are mutable
+- Example:
+  ```python
+  from typing import Tuple, Optional
+  pos1 = (49.0127913, 8.4231381, "Parkstraße 17")
+  pos2 = (42.1238762, 9.1649964, None)
+  def get_distance(p1: Tuple[float, float, Optional[str]],
+                   p2: Tuple[float, float, Optional[str]]) -> float:
+      pass
+  ```
+- The annotation for get_distance looks messy. A human should be given the information that p1 represents a location — not that the location contains two floats and an optional string.
+
+### 2. Dictionaries
+- Dicts have a bigger memory overhead compared to tuples, as you have to store the names somewhere, but they are still OK
+- Accessing elements by index is fast. Dicts are always mutable, but there is the third-party package frozendict to solve this.
+- Example:
+  ```python
+  
+  from typing import Any, Dict
+  pos1 = {"longitude": 49.0127913,
+          "latitude": 8.4231381,
+          "address": "Parkstraße 17"}
+  pos2 = {"longitude": 42.1238762,
+          "latitude": 9.1649964,
+          "address": None}
+  def get_distance(p1: Dict[str, Any],
+                   p2: Dict[str, Any]) -> float:
+      pass
+  ```
+
+### 3. Named Tuples
+- They are actually tuples, but they have a name and a constructor that accepts keyword arguments.
+- Most people use the factory function collections.namedtuple to generate the named tuple class, but I prefer to inherit from typing.NamedTuple and use inheritance combined with type annotations
+  ```python
+  # Old style, before Python 3.7
+  from collections import namedtuple
+  attribute_names = ["longitude", "latitude", "address"]
+  Position = namedtuple("Position", attribute_names, defaults=(None,))
+  
+  # Python 3.7 and later:
+  from typing import NamedTuple
+  
+  class Position(NamedTuple):
+      longitude: int
+      latitude: int
+      address: int
+  
+  # Both are used in the same way
+  pos1 = Position(49.0127913, 8.4231381, "Parkstraße 17")
+  pos2 = Position(42.1238762, 9.1649964)
+  
+  def get_distance(p1: Position, p2: Position) -> float:
+      pass
+  ```
+- NamedTuples solve the issue of the annotations becoming hard to read. They thus also fix the issue of editor support that I mentioned earlier.
+- Interestingly, NamedTuples are not type-aware:
+  ```python
+  
+  >>> from collections import namedtuple
+  >>> Coordinates = namedtuple("Coordinates", ["x", "y"])
+  >>> BMI = namedtuple("BMI", ["weight", "size"])
+  >>> a = Coordinates(60, 170)
+  >>> b = BMI(60, 170)
+  >>> a
+  Coordinates(x=60, y=170)
+  >>> b
+  BMI(weight=60, size=170)
+  >>> a == b
+  True
+  ```
+
+### 4. attrs
+- attrs is a third-party library that reduces boilerplate code. Developers can use it by adding the @attrs.s decorator above the class. Attributes are assigned the attr.ib() function
+  ```python
+  from typing import Optional
+  import attr
+  
+  
+  @attr.s
+  class Position:
+      longitude: float = attr.ib()
+      latitude: float = attr.ib()
+      address: Optional[str] = attr.ib(default=None)
+  
+      @longitude.validator
+      def check_long(self, attribute, v):
+          if not (-180 <= v <= 180):
+              raise ValueError(f"Longitude was {v}, but must be in [-180, +180]")
+  
+      @latitude.validator
+      def check_lat(self, attribute, v):
+          if not (-90 <= v <= 90):
+              raise ValueError(f"Latitude was {v}, but must be in [-90, +90]")
+  
+  
+  pos1 = Position(49.0127913, 8.4231381, "Parkstraße 17")
+  pos2 = Position(42.1238762, 9.1649964)
+  
+  
+  def get_distance(p1: Position, p2: Position) -> float:
+      pass
+  ```
+
+### 5. Dataclass
+- They are similar to attrs, but in the standard library. It’s especially important to note that dataclasses are “just” normal classes that happen to have lots of data in them.
+- In contrast to attrs, data classes use type annotations instead of the attr.ib() notation.
+- You can easily make it immutable by changing the decorator to @dataclass(frozen=True) — just like with attrs.
+- Example:
+  ```python
+  from typing import Optional
+  from dataclasses import dataclass
+  
+  
+  @dataclass
+  class Position:
+      longitude: float
+      latitude: float
+      address: Optional[str] = None
+  
+        
+  pos1 = Position(49.0127913, 8.4231381, "Parkstraße 17")
+  pos2 = Position(42.1238762, 9.1649964, None)
+  
+  
+  def get_distance(p1: Position, p2: Position) -> float:
+      pass
+  ```
+- Using `__post__init__` for attribute validation:
+  ```python
+  def __post_init__(self):
+      if not (-180 <= self.longitude <= 180):
+          v = self.longitude
+          raise ValueError(f"Longitude was {v}, but must be in [-180, +180]")
+      if not (-90 <= self.latitude <= 90):
+          v = self.latitude
+          raise ValueError(f"Latitude was {v}, but must be in [-90, +90]")
+  ```
+- Example:
+  ```python
+  @dataclass
+  class Position:
+      longitude: float
+      latitude: float
+      address: Optional[str] = None
+  
+      @property
+      def latitude(self) -> float:
+          """Getter for latitude."""
+          return self._latitude
+  
+      @latitude.setter
+      def latitude(self, latitude: float) -> None:
+          """Setter for latitude."""
+          if not (-90 <= latitude <= 90):
+              raise ValueError(f"latitude was {latitude}, but has to be in [-90, 90]")
+          self._latitude = latitude
+  
+      @property
+      def longitude(self) -> float:
+          """Getter for longitude."""
+          return self._longitude
+  
+      @longitude.setter
+      def longitude(self, longitude: float) -> None:
+          """Setter for longitude."""
+          if not (-180 <= longitude <= 180):
+              raise ValueError(f"longitude was {longitude}, but has to be in [-180, 180]")
+          self._longitude = longitude
+  ```
+
+### 6. Pydantic
+- Pydantic is a third-party library that focuses on data validation and settings management.
+- Example:
+  ```python
+  
+  from typing import Optional
+  from pydantic import validator
+  from pydantic.dataclasses import dataclass
+  
+  
+  @dataclass(frozen=True)
+  class Position:
+      longitude: float
+      latitude: float
+      address: Optional[str] = None
+  
+      @validator("longitude")
+      def longitude_value_range(cls, v):
+          if not (-180 <= v <= 180):
+              raise ValueError(f"Longitude was {v}, but must be in [-180, +180]")
+          return v
+  
+      @validator("latitude")
+      def latitude_value_range(cls, v):
+          if not (-90 <= v <= 90):
+              raise ValueError(f"Latitude was {v}, but must be in [-90, +90]")
+          return v
+  
+  
+  pos1 = Position(49.0127913, 8.4231381, "Parkstraße 17")
+  pos2 = Position(longitude=42.1238762, latitude=9.1649964)
+  
+  
+  def get_distance(p1: Position, p2: Position) -> float:
+      pass
+  ```
+
+### Mutability and Hashability
+- Having the option to mark classes as frozen to make their objects immutable is pretty nice.
+- Implementing `__hash__` for a mutable object is problematic because the hash might change when the object is changed. 
+- This means if the object is in a dictionary, the dictionary would need to know that the hash of the object has changed and store it in a different location. 
+- For this reason, both dataclasses and Pydantic prevent the hashing of mutable classes by default. They have unsafe_hash, though.
+
+### Default String Representation
+- If we printed pos1 from the examples above, here is what we would get. The linebreaks and alignments were added to keep things nice to read. The original results are on one line:
+  ```text
+  >>> print(pos1)
+  Plain class   : <__main__.Position object at 0x7f1562750640>
+  # 1 Tuples    : (49.0127913, 8.4231381, 'Parkstraße 17')
+  # 2 Dicts     : {'longitude': 49.0127913,
+                   'latitude': 8.4231381,
+                   'address': 'Parkstraße 17'}
+  # 3 NamedTuple: Position(longitude=49.0127913,
+                           latitude=8.4231381,
+                           address='Parkstraße 17')
+  # 4 attrs     : Position(longitude=49.0127913,
+                           latitude=8.4231381,
+                           address='Parkstraße 17')
+  # 5 dataclass : Position(longitude=49.0127913,
+                           latitude=8.4231381,
+                           address='Parkstraße 17')
+  ```
+  
+### Data Validation
+- For the following, I will attempt to create Position(1234, 567). So both the longitude and latitude are wrong. Here are the error messages this triggers:
+  ```text
+  # Plain Class
+  ValueError: Longitude was 11111, but has to be in [-180, 180]
+  # 4: attr
+  ValueError: Longitude was 1234, but must be in [-180, +180]
+  # 5: dataclasses
+  (same as plain classes is possible)
+  # 6: Pydantic
+  pydantic.error_wrappers.ValidationError: 2 validation errors for Position
+  longitude
+    Longitude was 1234.0, but must be in [-180, +180] (type=value_error)
+  latitude
+    Latitude was 567.0, but must be in [-90, +90] (type=value_error)
+  ```
+- This is the point I want to make: Pydantic gives you all the errors in a very clear way. Plain classes and attrs just give you the first error.
+
+### Serialize to JSON
+- Example:
+  ```python
+  from pydantic import BaseModel
+  
+  
+  class GitlabUser(BaseModel):
+      id: int
+      username: str
+  
+  
+  class GitlabMr(BaseModel):
+      id: int
+      squash: bool
+      web_url: str
+      title: str
+      author: GitlabUser
+  
+  
+  mr = GitlabMr(
+      id=1,
+      squash=True,
+      web_url="http://foo",
+      title="title",
+      author=GitlabUser(id=42, username="Joe"),
+  )
+  json_str = mr.json()
+  print(json_str)
+  ```
+- Result:
+  ```json
+  {"id": 1, "squash": true, "web_url": "http://foo", "title": "title", "author": {"id": 42, "username": "Joe"}}
+  ```
+
+### Memory
+- Using `getsize` to know the size
+- The Pydantic base model has quite an overhead, but you always have to keep things in perspective.
+- If memory becomes problematic, then you will not switch from Pydantic to dataclasses or attrs.
+
+### So When Do I Use What?
+- Dict when you don’t know ahead of time what will be added. Please note that you can mix all of the others with dict and vice versa. So if you know what a part of the data structure will look like, then use something different.
+- NamedTuple when you need a quick way to group data and mutability is not needed. And when it’s OK for you to not be type-aware.
+- Dataclasses when you need mutability, want to be type-aware, or want to have the possibility of inheriting from the created dataclass.
+- Pydantic BaseModel when you need to deserialize data.
+
+**[⬆ back to top](#list-of-contents)**
+
+<br />
+
+---
+
 ## References:
 - https://betterprogramming.pub/5-pairs-of-magic-methods-in-python-you-should-know-f98f0e5356d6
 - https://betterprogramming.pub/4-ways-to-level-up-your-python-code-f148a50efeea
 - https://levelup.gitconnected.com/10-advance-python-concepts-to-level-up-your-python-skills-da3d6284ad53
+- https://betterprogramming.pub/6-alternatives-to-classes-in-python-6ecb7206377
