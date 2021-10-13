@@ -1,13 +1,13 @@
 # Anti Patterns
 
-</br>
+<br />
 
 ## List of Contents:
 ### 1. [18 Common Python Anti-Patterns I Wish I Had Known Before](#content-1)
+### 2. [4 Anti-Patterns in Python (And How to Avoid Them)](#content-2)
 
 
-
-</br>
+<br />
 
 ---
 
@@ -371,9 +371,144 @@
 
 **[⬆ back to top](#list-of-contents)**
 
-</br>
+<br />
+
+---
+
+## [4 Anti-Patterns in Python (And How to Avoid Them)](https://betterprogramming.pub/4-anti-patterns-in-python-a6d5023c8473) <span id="content-2"></span>
+
+### 1. Docstrings
+- Docstrings repeat a lot of knowledge, a clear violation of the DRY principle.
+- Things that a docstring repeats:
+  - A description of the arguments and their Python types, and what the function returns — this is already in the function signature if you include the type annotations
+  - A summary of what the function does — this is already in the function name and the function body
+  - The exceptions that the function raises — this is already in the function body
+- A function should be largely self-documenting and self-explanatory.
+  ```python
+  def preprocess_sentence(text):
+      """
+      Preprocess sentence to remove line breaks and 
+      special characters.
+      
+      >>> preprocess_sentence("Hello world!")
+      
+      Args:
+          text (str): text to preprocess
+          
+      Raises:
+          ValueError: If text is an empty string
+          
+      Returns:
+          str: preprocessed text
+      """
+      pass
+  ```
+- Duplication of knowledge (explanation vs. code) might lead to possible inconsistency if you forget to change the docstring together with your code.
+- It gives developers an opportunity to make up for bad code by writing docstrings.
+- What can we do instead?
+  - Remove the docstring completely if you think it does not provide any value.
+  - Introduce gradual typing — type annotate the arguments and return type. Use type aliases.
+  - Only show input and output in the docstring. This is helpful especially for data transformations, which is quite common in machine learning.
+- Example:
+  ```python
+  def remove_special_chars(text: str) -> str:
+      """
+      ["hello world!\n"] -> ["hello world"]
+      """
+      pass
+  ```
+- If you make a library, then it's necessary to provide docstring.
+- Docstrings are, however, necessary in libraries, packages or frameworks.
+
+### 2. Dictionaries for read-only data
+- Don't use dictonaries if your data is read-only, because they are mutable and can be accessed via string-type keys.
+- It means this object (that contains our data) should not be mutated after its creation and will never be, for as long as it lives
+- What can we do instead?
+  - Use frozen dataclasses:
+  ```python
+  from dataclasses import dataclass
+  
+  @dataclass(frozen=True)
+  class Person:
+      name: str
+      age: int
+      country: str
+  ```
+- The frozen=True protects us from accidentally overwriting the data (raised by mypy).
+- And not even a chance to access a misspelled attribute. We also benefit from autocompletion of the class attributes in common IDEs.
+
+### 3. Strings instead of enums
+- String types are a poor choice for function arguments that only take in one of a list of possible options.
+- Here are some reasons why:
+  - Risk of misspelling.
+  - Escape exhaustiveness checks from linters. If you forgot to add an option, mypy could possibly detect it for you (see below).
+  - Code duplication. If you want to reuse, say, the if-else branch checks, you might have to repeat the if-else statements.
+    ```python
+    def fit(solver="lbfgs"):
+    
+        if solver == "lbfgs":
+            pass
+        elif solver == "saga":
+            pass
+        elif solver == "sag":
+            pass
+        else:
+            raise ValueError
+    ```
+- What can we do instead?
+  - Use enums and linters.
+  - The instance is a value that comes only from a defined list of possible values.
+  - Example:
+  ```python
+  from enum import Enum
+  
+  class SolverAlgorithm(Enum):
+      LBFGS = 0
+      SAGA = 1
+      SAG = 2
+      
+  def fit(solver: SolverAlgorithm = SolverAlgorithm.LBFGS):
+      
+      if solver == SolverAlgorithm.LBFGS:
+          pass
+      elif solver == SolverAlgorithm.SAGA:
+          pass
+      elif solver == SolverAlgorithm.SAG:
+          pass
+      else:
+          raise ValueError
+  ```
+
+### 4. List comprehensions spanning multiple lines
+- While comprehensions (so named to include list, dictionary, and generator comprehensions) are fairly concise, it can become very unreadable if the code has more than one of the following
+  - if-else clause(s)
+  - multiple lines
+  - nested comprehension
+- What can we do instead?
+  - Indent the comprehension and separate the clauses into different lines appropriately.
+  - Use more readable variable names.
+  - Use a for-loop instead, especially for nested comprehensions. Trade a little bit of speed and concision for higher readability.
+  - Example:
+    ```python
+    nested_list = [[1,2,3],[4,5,6],[7,8,9]]
+    
+    new_list = []
+    for sub_list in nested_list:
+        if sum(sub_list) <= 6:
+            continue
+        for x in sub_list:
+            item = x if x > 4 else -1
+            new_list.append(item)
+    ```
+
+
+
+**[⬆ back to top](#list-of-contents)**
+
+<br />
 
 ---
 
 ## References:
 - https://towardsdatascience.com/18-common-python-anti-patterns-i-wish-i-had-known-before-44d983805f0f
+- https://betterprogramming.pub/4-anti-patterns-in-python-a6d5023c8473
