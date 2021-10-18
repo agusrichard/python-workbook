@@ -10,6 +10,7 @@
 ### 5. [Python tricks I wish I knew earlier](#content-5)
 ### 6. [32 Advanced Techniques for Better Python Code](#content-6)
 ### 7. [I Thought I Was Mastering Python Until I Discovered These Tricks](#content-7)
+### 8. [An A-Z of useful Python tricks](#content-8)
 
 <br />
 
@@ -1033,6 +1034,133 @@
 - Use a list comprehension when the expected result is the list.
 - Use a generator expression when the list is only an intermediate result.
 
+**[⬆ back to top](#list-of-contents)**
+
+<br />
+
+---
+
+## [An A-Z of useful Python tricks](https://medium.com/free-code-camp/an-a-z-of-useful-python-tricks-b467524ee747) <span id="content-8"></span>
+
+### all or any
+- Example:
+  ```python
+  x = [True, True, False]
+  if any(x):
+      print("At least one True")
+  if all(x):
+      print("Not one False")
+  if any(x) and not all(x):
+      print("At least one True and one False")
+  ```
+
+### collections
+- Example:
+  ```python
+  from collections import OrderedDict, Counter
+  # Remembers the order the keys are added!
+  x = OrderedDict(a=1, b=2, c=3)
+  # Counts the frequency of each character
+  y = Counter("Hello World!")
+  ```
+  
+### dir
+- Example:
+  ```python
+  >>> dir()
+  >>> dir("Hello World")
+  >>> dir(dir)
+  ```
+
+### from `__future__` import
+- The `__future__` module lets you import functionality from future versions of Python. It’s literally like time travel, or magic, or something.
+- Example:
+```python
+from __future__ import print_function
+print("Hello World!")
+```
+
+### geopy
+- It works by abstracting the APIs of a range of different geocoding services. It enables you to obtain a place’s full street address, latitude, longitude, and even altitude.
+- Example:
+  ```python
+  from geopy import GoogleV3
+  place = "221b Baker Street, London"
+  location = GoogleV3().geocode(place)
+  print(location.address)
+  print(location.location)
+  ```
+
+### Operator overloading
+- It’s actually a simple concept. Ever wondered why Python lets you use the + operator to add numbers and also to concatenate strings? That’s operator overloading in action.
+- Example:
+  ```python
+  class Thing:
+      def __init__(self, value):
+          self.__value = value
+      def __gt__(self, other):
+          return self.__value > other.__value
+      def __lt__(self, other):
+          return self.__value < other.__value
+  something = Thing(100)
+  nothing = Thing(0)
+  # True
+  something > nothing
+  # False
+  something < nothing
+  # Error
+  something + nothing
+  ```
+
+### `__repr__`
+- When defining a class or an object in Python, it is useful to provide an ‘official’ way of representing that object as a string.
+- Example:
+  ```python
+  class someClass:
+      def __repr__(self):
+          return "<some description here>"
+  someInstance = someClass()
+  # prints <some description here>
+  print(someInstance)
+  ```
+  
+### sh
+- Example:
+  ```python
+  import sh
+  sh.pwd()
+  sh.mkdir('new_folder')
+  sh.touch('new_file.txt')
+  sh.whoami()
+  sh.echo('This is great!')
+  ```
+  
+### Type hints
+- Example:
+  ```python
+  from typing import List
+  Vector = List[float]
+  Matrix = List[Vector]
+  def addMatrix(a : Matrix, b : Matrix) -> Matrix:
+    result = []
+    for i,row in enumerate(a):
+      result_row =[]
+      for j, col in enumerate(row):
+        result_row += [a[i][j] + b[i][j]]
+      result += [result_row]
+    return result
+  x = [[1.0, 0.0], [0.0, 1.0]]
+  y = [[2.0, 1.0], [0.0, -2.0]]
+  z = addMatrix(x, y)
+  ```
+
+### uuid
+- Example:
+  ```python
+  import uuid
+  user_id = uuid.uuid4()
+  print(user_id)
+  ```
 
 **[⬆ back to top](#list-of-contents)**
 
@@ -1048,3 +1176,4 @@
 - https://preettheman.medium.com/python-tricks-i-wish-i-knew-earlier-aab07dec3bd4
 - https://betterprogramming.pub/thirty-two-advanced-techniques-for-better-python-code-6717226eb611
 - https://towardsdatascience.com/i-thought-i-was-mastering-python-until-i-discovered-these-tricks-e40d9c71f4e2
+- https://medium.com/free-code-camp/an-a-z-of-useful-python-tricks-b467524ee747
