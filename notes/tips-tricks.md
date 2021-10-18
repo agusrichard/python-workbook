@@ -9,7 +9,7 @@
 ### 4. [10 Advanced Python Tricks To Write Faster, Cleaner Code](#content-4)
 ### 5. [Python tricks I wish I knew earlier](#content-5)
 ### 6. [32 Advanced Techniques for Better Python Code](#content-6)
-
+### 7. [I Thought I Was Mastering Python Until I Discovered These Tricks](#content-7)
 
 <br />
 
@@ -849,6 +849,197 @@
 
 ---
 
+## [I Thought I Was Mastering Python Until I Discovered These Tricks](https://towardsdatascience.com/i-thought-i-was-mastering-python-until-i-discovered-these-tricks-e40d9c71f4e2) <span id="content-7"></span>
+
+### Introduction
+- True, practice alone is not perfect, but perfect practice is.
+- This means that you need to make sure that you are always following the best coding practices (commenting on your code, using correct syntax, etc.), otherwise you will likely end up adopting bad habits that could harm your future lines of code.
+- A universal convention supplies all of maintainability, clarity, consistency, and a foundation for good programming habits too. What it doesn’t do is insist that you follow it against your will. That’s Python! - Tim Peters on comp.lang.python, 2001–06–16
+
+### 1. Readability is important
+- Programs must be written for people to read, and only incidentally for machines to execute. Hal Abelson
+- First of all, try to make your programs easy to read by following some programming conventions. A programming convention is one that a seasoned programmer follows when writing his or her code.
+- There’s no quicker way to reveal that you’re a “newbie” than by ignoring conventions.
+- Some of these conventions are specific to Python; others are used by computer programmers in all languages.
+  ![](https://miro.medium.com/max/700/1*kjVAg20iyGR70YDZ3pd6qg.jpeg)
+- Essentially, readability is the characteristic which specifies how easy another person can understand some parts of your code (and not you!).
+- As an example, I was not used to write with vertical alignment and to align the function’s parameters with opening delimiter.
+  ```python
+  # No, to avoid: 
+  func = long_function_name(var_one, var_two,
+         var_three, var_four)
+  #Yes, 
+  func = long_function_name(var_one, var_two,
+                            var_three, var_four)
+  ```
+
+### 2. Avoid unuseful conditions
+- Often, a long if & elif & …. & else conditions is the sign of code that needs refactoring, these conditions make your code lengthy and really hard to interpret.
+- Example:
+  ```python
+  # Bad, because we know this function return boolean
+  def f():
+      if condition:
+          return True
+      else:
+          return False
+  
+  # Good, directly return the boolean
+  def f():
+      return condition
+  ```
+- Challenge to decide if a year is a skip year or not:
+  ```python
+  def is_leap(year):
+      return year % 4 == 0 and (year % 400 == 0 or year % 100 != 0)
+  ```
+
+### 3. Adequate use of Whitespace
+- Never mix tabs and spaces
+- A line break between functions
+- Two line breaks between classes
+- Add a space after “,” in dictionaries, lists, tuples, arguments in a list of arguments and after “:” in dictionaries but not before.
+- Put spaces around assignments and comparisons (except for arguments in a list)
+- No space for opening / closing parentheses or just before a list of arguments.
+- Example:
+  ```python
+  def function(key, value=0):
+      """Return a dictionary and a list..."""
+      d = {key: value}
+      l = [key, value]
+      return d, l
+  ```
+
+### 4. Docstrings and Comments
+- Docstrings = How to use the code
+- Comments = Why (rational) and how the code works
+- Explain the purpose of a function even if it seems obvious to you because it will not necessarily seem obvious to another person later.
+- Describe the expected parameters, the returned values and the exceptions raised.
+- If the method is strongly coupled to a single caller, mention the calling function.
+- The comments explain what are for the maintainers of your code. Examples including notes for yourself, such as:
+  ```python
+  # !!! BUG: …
+  # !!! FIX: This is a hack
+  # ??? Why is this here?
+  ```
+- It is on your responsibility to write good docstrings and good comments, so always keep them up to date! When making changes, make sure the comments and docstrings are consistent with the code.
+
+### 5. Variables and Assignment
+- Comparing to other programming languages:
+  ```python
+  # Others
+  c = a
+  a = b
+  b = c
+  
+  # Python
+  b, a = a, b
+  ```
+- A tuple is created on the right (tuple packing).
+- A tuple is the target on the left (tuple unpacking).
+- Example:
+  ```python
+  >>> user =['Jan', 'Gomez', '+1-888-222-1546']
+  >>> name, title, phone = user
+  >>> name
+  'Jan'
+  >>> title
+  'Gomez'
+  >>> phone
+  '+1-888-222-1546'
+  
+  >>> jan, (gname, gtitle, gphone) = people
+  >>> gname
+  'German'
+  >>> gtitle
+  'GBT'
+  >>> gphone
+  'unlisted'
+  >>> jan
+  ['Jan', 'Gomez', '+1-888-222-1546']
+  ```
+
+### 6. List Concatenation & Join
+- How to concatenate in a better way:
+  ```python
+  # Dont
+  result = ''
+  for s in colors:
+      result += s
+  
+  # Do
+  result = ''.join(colors)
+  ```
+
+### 7. Test true conditions
+- Example:
+  ```python
+  # Do this :     # And not this :
+  if x:             if x == True:
+     pass                  pass
+  # Do this :     # And not this :
+  if items:         if len(items) != 0:
+      pass                pass
+  # and especially not that :
+          if items != []:
+                 pass
+  ```
+
+### 8. Use enumerate when it’s possible
+- The enumerate function takes a list and returns pairs (index, item):
+  ```python
+  items = ['zero', 'one', 'two', 'three']
+  >>> print list(enumerate(items))
+  [(0, 'zero'), (1, 'one'), (2, 'two'), (3, 'three')]
+  ```
+- Print does not take one result at a time but must be in possession of the entire message to be displayed. We therefore automatically converted the generator to a list before using print.
+- Wny enumerate is better:
+  ```python
+  for (index, item) in enumerate(items):
+      print (index, item)
+  # compared to :              # And :
+  index = 0                     for i in range(len(items)):
+  for item in items:                    print (i, items[i])
+      print (index, item)
+      index += 1
+  ```
+
+### 9. List Comprehension
+- Example:
+  ```python
+  # without list comprehension
+  new_list = []
+  for item in a_list:
+      if condition(item):
+          new_list.append(fn(item))
+  
+  # With list comprehension
+  new_list = [fn(item) for item in a_list if condition(item)]
+  ```
+
+### 10. Generator Expressions
+- The better way to use sum function:
+  ```python
+  # With a list comprehension :
+  total = sum([num * num for num in range(1, 101)])
+  # With a generator expression :
+  total = sum(num * num for num in xrange(1, 101))
+  ```
+- The generator expressions are like list comprehensions, except in their calculation, they are lazy.
+- Listcomps calculate the entire result in a single pass, to store it in a list.
+- Generator expressions calculate one value at a time, when necessary.
+- This is particularly useful when the sequence is very long and the generated list is only an intermediate step and not the final result.
+- The difference in syntax is that listcomps have square brackets, while generator expressions do not. Generator expressions sometimes require parentheses, so you should always use them.
+- Use a list comprehension when the expected result is the list.
+- Use a generator expression when the list is only an intermediate result.
+
+
+**[⬆ back to top](#list-of-contents)**
+
+<br />
+
+---
+
 ## References:
 - https://levelup.gitconnected.com/5-powerful-python-one-liners-you-should-know-469b9c4737c7
 - https://python.plainenglish.io/11-python-tricks-to-boost-your-python-skills-significantly-1a5221dfa5c7
@@ -856,3 +1047,4 @@
 - https://medium.com/pythonland/10-advanced-python-tricks-to-write-faster-cleaner-code-f9ee76fa878f
 - https://preettheman.medium.com/python-tricks-i-wish-i-knew-earlier-aab07dec3bd4
 - https://betterprogramming.pub/thirty-two-advanced-techniques-for-better-python-code-6717226eb611
+- https://towardsdatascience.com/i-thought-i-was-mastering-python-until-i-discovered-these-tricks-e40d9c71f4e2
