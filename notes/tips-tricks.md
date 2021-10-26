@@ -11,6 +11,7 @@
 ### 6. [32 Advanced Techniques for Better Python Code](#content-6)
 ### 7. [I Thought I Was Mastering Python Until I Discovered These Tricks](#content-7)
 ### 8. [An A-Z of useful Python tricks](#content-8)
+### 9. [22 Code Snippets That Every Python Programmer Must Learn](#content-9)
 
 <br />
 
@@ -1168,6 +1169,275 @@ print("Hello World!")
 
 ---
 
+## [22 Code Snippets That Every Python Programmer Must Learn](https://levelup.gitconnected.com/22-code-snippets-that-every-python-programmer-must-learn-b7f7ec35e9df) <span id="content-9"></span>
+
+### 1. Merge two dictionaries
+- Snippet:
+  ```python
+  dictionary1 = {"name": "Joy", "age": 25}
+  dictionary2 = {"name": "Joy", "city": "New York"}
+
+  merged_dict = {**dictionary1, **dictionary2}
+
+  print("Merged dictionary:", merged_dict)
+  ```
+
+### 2. Chain Comparison
+- I am not a fan of this approach, since it's not obvious to read
+- Snippet:
+  ```python
+  a = 5
+
+  print(2 < a < 8)
+  print(1 == a < 3)
+  ```
+
+### 3. Print a String N times
+- Snippet:
+  ```python
+  n = 5
+  string = "Hello!"
+
+  print(string * n)
+  ```
+
+### 4. Checking if a File Exists
+- Using this code snippet, we can know whether the file exists or not in our directory or given path.
+- Snippet:
+  ```python
+  from os import path
+
+  def check_for_file():
+      print("Does file exist:", path.exists("data.csv"))
+
+  if __name__=="__main__":
+      check_for_file()
+  ```
+
+### 5. Retrieve the Last Element of a List
+- Snippet:
+  ```python
+  my_list = ['banana', 'apple', 'orange', 'pineapple']
+
+  #Using brute force method
+  last_element = my_list[len(my_list) - 1]
+
+  #Using negative indeces
+  last_element = my_list[-1]
+
+  #Using pop method
+  last_element = my_list.pop()
+  ```
+
+### 6. List Comprehension
+- Snippet:
+  ```python
+  def get_vowels(string):
+      return [vowel for vowel in string if vowel in 'aeiou'] 
+
+  print("Vowels are:", get_vowels('This is some random string'))
+  ```
+
+### 7. Calculate Code Execution Time
+- Snippet:
+  ```python
+  import time
+
+  start_time = time.time()
+
+  total = 0
+  for i in range(10):
+    total += i
+  print("Sum:", total)
+
+  end_time = time.time()
+  time_taken = end_time - start_time
+  print("Time: ", time_taken)
+  ```
+
+### 8. Find Element with Most Occurance
+- Snippet:
+  ```python
+  def most_frequent(list):
+    return max(set(list), key=list.count)
+
+  mylist = [1,1,2,3,4,5,6,6,2,2]
+  print("most frequent item is:", most_frequent(mylist))
+  ```
+
+### 9. Convert Two Lists into a Dictionary
+- Snippet:
+  ```python
+  def list_to_dictionary(keys, values):
+    return dict(zip(keys, values))
+
+  list1 = [1, 2, 3]
+  list2 = ['one', 'two', 'three']
+
+  print(list_to_dictionary(list1, list2))
+  ```
+
+### 10. Error Handling
+- Snippet:
+  ```python
+  a, b = 1,0
+
+  try:
+      print(a/b)
+  except ZeroDivisionError:
+      print("Can not divide by zero")
+  finally:
+      print("Executing finally block")
+  ```
+
+### 11. Reversing a String
+- Snippet:
+  ```python
+  str = "Hello World"
+
+  print("Reversed string is:", str[::-1])
+  ```
+
+### 12. Combining a List of Strings into a Single String
+- Snippet:
+  ```python
+  list = ["Hello", "world", "Ok", "Bye!"]
+  combined_string = " ".join(list)
+
+  print(combined_string)
+  ```
+
+### 13. Get Default Values for Missing Keys
+- Snippet:
+  ```python
+  dict = {1:'one', 2:'two', 4:'four'}
+
+  #returning three as default value
+  print(dict.get(3, 'three'))
+
+  print("Original dictionary:", dict)
+  ```
+
+### 14. Swap two values without an extra variable
+- Snippet:
+  ```python
+  a, b = 5, 10
+
+  #Method 1
+  a, b = b, a
+
+  #Method 2
+  def swap(a,b):
+    return b,a
+  swap(a,b)
+  ```
+
+### 15. Regular Expressions
+- Snippet:
+  ```python
+  import re
+
+  text = "The rain in spain"
+  result = re.search("rain", text)
+
+  print(True if result else False)
+  ```
+
+### 16. Palindrome
+- Snippet:
+  ```python
+  def is_palindrome(str):
+    return str == str[::-1]
+
+  print(is_palindrome('hannah'))
+
+  print(is_palindrome('solo'))
+  ```
+
+### 17. Filter values
+- Snippet:
+  ```python
+  my_list = [0,1,2,3,6,7,9,11]
+
+  result = filter(lambda x: x % 2!=0, my_list)
+
+  print(list(result))
+  ```
+
+### 18. Anagrams
+- An Anagram is a word or phrase formed by rearranging the letters of a different word or phrase.
+- Snippet:
+  ```python
+  from collections import Counter
+
+  def is_anagram(string1, string2):
+    return Counter(string1) == Counter(string2)
+
+  print(is_anagram('race', 'care'))
+  ```
+
+### 19. Memory Usage of Variable
+- Snippet:
+  ```python
+  import sys
+
+  var1 = 15
+  list1 = [1,2,3,4,5]
+
+  print(sys.getsizeof(var1))
+  print(sys.getsizeof(list1))
+  ```
+
+### 20. Chained function call
+- Snippet:
+  ```python
+  def add(a, b):
+      return a + b
+
+  def subtract(a, b):
+      return a - b
+
+  a, b = 5, 10
+
+  print((add if b > a else subtract)(a,b))
+  ```
+
+### 21. Get the Unique ID of an Object
+- id() method can be used to access the unique id of an object.
+- Snippet:
+  ```python
+  num = 15
+  name = 'John'
+  list1 = [1,2,3,4]
+
+  print(id(num))
+  print(id(name))
+  print(id(list1))
+  ```
+
+### 22. Remove Duplicates From a List
+- Snippet:
+  ```python
+  list1 = [1,2,3,3,4,'John', 'Ana', 'Mark', 'John']
+
+  #Method 1
+  def remove_duplicate(list_value):
+      return list(set(list_value))
+  print(remove_duplicate(list1))
+
+  #Method 2
+  result = []
+  [result.append(x) for x in list1 if x not in result]
+  print(result)
+  ```
+
+
+**[⬆ back to top](#list-of-contents)**
+
+<br />
+
+---
+
 ## References:
 - https://levelup.gitconnected.com/5-powerful-python-one-liners-you-should-know-469b9c4737c7
 - https://python.plainenglish.io/11-python-tricks-to-boost-your-python-skills-significantly-1a5221dfa5c7
@@ -1177,3 +1447,4 @@ print("Hello World!")
 - https://betterprogramming.pub/thirty-two-advanced-techniques-for-better-python-code-6717226eb611
 - https://towardsdatascience.com/i-thought-i-was-mastering-python-until-i-discovered-these-tricks-e40d9c71f4e2
 - https://medium.com/free-code-camp/an-a-z-of-useful-python-tricks-b467524ee747
+- https://levelup.gitconnected.com/22-code-snippets-that-every-python-programmer-must-learn-b7f7ec35e9df
