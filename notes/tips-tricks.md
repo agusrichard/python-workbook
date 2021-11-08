@@ -12,6 +12,8 @@
 ### 7. [I Thought I Was Mastering Python Until I Discovered These Tricks](#content-7)
 ### 8. [An A-Z of useful Python tricks](#content-8)
 ### 9. [22 Code Snippets That Every Python Programmer Must Learn](#content-9)
+### 10. [Stop Using Print to Debug in Python. Use Icecream Instead](#content-10)
+
 
 <br />
 
@@ -1438,6 +1440,103 @@ print("Hello World!")
 
 ---
 
+## [Stop Using Print to Debug in Python. Use Icecream Instead](https://towardsdatascience.com/stop-using-print-to-debug-in-python-use-icecream-instead-79e17b963fcc) <span id="content-10"></span>
+
+### What is icecream?
+- Icecream is a Python library that makes print debugging more readable with minimal code.
+- To install icecream: `pip install icecream`
+- Example:
+  ```python
+  from icecream import ic 
+
+  def plus_five(num):
+      return num + 5
+
+  ic(plus_five(4))
+  ic(plus_five(5))
+  ```
+- By using ic , we do not only see the output but also see the function and its arguments! How convenient! The color in your terminal will also be as colorful as the outputs shown above.
+
+### Inspect Execution
+- Normal code without icecream:
+  ```python
+  def hello(user:bool):
+      if user:
+          print("I'm user")
+      else:
+          print("I'm not user")
+
+  hello(user=True)
+  ```
+- Icecream makes it easier for you to do something like the above by simply running ic() without additional text
+- Code with icecream:
+  ```python
+  from icecream import ic 
+
+  def hello(user:bool):
+      if user:
+          ic()
+      else:
+          ic()
+
+  hello(user=True)
+  ```
+
+### Custom Prefix
+- If you would like to insert a custom prefix such as the time the code was executed to your print statement, icecream also allows you to do so.
+- Example:
+  ```python
+  from datetime import datetime
+  from icecream import ic 
+  import time
+
+  def time_format():
+      return f'{datetime.now()}|> '
+
+  ic.configureOutput(prefix=time_format)
+
+  for _ in range(3):
+      time.sleep(1)
+      ic('Hello')
+  ```
+
+### Can I get more context?
+- Besides knowing the code that is responsible for the output, you might also want to know which line and file the code was executed from. To know the context of the code, add includeContext=True to ic.configureOutput()
+  ```python
+  from icecream import ic 
+
+  def plus_five(num):
+      return num + 5
+
+  ic.configureOutput(includeContext=True)
+  ic(plus_five(4))
+  ic(plus_five(5))
+  ```
+
+### Delete All Icecream after Finish Debugging
+- You can use icecream solely for debugging while using print for other purposes such as pretty printing
+- Example:
+  ```python
+  from icecream import ic 
+
+  def plus_five(num):
+      return num + 5
+
+  ic(plus_five(4))
+  ic(plus_five(5))
+
+  for i in range(10):
+      print(f'****** Training model {i} ******')
+  ```
+
+
+
+**[⬆ back to top](#list-of-contents)**
+
+<br />
+
+---
+
 ## References:
 - https://levelup.gitconnected.com/5-powerful-python-one-liners-you-should-know-469b9c4737c7
 - https://python.plainenglish.io/11-python-tricks-to-boost-your-python-skills-significantly-1a5221dfa5c7
@@ -1448,3 +1547,4 @@ print("Hello World!")
 - https://towardsdatascience.com/i-thought-i-was-mastering-python-until-i-discovered-these-tricks-e40d9c71f4e2
 - https://medium.com/free-code-camp/an-a-z-of-useful-python-tricks-b467524ee747
 - https://levelup.gitconnected.com/22-code-snippets-that-every-python-programmer-must-learn-b7f7ec35e9df
+- https://towardsdatascience.com/stop-using-print-to-debug-in-python-use-icecream-instead-79e17b963fcc
