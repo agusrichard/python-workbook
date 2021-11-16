@@ -1,13 +1,14 @@
 # Python Clean Code
 
-</br>
+<br />
 
 ## List of Contents:
 ### 1. [Handling Errors in Python](#content-1)
 ### 2. [Stop Using Exceptions Like This in Python](#content-2)
+### 3. [In Python, Don’t Look Before You Leap](#content-3)
 
 
-</br>
+<br />
 
 ---
 
@@ -31,7 +32,7 @@
 - When to use expections and assertions
 
 ### Catching and Handling Exceptions
-- Example usage: </br>
+- Example usage: <br />
   ```python
   try:
       x = int(input("Please enter a number: "))
@@ -49,14 +50,14 @@
 
 
 ### Things to look out for when handling exceptions
-- If you need to swallow an exception, it's a good reason to re-evaluate your code: </br>
+- If you need to swallow an exception, it's a good reason to re-evaluate your code: <br />
   ```python
   try:
     y = 100 / x
   except ZeroDivisionError:
       pass 
   ```
-- Don’t declare new variables inside a try statement that might not be reached. </br>
+- Don’t declare new variables inside a try statement that might not be reached. <br />
   ```python
   try:
      y = 100 / x
@@ -67,7 +68,7 @@
   ```
 
 ### Raising Exceptions
-- We can re-raise an exception if we don't know that kind of error caused the exception. </br>
+- We can re-raise an exception if we don't know that kind of error caused the exception. <br />
   ```python
   try:
       x = int(input("Please enter a number: "))
@@ -81,7 +82,7 @@
   ```
 
 ### User-Defined Exceptions
-- Defining our our error: </br>
+- Defining our our error: <br />
   ```python
   class CustomError(Exception): 
       def __init__(self, value): 
@@ -98,7 +99,7 @@
 ### Assertions
 - Assertions evaluate an expression to true or false. If the expression is false, python will raise an AssertionError exception.
 - Could be used for testing
-- Example: </br>
+- Example: <br />
   ```python
   a = 20
   assert a < 10, "something went wrong"
@@ -113,11 +114,11 @@
 
 **[⬆ back to top](#list-of-contents)**
 
-</br>
+<br />
 
 ---
 
-## [Handling Errors in Python](https://betterprogramming.pub/handling-errors-in-python-9f1b32952423) <span id="content-1"></span>
+## [Stop Using Exceptions Like This in Python](https://betterprogramming.pub/handling-errors-in-python-9f1b32952423) <span id="content-2"></span>
 
 
 ### Introduction
@@ -264,12 +265,67 @@
 - In most situations, it’s often better for the app to fail at the point of an exception rather than having our app continue to behave in weird unexpected ways.
 
 
+## [In Python, Don’t Look Before You Leap](https://betterprogramming.pub/in-python-dont-look-before-you-leap-cff250881930) <span id="content-3"></span>
+
+### Look Before You Leap
+- LBYL is the traditional programming style in which we check if a piece of code is going to work before actually running it.
+- In other words, if a piece of code needs some prerequisites, we place conditional statements such that the code only runs if all the prerequisites are met.
+- Snippet:
+  ```python
+  person = {'name': 'John Doe', 'age':30, 'gender': 'male'}
+  
+  #LBYL
+  if 'name' in person and 'age' in person and 'gender' in person:
+      print("{name} is a {age} year old {gender}.".format(**person))
+  else:
+      print("Some keys are missing")
+  ```
+
+### Easier To Ask for Forgiveness Than Permission
+- In this approach, we simply run our code, hoping for the best while being prepared to handle any errors if the code fails.
+- Typically, this means enclosing our code in try-except blocks and handling any exceptions that might occur.
+- Snippet:
+  ```python
+  person = {'name': 'John Doe', 'age':30, 'gender': 'male'}
+  
+  #EAFP
+  try:
+      print("{name} is a {age} year old {gender}.".format(**person))
+  except KeyError:
+      print("Some keys are missing")
+  ```
+
+### So, Which One’s Better?
+- As a rule of thumb, EAFP is considered more Pythonic and should be preferred in most scenarios.
+- Here are some reasons why EAFP is preferred over LBYL.
+  - Explicit and more readable
+    - EAFP makes the “happy path” more explicit and readable. “Explicit is better than implicit” is an important tenet of Python.
+    - In the example above, we expect that the keys will be present in the dictionary in most cases, which is what the EAFP code suggests. 
+    - The LBYL code, however, emphasizes the rare case where the keys are missing.
+  - Better performance
+    - EAFP is usually faster than LBYL — especially when lots of checks are needed.
+    - Calling the dictionary thrice is time-consuming and repetitive.
+    - It’s true that exceptions are costlier than if statements.
+    - Exceptions are only triggered a few times, whereas an if statement is always executed.
+  - Prevents race conditions
+    - Most importantly, EAFP helps us avoid race conditions. Race conditions occur when multiple threads are trying to access an object.
+    - Consider two threads trying to access the person dictionary in the LBYL scenario. If one of the threads deletes a key from the dictionary and the second thread is past the checks, we’ll get an exception when the print statement is executed.
+
+### There are some scenarios where using LBYL does make more sense.
+- Complex side effects
+  - Suppose you begin writing to a file and get an exception when some changes have been made. Trying to revert the changes in the except block can be tricky.
+  - Using LBYL to stop the operation beforehand will make your life much easier.
+- Too many exceptions
+  - If you expect exceptions to be thrown at multiple points in your code, using EAFP might diminish your ability to trace where the code actually failed. Ideally, you should refactor your code to have narrow try-except blocks and continue to use EAFP.
+
+
 
 **[⬆ back to top](#list-of-contents)**
 
-</br>
+<br />
 
 ---
 ## References:
-
-https://betterprogramming.pub/handling-errors-in-python-9f1b32952423
+- https://betterprogramming.pub/handling-errors-in-python-9f1b32952423
+- https://betterprogramming.pub/stop-using-exceptions-like-this-in-python-2bd8ba7d8841
+- https://betterprogramming.pub/in-python-dont-look-before-you-leap-cff250881930
