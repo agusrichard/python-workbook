@@ -7,6 +7,7 @@
 ### 2. [4 Ways To Level Up Your Python Code](#content-2)
 ### 3. [10 Advanced Python Concepts To Level Up Your Python Skills](#content-3)
 ### 4. [6 Alternatives to Classes in Python](#content-4)
+### 5. [How to Write Awesome Python Classes](#content-5)
 
 
 <br />
@@ -992,6 +993,76 @@
 - NamedTuple when you need a quick way to group data and mutability is not needed. And when it’s OK for you to not be type-aware.
 - Dataclasses when you need mutability, want to be type-aware, or want to have the possibility of inheriting from the created dataclass.
 - Pydantic BaseModel when you need to deserialize data.
+
+**[⬆ back to top](#list-of-contents)**
+
+<br />
+
+---
+
+## [How to Write Awesome Python Classes](https://towardsdatascience.com/how-to-write-awesome-python-classes-f2e1f05e51a9) <span id="content-1"></span>
+
+
+### Magic Methods
+- Magic methods are functions that belong to a class. They can be both instances and class methods.
+- The probably most important thing is that magic methods are not meant to be called directly by you!
+- So how are magic methods invoked? They are invoked from certain actions that you apply to your class or instance of your class.
+- As a sneak peek, for example, calling str(YourClass()) would invoke the magic method `__str__` or YourClass() + YourClass() would invoke `__add__` if you’ve implemented it.
+- In contrast to the built-in version, the example will offer some more functionality and more importantly create datetime ranges instead of numeric ranges.
+  ```python
+  from datetime import datetime, timedelta
+  from typing import Iterable
+  from math import ceil
+
+
+  class DateTimeRange:
+      def __init__(self, start: datetime, end_:datetime, step:timedelta = timedelta(seconds=1)):
+          self._start = start
+          self._end = end_
+          self._step = step
+
+      def __iter__(self) -> Iterable[datetime]:
+          point = self._start
+          while point < self._end:
+              yield point
+              point += self._step
+
+      def __len__(self) -> int:
+          return ceil((self._end - self._start) / self._step)
+
+      def __contains__(self, item: datetime) -> bool:
+          mod = divmod(item - self._start, self._step)
+          return item >= self._start and item < self._end and mod[1] == timedelta(0)
+
+      def __getitem__(self, item: int) -> datetime:
+          n_steps = item if item >= 0 else len(self) + item
+          return_value = self._start + n_steps * self._step
+          if return_value not in self:
+              raise IndexError()
+
+          return return_value
+    
+      def __str__(self):
+          return f"Datetime Range [{self._start}, {self._end}) with step {self._step}"
+
+  # Usage
+  my_range = DateTimeRange(datetime(2021,1,1), datetime(2021,12,1), timedelta(days=12))
+  print(my_range)
+  assert len(my_range) == len(list(my_range))
+  my_range[-2] in my_range
+  my_range[2] + timedelta(seconds=12) in my_range
+  for r in my_range:
+      do_something(r)
+  ```
+- Explanation of the above code:
+  - The first one, and probably the best-known one is the __init__ method. As you certainly know, this method is mainly used to initialize your class's instance attributes.
+  - The next one is the __iter__ method. This is probably the most important one as it generates all the elements that are part of our datetime range.
+  - You can easily identify a generator function when seeing the yield keyword.
+  - This allows you to consume one element at a time and work with it without requiring you to have every element in memory.
+  - With __len__ you can find out the number of elements that are part of your range by calling len(my_range) .
+  - With `__contains__` you can check if an element is part of your range using the built-in syntax element in my_range.
+  - The sixth and last magic method that I have added is `__str__` . What this method does is allow you to convert an instance of your class to a string. This becomes very handy when calling print(my_range) as print has to transform an instance into a string and therefore uses the `__str__` method.
+
 
 **[⬆ back to top](#list-of-contents)**
 
