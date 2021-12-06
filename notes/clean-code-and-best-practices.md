@@ -14,6 +14,7 @@
 ### 9. [Python Refactoring Tips to Write Code in Pythonic Way](#content-9)
 ### 10. [12 Of My Favorite Python Practices For Better Functions](#content-10)
 ### 11. [Write Clean Python Code Using Pipes](#content-11)
+### 12. [Python: Production-Level Coding Practices](#content-12)
 
 <br />
 
@@ -2361,6 +2362,96 @@
   ![](https://miro.medium.com/max/700/1*X1eRTaS8h0nv9SeXIKYPPQ.png)
 
 
+**[⬆ back to top](#list-of-contents)**
+
+<br />
+
+---
+
+
+## [Python: Production-Level Coding Practices](https://medium.com/red-buffer/python-production-level-coding-practices-4c39246e0233) <span id="content-12"></span>
+
+### Break down the code
+- Always limit tasks to their specific functions.
+- The software development principle you need to follow is the Separation of Concern
+- Both these tasks should be separate functions which are later called to calculate the output.
+- Example:
+  ```python
+  listA = [1, 2, 3, 4, 5]
+  listB = [9, 8, 7, 6, 5]
+  def find_sum(listA, listB):
+    summed_list = np.add(listA, listB)
+    return summed_list
+  def find_square(my_list):
+    squared_list = np.square(my_list)
+    return squared_list
+  summed_list = find_sum(listA, listB);
+  squared_list = find_square(summed_list)
+  ```
+- This is why the task should be broken down into separate tasks even for smaller steps like element-wise addition or squaring in order to increase reusability and saving time in the long run.
+
+### Start Using a Proper IDE
+- Using an IDE (Integrated Development Environment), specifically for your Python codes, is very important and much better than using notebooks.
+
+### Group Files on the Basis of Tasks/Steps
+- A very useful way to keep the project code modular is by grouping files in terms of the overall tasks they perform.
+  
+### Use config.Py for All Your Directories
+- If your work requires you to load a lot of files or go to specific paths, you should mention all such directories or hard-coded values in a configuration file.
+- Make sure to have one source of truth.
+  ```text
+  Config.py >> 
+  MY_FILE_PATH = "./abc/xyz.csv"
+  Task_file >>
+  import config
+  pandas.read_csv(config.MY_FILE_PATH)
+  ```
+
+### Make Config Files for All Environments
+- You need to create separate config files for your local, test, and production environments and use a method to programmatically use a particular config file in terms of the environment you are in (like using cross-env in node.js).
+- One of the methods you could use in Python for your environments is Argparse. The documentation for Argparse can be found here.
+
+
+### Use Blueprints for Flask
+- Flask Blueprints are a great tool for dealing with application complexity as it increases.
+
+
+### Try to Optimize Your Code As Much As Possible
+- Code Optimization at the production level becomes really important because the user or the client would demand a much-reduced application processing time on simpler non-dev machines.
+
+### Logging Critical Failures and Intermediate Results
+- Logging is very important when writing production-level code. You need to track critical failures in your application and find a necessary solution to them.
+- I prefer to create a log text file that will show me any error tracebacks or intermediate results. The purpose for getting intermediate results logged is that you can gauge how the app is running and which part has been reached.
+  ```python
+  # define a path for your log file
+  logs_file_path = "./app.log"
+  # Create the log file
+  sys.stdout = open(logs_file_path, "w", buffering=1, encoding='utf-8')
+  ```
+
+### Handle Possible Errors in the Code
+- Use Try and Except statements to handle possible errors and log them using traceback.
+  ```python
+  import traceback
+  import sys
+  logs_file_path = "./app.log"
+  sys.stdout = open(logs_file_path, "w", buffering=1, encoding='utf-8')
+  thisdict = {
+      "brand": "Ford",
+      "model": "Mustang",
+      "year": 1964
+    }
+  try:  
+    print(thisdict["car"])
+  except Exception as i:
+    print(traceback.format_exc())
+  ```
+
+### Proper Naming to Improve Readability
+- The name should at most parts explain itself by its name.
+
+### Create a Proper Project Structure
+- Making a great project structure is one of the most important things because that actually aligns your tasks in proper order, and you can make sure that modules are separated from each other properly.
 
 
 **[⬆ back to top](#list-of-contents)**
