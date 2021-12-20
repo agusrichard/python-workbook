@@ -8,6 +8,7 @@
 ### 3. [10 Advanced Python Concepts To Level Up Your Python Skills](#content-3)
 ### 4. [6 Alternatives to Classes in Python](#content-4)
 ### 5. [How to Write Awesome Python Classes](#content-5)
+### 6. [The Definitive Guide to Python import Statements](#content-6)
 
 
 <br />
@@ -1070,8 +1071,169 @@
 
 ---
 
+## [The Definitive Guide to Python import Statements](https://chrisyeh96.github.io/2017/08/08/definitive-guide-python-imports.html#:~:text=root%20test%2F%20folder.-,What%20is%20an%20import%20%3F,made%20available%20to%20the%20importer.) <span id="content-6"></span>
+
+### Summary / Key Points
+- `import` statements search through the list of paths in `sys.path`
+- `sys.path` always includes the path of the script invoked on the command line and is agnostic to the working directory on the command line.
+- importing a package is conceptually the same as importing that package’s `__init__.py` file
+
+### Basic Definitions
+- module: any `*.py` file. Its name is the file name.
+- built-in module: a “module” (written in C) that is compiled into the Python interpreter, and therefore does not have a *.py file.
+- package: any folder containing a file named `__init__.py` in it. Its name is the name of the folder.
+in Python 3.3 and above, any folder (even without a __init__.py file) is considered a package
+- object: in Python, almost everything is an object - functions, classes, variables, etc.
+
+### Example directory structure
+- Example:
+  ```text
+  test/                      # root folder
+      packA/                 # package packA
+          subA/              # subpackage subA
+              __init__.py
+              sa1.py
+              sa2.py
+          __init__.py
+          a1.py
+          a2.py
+      packB/                 # package packB (implicit namespace package)
+          b1.py
+          b2.py
+      math.py
+      random.py
+      other.py
+      start.py
+  ```
+
+### What is an `import`?
+- When a module is imported, Python runs all of the code in the module file.
+- When a package is imported, Python runs all of the code in the package’s __init__.py file, if such a file exists.
+- All of the objects defined in the module or the package’s __init__.py file are made available to the importer.
+
+### Basics of the Python `import` and `sys.path`
+- According to Python documentation, here is how an import statement searches for the correct module or package to import:
+  - When a module named spam is imported, the interpreter first searches for a built-in module with that name. 
+  - If not found, it then searches for a file named spam.py in a list of directories given by the variable `sys.path`.
+  - `sys.path` is initialized from these locations:
+    - The directory containing the input script (or the current directory when no file is specified).
+    - PYTHONPATH (a list of directory names, with the same syntax as the shell variable PATH).
+    - The installation-dependent default.
+  - After initialization, Python programs can modify sys.path.
+  - The directory containing the script being run is placed at the beginning of the search path, ahead of the standard library path.
+  - This means that scripts in that directory will be loaded instead of modules of the same name in the library directory.
+- Technically, Python’s documentation is incomplete. The interpreter will not only look for a file (i.e., module) named spam.py, it will also look for a folder (i.e., package) named spam.
+- Note that the Python interpreter first searches through the list of built-in modules, modules that are compiled directly into the Python interpreter.
+- This list of built-in modules is installation-dependent and can be found in sys.builtin_module_names (Python 2 and 3). Some modules that are commonly built-in include sys, math, itertools, and time, among others.
+- Unlike built-in modules which are first in the search path, the rest of the modules in Python’s standard library (not built-ins) come after the directory of the current script.
+- For example, on my computer (Windows 10, Python 3.6), the math module is a built-in module, whereas the random module is not. Thus, import math in start.py will import the math module from the standard library, NOT my own math.py file in the same directory.
+- However, import random in start.py will import my random.py file, NOT the random module from the standard library.
+- Also, Python imports are case-sensitive. import Spam is not the same as import spam.
+- The function pkgutil.iter_modules (Python 2 and 3) can be used to get a list of all importable modules from a given path:
+  ```python
+  import pkgutil
+  search_path = ['.'] # set to None to see all modules importable from sys.path
+  all_modules = [x[1] for x in pkgutil.iter_modules(path=search_path)]
+  print(all_modules)
+  ```
+- To see what is in sys.path, run the following in the interpreter or as a script:
+  ```python
+  import sys
+  print(sys.path)
+  ```
+- `sys.path`: A list of strings that specifies the search path for modules. Initialized from the environment variable PYTHONPATH, plus an installation-dependent default.
+- As initialized upon program startup, the first item of this list, `path[0]`, is the directory containing the script that was used to invoke the Python interpreter.
+- If the script directory is not available (e.g. if the interpreter is invoked interactively or if the script is read from standard input), `path[0]` is the empty string, which directs Python to search modules in the current directory first.
+- Let’s recap the order in which Python searches for modules to import:
+  - built-in modules from the Python Standard Library (e.g. `sys`, `math`)
+  - modules or packages in a directory specified by `sys.path`:
+    - If the Python interpreter is run interactively, `sys.path[0]` is the empty string ''. This tells Python to search the current working directory from which you launched the interpreter, i.e., the output of pwd on Unix systems.
+    - If we run a script with python `<script>.py,` `sys.path[0]` is the path to `<script>.py`.
+    - directories in the PYTHONPATH environment variable
+    - default `sys.path` locations, including remaining Python Standard Library modules which are not built-in
+- Note that when running a Python script, `sys.path` doesn’t care what your current “working directory” is. It only cares about the path to the script.
+- For example, if my shell is currently at the `test/` folder and I run python `./packA/subA/subA1.py`, then `sys.path` includes `test/packA/subA/` but NOT `test/`.
+
+### All about __init__.py
+- An `__init__.py` file has 2 functions.
+  - convert a folder of scripts into an importable package of modules (before Python 3.3)
+  - run package initialization code
+- In order to import a module or package from a directory that is not in the same directory as the script we are writing (or the directory from which we run the Python interactive interpreter), that module needs to be in a package.
+- As defined above, any directory with a file named __init__.py is a Python package. 
+- The first time that a package or one of its modules is imported, Python will execute the __init__.py file in the root folder of the package if the file exists.
+- All objects and functions defined in __init__.py are considered part of the package namespace.
+- Example:
+  ```python
+  # test/packA/a1.py
+  def a1_func():
+    print("running a1_func()")
+  ```
+  ```python
+  # test/packA/__init__.py
+  ## this import makes a1_func directly accessible from packA.a1_func
+  from packA.a1 import a1_func
+
+  def packA_func():
+      print("running packA_func()")
+  ```
+  ```python
+  # test/start.py
+  import packA  # "import packA.a1" will work just the same
+
+  packA.packA_func()
+  packA.a1_func()
+  packA.a1.a1_func()
+  ```
+- If `a1.py` calls `import a2` and we run python `a1.py`, then `test/packA/__init__.py` will NOT be called, even though it seems like `a2` is part of the `packA` package. This is because when Python runs a script (in this case `a1.py`), its containing folder is not considered a package.
+
+### Using Objects from the Imported Module or Package
+- There are 4 different syntaxes for writing import statements.
+  - `import <package>`
+  - `import <module>`
+  - `from <package> import <module or subpackage or object>`
+  - `from <module> import <object>`
+- Let X be whatever name comes after import.
+  - If X is the name of a module or package, then to use objects defined in X, you have to write `X.object`.
+  - If X is a variable name, then it can be used directly.
+  - If X is a function name, then it can be invoked with `X()`
+- Optionally, as Y can be added after any import X statement: import X as Y. This renames X to Y within the script. Note that the name X itself is no longer valid. A common example is import numpy as np.
+
+### Use dir() to examine the contents of an imported module
+- Example:
+  ```python
+  >>> from packA.subA import sa1
+  >>> dir(sa1)
+  ['__builtins__', '__cached__', '__doc__', '__file__', '__loader__', '__name__', '__package__', '__spec__', 'helloWorld']
+  ```
+- Importing a package is conceptually equivalent to importing the package’s __init__.py file as a module. Indeed, this is what Python treats the package as:
+  
+### Absolute vs. Relative Import
+- An absolute import uses the full path (starting from the project’s root folder) to the desired module to import.
+- A relative import uses the relative path (starting from the path of the current module) to the desired module to import. There are two types of relative imports:
+  - an explicit relative import follows the format from `.<module/package> import X`, where `<module/package>` is prefixed by dots . that indicate how many directories upwards to traverse. A single dot . corresponds to the current directory; two dots .. indicate one folder up; etc
+- Absolute imports:
+  ```python
+  import other
+  import packA.a2
+  import packA.subA.sa1
+  ```
+- Relative imports:
+  ```python
+  import other
+  from . import a2
+  from .subA import sa1
+  ```
+- Note that relative imports are based on the name of the current module. Since the name of the main module is always “main”, modules intended for use as the main module of a Python application must always use absolute imports.
+
+**[⬆ back to top](#list-of-contents)**
+
+<br />
+
+---
+
 ## References:
 - https://betterprogramming.pub/5-pairs-of-magic-methods-in-python-you-should-know-f98f0e5356d6
 - https://betterprogramming.pub/4-ways-to-level-up-your-python-code-f148a50efeea
 - https://levelup.gitconnected.com/10-advance-python-concepts-to-level-up-your-python-skills-da3d6284ad53
 - https://betterprogramming.pub/6-alternatives-to-classes-in-python-6ecb7206377
+- https://chrisyeh96.github.io/2017/08/08/definitive-guide-python-imports.html#:~:text=root%20test%2F%20folder.-,What%20is%20an%20import%20%3F,made%20available%20to%20the%20importer.
