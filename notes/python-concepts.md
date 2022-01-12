@@ -9,6 +9,8 @@
 ### 4. [6 Alternatives to Classes in Python](#content-4)
 ### 5. [How to Write Awesome Python Classes](#content-5)
 ### 6. [The Definitive Guide to Python import Statements](#content-6)
+### 7. [Advanced Object Oriented Features of Python](#content-7)
+
 
 
 <br />
@@ -1224,6 +1226,140 @@ in Python 3.3 and above, any folder (even without a __init__.py file) is conside
   from .subA import sa1
   ```
 - Note that relative imports are based on the name of the current module. Since the name of the main module is always “main”, modules intended for use as the main module of a Python application must always use absolute imports.
+
+**[⬆ back to top](#list-of-contents)**
+
+<br />
+
+---
+
+## [Advanced Object Oriented Features of Python](https://uwpce-pythoncert.github.io/SystemDevelopment/advanced_oo.html) <span id="content-7"></span>
+
+### Multiple Inheritance
+- Pulling methods from more than one class
+- Snippet:
+  ```python
+  class Combined(Super1, Super2, Super3):
+      def __init__(self, something, something else):
+          Super1.__init__(self, ......)
+          Super2.__init__(self, ......)
+          Super3.__init__(self, ......)
+  ```
+
+### The Diamond Problem
+- Snippet:
+  ```python
+  class A(object):
+      def do_your_stuff(self):
+          print("doing A's stuff")
+
+  class B(A):
+      def do_your_stuff(self):
+          A.do_your_stuff(self)
+          print("doing B's stuff")
+
+  class C(A):
+      def do_your_stuff(self):
+          A.do_your_stuff(self)
+          print("doing C's stuff")
+
+  class D(B,C):
+      def do_your_stuff(self):
+          B.do_your_stuff(self)
+          C.do_your_stuff(self)
+          print("doing D's stuff")
+  ```
+- Problem: <br />
+  ![](https://uwpce-pythoncert.github.io/SystemDevelopment/_images/Diamond_inheritance.png)
+
+### The Method Resolution Order
+- super() can handle the MRO for you dynamically
+- Getting the superclass:
+  ```python
+  class SafeVehicle(Vehicle):
+      """
+      Safe Vehicle subclass of Vehicle base class...
+      """
+      def __init__(self, position=0, velocity=0, icon='S'):
+          Vehicle.__init__(self, position, velocity, icon)
+  ```
+- Another way doing the same thing as the above:
+  ```python
+  class SafeVehicle(Vehicle):
+      """
+      Safe Vehicle subclass of Vehicle base class
+      """
+      def __init__(self, position=0, velocity=0, icon='S'):
+          super().__init__(position, velocity, icon)
+  ```
+
+### What does super() do?
+- super returns a “proxy object” that delegates method calls.
+- It’s not returning the object itself – but you can call methods on it.
+- It runs through the method resolution order (MRO) to find the method you call.
+- Snippet:
+  ```python
+  class D(C, B, A):
+      def __init__(self):
+        super().__init__()
+  ```
+- Below is the same thing as above:
+  ```python
+  class D(C, B, A):
+      def __init__(self):
+        C.__init__()
+        B.__init__()
+        A.__init__()
+  ```
+- In python3, you can usually call super() with no arguments:
+  ```python
+  class B(A):
+      def a_method(self, *args, **kwargs)
+          super().a_method(*args, **kwargs)
+  ```
+
+### Class Creation
+- Snippet:
+  ```python
+  class Class():
+      def __init__(self, arg1, arg2):
+          self.arg1 = arg1
+          self.arg2 = arg2
+          .....
+  ```
+- The usual thing:
+  - A new instance is created
+  - `__init__` is called
+  - The code in `__init__` is run to initialize the instance
+- What if you need to do something before creation? Use `__new__`
+  ```python
+  class Class():
+      def __new__(cls, arg1, arg2):
+          some_code_here
+          return cls(...)
+          ...
+  ```
+- Flow:
+  - `__new__` is called: it returns a new instance
+  - The code in `__new__` is run to pre-initialize the instance
+  - `__init__` is called
+  - The code in `__init__` is run to initialize the instance
+- Snippet:
+  ```python
+  class Class(superclass):
+      def __new__(cls, arg1, arg2):
+          some_code_here
+          return superclass.__new__(cls)
+          .....
+  ```
+
+### When to use `__new__`
+- When would you need to use it:
+  - Subclassing an immutable type:
+    - It’s too late to change it once you get to `__init__`
+  - When `__init__` is not called:
+    - unpickling
+    - copying
 
 **[⬆ back to top](#list-of-contents)**
 
