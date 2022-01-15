@@ -3,6 +3,7 @@ from typing import List
 from random import randint
 
 def bubble_sort(lst: List, reverse=False) -> List:
+    """Implement Bubble Sort Algorithm"""
     result = lst.copy()
 
     is_sorted = False
