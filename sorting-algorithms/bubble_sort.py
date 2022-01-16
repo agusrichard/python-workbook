@@ -5,21 +5,22 @@ from random import randint
 def bubble_sort(lst: List, reverse=False) -> List:
     """Implement Bubble Sort Algorithm"""
     result = lst.copy()
-
     is_sorted = False
-    while not is_sorted:
-        is_sorted = True
-        for i in range(1, len(lst)):
-            if not reverse:
+
+    if not reverse:
+        while not is_sorted:
+            is_sorted = True
+            for i in range(1, len(lst)):
                 if result[i] < result[i-1]:
                     is_sorted = False
                     result[i], result[i-1] = result[i-1], result[i]
-            else:
+    else:
+        while not is_sorted:
+            is_sorted = True
+            for i in range(1, len(lst)):
                 if result[i] > result[i-1]:
                     is_sorted = False
-                    result[i], result[i-1] = result[i-1], result[i]
-        
-            
+                    result[i], result[i-1] = result[i-1], result[i]          
 
     return result
 
