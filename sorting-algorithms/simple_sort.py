@@ -6,14 +6,17 @@ from random import randint
 def simple_sort(lst: List, reverse=False) -> List:
     """Implement Simple Sort Algorithm"""
     result = lst.copy()
+    length = len(lst)
 
-    for i in range(len(lst)):
-        for j in range(i+1, len(lst)):
-            if reverse:
-                if result[j] > result[i]:
-                    result[i], result[j] = result[j], result[i]
-            else:
+    if not reverse:
+        for i in range(length):
+            for j in range(i+1, length):
                 if result[j] < result[i]:
+                    result[i], result[j] = result[j], result[i]
+    else:
+        for i in range(length):
+            for j in range(i+1, length):
+                if result[j] > result[i]:
                     result[i], result[j] = result[j], result[i]
 
     return result
@@ -50,6 +53,23 @@ class TestSimpleSort(unittest.TestCase):
         actual = simple_sort(rndn, reverse=True)
         expected = sorted(rndn, reverse=True)
         self.assertEqual(actual, expected)
+
+    def test_compare_to_standard_n_lists(self):
+        n = 100
+        for i in range(n):
+            rndn = [randint(0, 99) for _ in range(100)]
+            actual = simple_sort(rndn)
+            expected = sorted(rndn)
+            self.assertEqual(actual, expected)
+
+    def test_compare_to_standard_n_lists_reverse(self):
+        n = 100
+        for i in range(n):
+            rndn = [randint(0, 99) for _ in range(100)]
+            actual = simple_sort(rndn, reverse=True)
+            expected = sorted(rndn, reverse=True)
+            self.assertEqual(actual, expected)
+
 
 
 

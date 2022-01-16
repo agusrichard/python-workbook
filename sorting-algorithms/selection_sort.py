@@ -51,6 +51,22 @@ class TestSelectionSort(unittest.TestCase):
         expected = sorted(rndn, reverse=True)
         self.assertEqual(actual, expected)
 
+    def test_compare_to_standard_n_lists(self):
+        n = 100
+        for i in range(n):
+            rndn = [randint(0, 99) for _ in range(100)]
+            actual = selection_sort(rndn)
+            expected = sorted(rndn)
+            self.assertEqual(actual, expected)
+
+    def test_compare_to_standard_n_lists_reverse(self):
+        n = 100
+        for i in range(n):
+            rndn = [randint(0, 99) for _ in range(100)]
+            actual = selection_sort(rndn, reverse=True)
+            expected = sorted(rndn, reverse=True)
+            self.assertEqual(actual, expected)
+
 
 
 if __name__ == '__main__':
