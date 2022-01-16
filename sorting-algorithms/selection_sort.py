@@ -6,15 +6,22 @@ from random import randint
 def selection_sort(lst: List, reverse=False) -> List:
     """Implement Selection Sort Algorithm"""
     result = lst.copy()
+    length = len(lst)
 
-    for i in range(len(lst)):
-        for j in range(i+1, len(lst)):
-            if reverse:
-                if result[j] > result[i]:
-                    result[i], result[j] = result[j], result[i]
-            else:
-                if result[j] < result[i]:
-                    result[i], result[j] = result[j], result[i]
+    if not reverse:
+        for i in range(length):
+            for j in range(i, length):
+                smallest_val_index = i
+                if result[j] < result[smallest_val_index]:
+                    smallest_val_index = j
+                result[i], result[smallest_val_index] = result[smallest_val_index], result[i]
+    else:
+        for i in range(length):
+            for j in range(i, length):
+                largest_val_index = i
+                if result[j] > result[largest_val_index]:
+                    largest_val_index = j
+                result[i], result[largest_val_index] = result[largest_val_index], result[i]
 
     return result
 
