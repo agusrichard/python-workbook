@@ -4,20 +4,21 @@ counter = 0
 
 def fib(n):
     global counter
-    counter += 1
 
     if n == 0:
+        counter += 1
         return 0
     if n == 1:
+        counter += 1
         return 1
 
     return fib(n-1) + fib(n-2)
 
 def exponential(n):
     global counter
-    counter += 1
 
     if n == 0:
+        counter += 1
         return
     
     exponential(n-1)
