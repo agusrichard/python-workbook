@@ -1,9 +1,16 @@
 import sys
 
+counter = 0
+
 def log_n_iterative(n):
-    while n >= 1:
-        print(n)
+    global counter
+
+    while n > 1:
+        counter += 1
         n = n // 2
+        print(n)
+
+    print('Counter: ', counter)
 
 
 if __name__ == '__main__':
