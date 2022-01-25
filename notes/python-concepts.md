@@ -11,6 +11,7 @@
 ### 6. [The Definitive Guide to Python import Statements](#content-6)
 ### 7. [Advanced Object Oriented Features of Python](#content-7)
 ### 8. [Supercharge Your Classes With Python super()](#content-8)
+### 9. [Deep Dive into Python Mixins and Multiple Inheritance](#content-9)
 
 
 
@@ -1619,6 +1620,122 @@ in Python 3.3 and above, any folder (even without a __init__.py file) is conside
 - In this example, the code was reworked to include a mixin called VolumeMixin. The mixin is then used by Cube and gives Cube the ability to calculate its volume, which is shown below:
 
 
+**[⬆ back to top](#list-of-contents)**
+
+<br />
+
+---
+
+## [Deep Dive into Python Mixins and Multiple Inheritance](https://coderbook.com/@marcus/deep-dive-into-python-mixins-and-multiple-inheritance/) <span id="content-9"></span>
+
+### Introduction
+- Mixins in Python is just semantics. It’s not a “thing” by itself, its just classes and normal inheritance. But it’s when inheritance is done in a specific way. So in that manner, then you could say that Yes – Mixins are the “same thing” as multiple inheritance. But let’s explore it further than that.
+
+### Mixins Cannot Be Intantiated By Themselves
+- Mixins are small classes that focus on providing a small set of specific features that you can later combine with code that live in other classes
+- Mixins are small classes that focus on providing a small set of specific features that you can later combine with code that live in other classes.
+- Example:
+  ```python
+  class MetaMixin(object):
+      """Mixin to enhance web view with meta data"""
+      def get_meta_title(self) -> str:
+          """Get meta title of page/view"""
+          return str(self.get_object())
+  ```
+- As you can see, our code is calling the get_object() method. Where is that one defined? Not within our MetaMixin.
+- If you would instantiate this class and call the get_meta_title method, an exception would be raised and the code wouldn’t be running. We expect some other code to define this method somewhere. We expect our Mixin to be “mixed in” with other classes and other code.
+- Example of using mixin:
+  ```python
+  from .mixins import MetaMixin
+  from .models import User
+
+  class Foo(MetaMixin):
+      def get_object(self):
+          return User.get_user()
+  ```
+  ```python
+  from .mixins import MetaMixin
+  from .views import DetailView
+  from .models import User
+
+  class UserDetailView(MetaMixin, DetailView):
+      model = User
+  ```
+
+### When to use Mixins in Python?
+- In general, there are 2 cases where you would like to implement something like this:
+  - You want to provide a lot of optional features for a class.
+  - You want to use one particular feature in a lot of different classes.
+- Instead of creating large classes that work with every combination of these features, or implementing them all in a single large class, we can instead compose our view classes with these features whenever they are needed.
+- For example, imagine that we have a web view for an e-commerce store that represents a single Product. This type of view might be required for other types of database models as well such as a Customer, Category or Order. It, therefore, makes sense to create some kind of reusable code that we can use to automatically fetch the object from the database, maybe we can automatically expect there to be a slug or id url parameter that we could use to figure out which unique object we want to fetch.
+- Example:
+  ```python
+  from .views import View
+  from .models import Product, Category, Customer, Order
+
+  class SingleObjectMixin(object):
+      model = None
+      def get_object(self, request):
+          if self.model is None:
+              raise Exception("Model must be set.")
+          return self.model.get(id=request.kwargs.get("id")
+
+  class ProductView(SingleObjectMixin, View):
+      model = Product
+
+  class CategoryView(SingleObjectMixin, View):
+      model = Category
+
+  class CustomerView(SingleObjectMixin, View):
+      model = Customer
+
+  class OrderView(SingleObjectMixin, View):
+      model = Order
+  ```
+- Some of these views might also require authentication to be viewed, perhaps a user must be logged in to be able to see the details of an order. We can then imagine that we also have an AuthMixin that we could use to implement this behavior. We might, therefore, end up with the final code looking something like this:
+- Example:
+  ```python
+  class ProductView(SingleObjectMixin, View):
+      model = Product
+
+  class CategoryView(SingleObjectMixin, View):
+      model = Category
+
+  class CustomerView(SingleObjectMixin, AuthMixin, View):
+      model = Customer
+
+  class OrderView(SingleObjectMixin, AuthMixin, View):
+      model = Order
+  ```
+- As you can see, all of the new views that we have created inherit from the base View class, which contains the bulk of all logic or code required for our code to work. But all of them get unique behavior added to them in different ways using smaller Mixin classes that add specific, small sets of features to enhance the base class in different ways.
+
+### What’s the Definition of a Python Mixin?
+- Definitions of mixin:
+  - Mixins are tools to create classes in compositional styles.
+  - A mixin is meant to be “mixed in” to other pieces of code. It might run on its own, but it was not created with the intention to run on its own.
+  - A mixin is a class that is implementing a small and specific set of features that is needed in many different classes.
+  - There is no limit on how many mixins you can use to compose a new class. You can use 1 or 10, it’s all up to you as the developer to make that decision.
+- Snippet:
+  ```python
+  class Foo(FirstMixin, SecondMixin, BaseClass):
+      pass
+
+  class Bar(BaseClass, SecondMixin, FirstMixin):
+      pass
+  ```
+- The recommended and “logical” way to structure the order of your inheritance is to make the highest to lowest from left to right. So if you want FirstMixin to have the highest precedence, it should be defined as the first item, following the Foo class definition.
+
+### Mixins vs Decorators in Python
+- If you already have some experience with Python, you might notice that the use of Mixins has some similarities with the use of Python Decorators. Both are used to modify or add behavior that enhances or customizes another set of code.
+- The main differences between Mixins and Decorators are:
+  - Decorators wrap functionality around a piece of code.
+  - Mixins add functionality to code using Inheritance.
+- Mixins only work with Object-Oriented Programming and Classes
+- Decorators cannot add new methods or new pieces of code.
+- Generally, you could say that decorators are most commonly used to modify the behavior of existing code while Mixins are used to add new behaviors.
+- For example, a decorator might be used to register a function to some collection and then returning the same function, or perhaps taking a function or class and then modifying it before returning it back again.
+- A Mixin might be used to add a new set of methods to a class, instead of just modifying behavior it adds new blocks of code and new features to the existing class.
+- Mixins are nicer to use for composing functionality of a new class. Theoretically, you could decorate a new class to compose it with functionality, but having a list of 5 decorators that wrap each other, is more confusing and difficult to understand than to use Mixins that compose the new behavior.
 
 
 **[⬆ back to top](#list-of-contents)**
@@ -1634,3 +1751,4 @@ in Python 3.3 and above, any folder (even without a __init__.py file) is conside
 - https://betterprogramming.pub/6-alternatives-to-classes-in-python-6ecb7206377
 - https://chrisyeh96.github.io/2017/08/08/definitive-guide-python-imports.html#:~:text=root%20test%2F%20folder.-,What%20is%20an%20import%20%3F,made%20available%20to%20the%20importer.
 - https://realpython.com/python-super/
+- https://coderbook.com/@marcus/deep-dive-into-python-mixins-and-multiple-inheritance/
