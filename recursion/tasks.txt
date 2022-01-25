@@ -1,0 +1,8 @@
+- Binary search
+- Linear search
+- Palindrome
+- Sum of natural numbers
+- Decimal to Binary
+- Factorial
+- Fibonacci
+- Merge sort
