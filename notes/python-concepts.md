@@ -1737,6 +1737,34 @@ in Python 3.3 and above, any folder (even without a __init__.py file) is conside
 - A Mixin might be used to add a new set of methods to a class, instead of just modifying behavior it adds new blocks of code and new features to the existing class.
 - Mixins are nicer to use for composing functionality of a new class. Theoretically, you could decorate a new class to compose it with functionality, but having a list of 5 decorators that wrap each other, is more confusing and difficult to understand than to use Mixins that compose the new behavior.
 
+### My Example:
+- Example:
+  ```python
+  class Store:
+    def __init__(self, store, factor=2):
+      self.store = store
+      self.factor = factor
+
+  class MultiplyStoreMixin:
+    def transform(self):
+      data = {**self.store}
+      data['nums'] = [self.factor * i for i in data['nums']]
+      self.store = data
+
+  class StoreView(MultiplyStoreMixin, Store):
+    def __init__(self, store, factor):
+      super().__init__(store, factor)
+
+    def show(self):
+      self.transform()
+      return self.store
+
+  if __name__ == '__main__':
+    view = StoreView(dict(name='My Awesome Store', nums=[0,1,2,3,4]), 10)
+    print(StoreView.mro())
+    print(view.show())
+  ```
+
 
 **[⬆ back to top](#list-of-contents)**
 
