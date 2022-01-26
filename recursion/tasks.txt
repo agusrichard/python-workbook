@@ -6,3 +6,4 @@
 - Factorial
 - Fibonacci
 - Merge sort
+- LinkedList reversal
