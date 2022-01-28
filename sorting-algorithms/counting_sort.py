@@ -12,11 +12,14 @@ def counting_sort(lst: List, reverse=False) -> List:
 
     max_value = max(lst)
     min_value = min(lst)
+    length = max_value - min_value
 
-    counter = [0 for _ in range(min_value, max_value+1)]
+    counter = [0 for _ in range(length+1)]
     result = [0 for _ in range(len(lst))]
 
-    for i in lst:
+    updated_lst = [i-min_value for i in lst]
+
+    for i in updated_lst:
         counter[i] += 1
 
     for i in range(len(counter)-1):
@@ -26,10 +29,12 @@ def counting_sort(lst: List, reverse=False) -> List:
         counter[-i] = counter[-(i+1)]
     counter[0] = 0
 
-    for i in lst:
+    for i in updated_lst:
         position = counter[i]
         result[position] = i
         counter[i] += 1
+
+    result = [i+min_value for i in result]
 
     return result
 
@@ -87,6 +92,6 @@ class CountingSortTest(unittest.TestCase):
 if __name__ == '__main__':
     unittest.main(verbosity=2)
     # nums = [2,1,3,2,4,3,5,4,6,5,7,6,8,7,9,8]
-    # print(len(nums))
+    # print(sorted(nums))
     # print(counting_sort(nums))
     # print(counting_sort([]))
