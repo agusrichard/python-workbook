@@ -36,6 +36,13 @@ class TestLinearSearch(TestCase):
             expected = i
             self.assertEqual(actual, expected)
 
+    def test_list_all_not_found(self):
+        nums = [-i for i in range(1, 100)]
+        for i in range(100):
+            actual = linear_search(nums, i)
+            expected = -1
+            self.assertEqual(actual, expected)
+
 
 if __name__ == "__main__":
     main(verbosity=2)
