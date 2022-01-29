@@ -29,12 +29,10 @@ def counting_sort(lst: List, reverse=False) -> List:
         counter[-i] = counter[-(i+1)]
     counter[0] = 0
 
-    for i in updated_lst:
+    for i, j in zip(updated_lst, lst):
         position = counter[i]
-        result[position] = i
+        result[position] = j
         counter[i] += 1
-
-    result = [i+min_value for i in result]
 
     return result
 
