@@ -10,8 +10,8 @@ def log_n_iterative(n):
         n = n // 2
         print(n)
 
-    print('Counter: ', counter)
-
 
 if __name__ == '__main__':
-    log_n_iterative(int(sys.argv[1]))
+    # log_n_iterative(int(sys.argv[1]))
+    log_n_iterative(1024)
+    print('Counter: ', counter)

@@ -9,7 +9,7 @@ def n_squared(n):
             print(i, j)
             counter += 1
 
-    print('Counter:', counter)
 
 if __name__ == '__main__':
     n_squared(int(sys.argv[1]))
+    print('Counter:', counter)

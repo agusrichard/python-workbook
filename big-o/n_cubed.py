@@ -11,7 +11,6 @@ def n_cubed(n):
                 print(i, j, k)
                 counter +=1
 
-    print('Counter:', counter)
-
 if __name__ == '__main__':
     n_cubed(int(sys.argv[1]))
+    print('Counter:', counter)

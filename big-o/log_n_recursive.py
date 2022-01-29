@@ -14,5 +14,5 @@ def log_n_recursive(n):
 
 
 if __name__ == '__main__':
-    log_n_recursive(int(sys.argv[1]))
+    log_n_recursive(1024)
     print('Counter: ', counter)
