@@ -8,8 +8,18 @@ from simple_sort import simple_sort
 from counting_sort import counting_sort
 from insertion_sort import insertion_sort
 from selection_sort import selection_sort
+from random_quick_sort import random_quick_sort
 
-sort_algorithms = [bubble_sort, counting_sort, insertion_sort, quick_sort, selection_sort, simple_sort, merge_sort]
+sort_algorithms = [
+    merge_sort,
+    quick_sort,
+    bubble_sort,
+    simple_sort,
+    counting_sort,
+    insertion_sort,
+    selection_sort,
+    random_quick_sort
+]
 
 
 class TestAllSortingAlgorithms(unittest.TestCase):
@@ -33,8 +43,8 @@ class TestAllSortingAlgorithms(unittest.TestCase):
 
     def test_compare_to_standard(self):
         for alg in sort_algorithms:
-            rndn = [randint(0, 99) for _ in range(100)]
-            actual = quick_sort(rndn)
+            rndn = [randint(0, 999999) for _ in range(100)]
+            actual = alg(rndn)
             expected = sorted(rndn)
             self.assertEqual(actual, expected)
 
@@ -46,16 +56,16 @@ class TestAllSortingAlgorithms(unittest.TestCase):
     
     def test_compare_to_standard_reverse(self):
         for alg in sort_algorithms:
-            rndn = [randint(0, 99) for _ in range(100)]
-            actual = quick_sort(rndn, reverse=True)
+            rndn = [randint(0, 999999) for _ in range(100)]
+            actual = alg(rndn, reverse=True)
             expected = sorted(rndn, reverse=True)
             self.assertEqual(actual, expected)
 
     def test_compare_to_standard_n_lists(self):
         for alg in sort_algorithms:
             n = 100
-            for i in range(n):
-                rndn = [randint(0, 99) for _ in range(100)]
+            for _ in range(n):
+                rndn = [randint(0, 999999) for _ in range(100)]
                 actual = alg(rndn)
                 expected = sorted(rndn)
                 self.assertEqual(actual, expected)
@@ -63,9 +73,9 @@ class TestAllSortingAlgorithms(unittest.TestCase):
     def test_compare_to_standard_n_lists_reverse(self):
         for alg in sort_algorithms:
             n = 100
-            for i in range(n):
-                rndn = [randint(0, 99) for _ in range(100)]
-                actual = quick_sort(rndn, reverse=True)
+            for _ in range(n):
+                rndn = [randint(0, 999999) for _ in range(100)]
+                actual = alg(rndn, reverse=True)
                 expected = sorted(rndn, reverse=True)
                 self.assertEqual(actual, expected)
 
