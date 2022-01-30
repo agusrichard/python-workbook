@@ -6,64 +6,48 @@ from random import randint
 
 def merge_sort(lst: List, reverse=False) -> List:
     """Implement Merge Sort Algorithm"""
-    result = lst.copy()
+    if len(lst) == 0:
+        return []
 
-    merge_sort_helper(result, reverse)
-
-    return result
-
-def merge_sort_helper(lst: List, reverse=False):
-    # print('lst', lst)
-    if len(lst) < 2:
-        return
+    if len(lst) == 1:
+        return lst
 
     mid = len(lst) // 2
     left = lst[:mid]
     right = lst[mid:]
 
-    # Recursive call on each half
-    merge_sort_helper(left, reverse)
-    merge_sort_helper(right, reverse)
+    return merge(merge_sort(left, reverse), merge_sort(right, reverse), reverse)
 
-    # Two iterators for traversing the two halves
-    i = 0
-    j = 0
-    
-    # Iterator for the main list
-    k = 0
-    
+def merge(left: List, right: List, reverse=False) -> List:
+    result = []
+
+    i, j = 0, 0
     while i < len(left) and j < len(right):
         if not reverse:
             if left[i] <= right[j]:
-                # The value from the left half has been used
-                lst[k] = left[i]
-                # Move the iterator forward
+                result.append(left[i])
                 i += 1
             else:
-                lst[k] = right[j]
+                result.append(right[j])
                 j += 1
         else:
             if left[i] > right[j]:
-                # The value from the left half has been used
-                lst[k] = left[i]
-                # Move the iterator forward
+                result.append(left[i])
                 i += 1
             else:
-                lst[k] = right[j]
+                result.append(right[j])
                 j += 1
-        # Move to the next slot
-        k += 1
 
     # For all the remaining values
     while i < len(left):
-        lst[k] = left[i]
+        result.append(left[i])
         i += 1
-        k += 1
 
     while j < len(right):
-        lst[k]=right[j]
+        result.append(right[j])
         j += 1
-        k += 1
+
+    return result
 
 
 class TestMergeSort(unittest.TestCase):
