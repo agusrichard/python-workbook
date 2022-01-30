@@ -3,6 +3,7 @@ from random import randint
 
 from quick_sort import quick_sort
 from merge_sort import merge_sort
+from radix_sort import radix_sort
 from bubble_sort import bubble_sort
 from simple_sort import simple_sort
 from counting_sort import counting_sort
@@ -13,6 +14,7 @@ from random_quick_sort import random_quick_sort
 sort_algorithms = [
     merge_sort,
     quick_sort,
+    radix_sort,
     bubble_sort,
     simple_sort,
     counting_sort,
