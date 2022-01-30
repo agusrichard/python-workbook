@@ -32,6 +32,18 @@ class TestAllSortingAlgorithms(unittest.TestCase):
         cls.reps = 100
         cls.list_length = 100
 
+    @classmethod
+    def tearDownClass(cls):
+        print('\n\n\n================ RESULT ================\n')
+        records = []
+        for i, durs in enumerate(cls.durations):
+             avg = sum(durs) / len(durs)
+             records.append((cls.sorting_algorithms[i].__name__,  avg,))
+        
+        records = sorted(records, key=lambda xs: xs[-1])
+        for rec in records:
+            print('{:<20}: {:10.4f} ms'.format(rec[0], rec[1]))
+
     def test_empty_list(self):
         for i, alg in enumerate(self.sorting_algorithms):
             start = time()
@@ -102,17 +114,6 @@ class TestAllSortingAlgorithms(unittest.TestCase):
                 expected = sorted(rndn, reverse=True)
                 self.assertEqual(actual, expected)
 
-    @classmethod
-    def tearDownClass(cls):
-        print('\n\n\n================ RESULT ================\n')
-        records = []
-        for i, durs in enumerate(cls.durations):
-             avg = sum(durs) / len(durs)
-             records.append((cls.sorting_algorithms[i].__name__,  avg,))
-        
-        records = sorted(records, key=lambda xs: xs[-1])
-        for rec in records:
-            print('{:<20}: {:>15} ms'.format(rec[0], round(rec[1], 5)))
 
 if __name__ == '__main__':
     unittest.main(verbosity=2)
