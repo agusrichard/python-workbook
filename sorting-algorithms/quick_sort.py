@@ -5,21 +5,29 @@ from random import randint
 
 def quick_sort(lst: List, reverse=False) -> List:
     """Implement Quick Sort Algorithm"""
-    result = lst.copy()
-    length = len(lst)
+    if len(lst) == 0:
+        return []
+    
+    if len(lst) == 1:
+        return lst
 
-    if not reverse:
-        for i in range(length):
-            for j in range(i+1, length):
-                if result[j] < result[i]:
-                    result[i], result[j] = result[j], result[i]
-    else:
-        for i in range(length):
-            for j in range(i+1, length):
-                if result[j] > result[i]:
-                    result[i], result[j] = result[j], result[i]
+    pivot = lst[-1]
+    left = []
+    right = []
+    for i in lst[:-1]:
+        if not reverse:
+            if i <= pivot:
+                left.append(i)
+            else:
+                right.append(i)
+        else:
+            if i > pivot:
+                left.append(i)
+            else:
+                right.append(i)
 
-    return result
+    return quick_sort(left, reverse) + [pivot] + quick_sort(right, reverse)
+
 
 class TestQuickSort(unittest.TestCase):
     def test_empty_list(self):
