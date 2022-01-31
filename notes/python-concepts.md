@@ -12,7 +12,7 @@
 ### 7. [Advanced Object Oriented Features of Python](#content-7)
 ### 8. [Supercharge Your Classes With Python super()](#content-8)
 ### 9. [Deep Dive into Python Mixins and Multiple Inheritance](#content-9)
-
+### 10. [Inheritance and Composition: A Python OOP Guide](#content-10)
 
 
 <br />
@@ -1764,6 +1764,73 @@ in Python 3.3 and above, any folder (even without a __init__.py file) is conside
     print(StoreView.mro())
     print(view.show())
   ```
+
+
+**[⬆ back to top](#list-of-contents)**
+
+<br />
+
+---
+
+## [Inheritance and Composition: A Python OOP Guide](https://realpython.com/inheritance-composition-python/) <span id="content-1"></span>
+
+### What’s Inheritance?
+- Inheritance models what is called an is a relationship. This means that when you have a Derived class that inherits from a Base class, you created a relationship where Derived is a specialized version of Base.
+- UML diagram for Inheritance: <br />
+  ![](https://files.realpython.com/media/ic-basic-inheritance.f8dc9ffee4d7.jpg)
+-  In an inheritance relationship:
+  - Classes that inherit from another are called derived classes, subclasses, or subtypes.
+  - Classes from which other classes are derived are called base classes or super classes.
+  - A derived class is said to derive, inherit, or extend a base class.
+- This is known as the Liskov substitution principle. The principle states that “in a computer program, if S is a subtype of T, then objects of type T may be replaced with objects of type S without altering any of the desired properties of the program”
+
+### What’s Composition?
+- Composition is a concept that models a has a relationship. It enables creating complex types by combining objects of other types. This means that a class Composite can contain an object of another class Component. This relationship means that a Composite has a Component. <br />
+  ![](https://files.realpython.com/media/ic-basic-composition.8a15876f7db2.jpg)
+- The composite side can express the cardinality of the relationship. The cardinality indicates the number or valid range of Component instances the Composite class will contain.
+- In the diagram above, the 1 represents that the Composite class contains one object of type Component. Cardinality can be expressed in the following ways:
+  - A number indicates the number of Component instances that are contained in the Composite.
+  - The * symbol indicates that the Composite class can contain a variable number of Component instances.
+  - A range 1..4 indicates that the Composite class can contain a range of Component instances. The range is indicated with the minimum and maximum number of instances, or minimum and many instances like in 1..*.
+- Classes that contain objects of other classes are usually referred to as composites, where classes that are used to create more complex types are referred to as components.
+- For example, your Horse class can be composed by another object of type Tail. Composition allows you to express that relationship by saying a Horse has a Tail.
+- Composition enables you to reuse code by adding objects to other objects, as opposed to inheriting the interface and implementation of other classes. Both Horse and Dog classes can leverage the functionality of Tail through composition without deriving one class from the other.
+
+### An Overview of Inheritance in Python
+- Everything in Python is an object. Modules are objects, class definitions and functions are objects, and of course, objects created from classes are objects too.
+
+### The Object Super Class
+- dir() returns a list of all the members in the specified object.
+- This is because every class you create in Python implicitly derives from object. You could be more explicit and write class MyClass(object):, but it’s redundant and unnecessary.
+
+### Exceptions Are an Exception
+- Every class that you create in Python will implicitly derive from object. The exception to this rule are classes used to indicate errors by raising an exception.
+- What if you try to raise a class:
+  ```python
+  >>> class MyError:
+  ...     pass
+  ...
+  >>> raise MyError()
+
+  Traceback (most recent call last):
+    File "<stdin>", line 1, in <module>
+  TypeError: exceptions must derive from BaseException
+  ```
+- You created a new class to indicate a type of error. Then you tried to use it to raise an exception. An exception is raised but the output states that the exception is of type TypeError not MyError and that all exceptions must derive from BaseException.
+- BaseException is a base class provided for all error types. To create a new error type, you must derive your class from BaseException or one of its derived classes.
+- The convention in Python is to derive your custom error types from Exception, which in turn derives from BaseException.
+- This is the way you can create a custom Exception:
+  ```python
+  >>> class MyError(Exception):
+  ...     pass
+  ...
+  >>> raise MyError()
+
+  Traceback (most recent call last):
+    File "<stdin>", line 1, in <module>
+  __main__.MyError
+  ```
+
 
 
 **[⬆ back to top](#list-of-contents)**
