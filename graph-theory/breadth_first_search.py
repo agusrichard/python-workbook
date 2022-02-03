@@ -1,18 +1,20 @@
 from node import Node
+from queuee import Queue
 
 visited = set()
+q = Queue()
 
 def breadth_first_search(node: Node) -> Node:
-    if node.id in visited:
+    if len(q) == 0 and len(visited) != 0:
         return
-    
+
     visited.add(node.id)
-
-    if len(node.neighbors) == 0:
-        return
-
     for n in node.neighbors:
-        breadth_first_search(n)
+        if n in q and n.id in visited:
+            continue
+        q.enqueue(n)
+
+    return breadth_first_search(q.dequeue())
 
 
 if __name__ == '__main__':
