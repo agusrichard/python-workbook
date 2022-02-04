@@ -21,3 +21,6 @@ class Queue:
 
     def __len__(self):
         return len(self.queue)
+
+    def __repr__(self):
+        return f'Queue({self.queue})'
