@@ -16,8 +16,8 @@ class Queue:
             raise ValueError('Can not dequeue empty queue')
         return self.queue.pop(0)
 
-    def __contains__(self, node_id):
-        return node_id in [n.id for n in self.queue]
+    def __contains__(self, node):
+        return node.id in [n.id for n in self.queue]
 
     def __len__(self):
         return len(self.queue)
