@@ -1831,6 +1831,99 @@ in Python 3.3 and above, any folder (even without a __init__.py file) is conside
   __main__.MyError
   ```
 
+### Creating Class Hierarchies
+- Inheritance is the mechanism you’ll use to create hierarchies of related classes. These related classes will share a common interface that will be defined in the base classes.
+- You start by implementing a PayrollSystem class that processes payroll:
+  ```python
+  # In hr.py
+
+  class PayrollSystem:
+      def calculate_payroll(self, employees):
+          print('Calculating Payroll')
+          print('===================')
+          for employee in employees:
+              print(f'Payroll for: {employee.id} - {employee.name}')
+              print(f'- Check amount: {employee.calculate_payroll()}')
+              print('')
+  ```
+- The PayrollSystem implements a .calculate_payroll() method that takes a collection of employees and prints their id, name, and check amount using the .calculate_payroll() method exposed on each employee object.
+- Base class:
+  ```python
+  # In hr.py
+
+  class Employee:
+      def __init__(self, id, name):
+          self.id = id
+          self.name = name
+  ```
+- Employee is the base class for all employee types. It is constructed with an id and a name. What you are saying is that every Employee must have an id assigned as well as a name.
+- The HR system requires that every Employee processed must provide a .calculate_payroll() interface that returns the weekly salary for the employee. The implementation of that interface differs depending on the type of Employee.
+- For example, administrative workers have a fixed salary, so every week they get paid the same amount:
+  ```python
+  # In hr.py
+
+  class SalaryEmployee(Employee):
+      def __init__(self, id, name, weekly_salary):
+          super().__init__(id, name)
+          self.weekly_salary = weekly_salary
+
+      def calculate_payroll(self):
+          return self.weekly_salary
+  ```
+- You create a derived class SalaryEmployee that inherits Employee. The class is initialized with the id and name required by the base class, and you use super() to initialize the members of the base class.
+- The company also employs manufacturing workers that are paid by the hour, so you add an HourlyEmployee to the HR system:
+  ```python
+  # In hr.py
+
+  class HourlyEmployee(Employee):
+      def __init__(self, id, name, hours_worked, hour_rate):
+          super().__init__(id, name)
+          self.hours_worked = hours_worked
+          self.hour_rate = hour_rate
+
+      def calculate_payroll(self):
+          return self.hours_worked * self.hour_rate
+  ```
+- The HourlyEmployee class is initialized with id and name, like the base class, plus the hours_worked and the hour_rate required to calculate the payroll. The .calculate_payroll() method is implemented by returning the hours worked times the hour rate.
+- Finally, the company employs sales associates that are paid through a fixed salary plus a commission based on their sales, so you create a CommissionEmployee class:
+  ```python
+  # In hr.py
+
+  class CommissionEmployee(SalaryEmployee):
+      def __init__(self, id, name, weekly_salary, commission):
+          super().__init__(id, name, weekly_salary)
+          self.commission = commission
+
+      def calculate_payroll(self):
+          fixed = super().calculate_payroll()
+          return fixed + self.commission
+  ```
+- The problem with accessing the property directly is that if the implementation of SalaryEmployee.calculate_payroll() changes, then you’ll have to also change the implementation of CommissionEmployee.calculate_payroll(). It’s better to rely on the already implemented method in the base class and extend the functionality as needed.
+- You created your first class hierarchy for the system. The UML diagram of the classes looks like this: <br />
+  ![](https://files.realpython.com/media/ic-initial-employee-inheritance.b5f1e65cb8d1.jpg)
+- The diagram shows the inheritance hierarchy of the classes. The derived classes implement the IPayrollCalculator interface, which is required by the PayrollSystem. The PayrollSystem.calculate_payroll() implementation requires that the employee objects passed contain an id, name, and calculate_payroll() implementation.
+- Interfaces are represented similarly to classes with the word interface above the interface name. Interface names are usually prefixed with a capital I.
+- The application creates its employees and passes them to the payroll system to process payroll:
+  ```python
+  # In program.py
+
+  import hr
+
+  salary_employee = hr.SalaryEmployee(1, 'John Smith', 1500)
+  hourly_employee = hr.HourlyEmployee(2, 'Jane Doe', 40, 15)
+  commission_employee = hr.CommissionEmployee(3, 'Kevin Bacon', 1000, 250)
+  payroll_system = hr.PayrollSystem()
+  payroll_system.calculate_payroll([
+      salary_employee,
+      hourly_employee,
+      commission_employee
+  ])
+  ```
+- Notice how the Employee base class doesn’t define a .calculate_payroll() method. This means that if you were to create a plain Employee object and pass it to the PayrollSystem, then you’d get an error.  
+- While you can instantiate an Employee object, the object can’t be used by the PayrollSystem. Why? Because it can’t .calculate_payroll() for an Employee. To meet the requirements of PayrollSystem, you’ll want to convert the Employee class, which is currently a concrete class, to an abstract class. That way, no employee is ever just an Employee, but one that implements .calculate_payroll().
+
+### Abstract Base Classes in Python
+
 
 
 **[⬆ back to top](#list-of-contents)**
