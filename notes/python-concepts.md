@@ -1772,7 +1772,7 @@ in Python 3.3 and above, any folder (even without a __init__.py file) is conside
 
 ---
 
-## [Inheritance and Composition: A Python OOP Guide](https://realpython.com/inheritance-composition-python/) <span id="content-1"></span>
+## [Inheritance and Composition: A Python OOP Guide](https://realpython.com/inheritance-composition-python/) <span id="content-10"></span>
 
 ### What’s Inheritance?
 - Inheritance models what is called an is a relationship. This means that when you have a Derived class that inherits from a Base class, you created a relationship where Derived is a specialized version of Base.
@@ -1923,7 +1923,233 @@ in Python 3.3 and above, any folder (even without a __init__.py file) is conside
 - While you can instantiate an Employee object, the object can’t be used by the PayrollSystem. Why? Because it can’t .calculate_payroll() for an Employee. To meet the requirements of PayrollSystem, you’ll want to convert the Employee class, which is currently a concrete class, to an abstract class. That way, no employee is ever just an Employee, but one that implements .calculate_payroll().
 
 ### Abstract Base Classes in Python
+- Abstract base classes exist to be inherited, but never instantiated.
+- You can use leading underscores in your class name to communicate that objects of that class should not be created. Underscores provide a friendly way to prevent misuse of your code, but they don’t prevent eager users from creating instances of that class.
+- Snippet:
+  ```python
+  # In hr.py
 
+  from abc import ABC, abstractmethod
+
+  class Employee(ABC):
+      def __init__(self, id, name):
+          self.id = id
+          self.name = name
+
+      @abstractmethod
+      def calculate_payroll(self):
+          pass
+  ```
+- You derive Employee from ABC, making it an abstract base class. Then, you decorate the .calculate_payroll() method with the @abstractmethod decorator.
+- This change has two nice side-effects:
+  - You’re telling users of the module that objects of type Employee can’t be created.
+  - You’re telling other developers working on the hr module that if they derive from Employee, then they must override the .calculate_payroll() abstract method.
+
+### Implementation Inheritance vs Interface Inheritance
+- When you derive one class from another, the derived class inherits both:
+  - The base class interface: The derived class inherits all the methods, properties, and attributes of the base class.
+  - The base class implementation: The derived class inherits the code that implements the class interface.
+- In Python, you don’t have to explicitly declare an interface. Any object that implements the desired interface can be used in place of another object. This is known as duck typing. Duck typing is usually explained as “if it behaves like a duck, then it’s a duck.”
+- Snippet:
+  ```python
+  # In disgruntled.py
+
+  class DisgruntledEmployee:
+      def __init__(self, id, name):
+          self.id = id
+          self.name = name
+
+      def calculate_payroll(self):
+          return 1000000
+  ```
+- The PayrollSystem.calculate_payroll() requires a list of objects that implement the following interface:
+  - An id property or attribute that returns the employee’s id
+  - A name property or attribute that represents the employee’s name
+  - A .calculate_payroll() method that doesn’t take any parameters and returns the payroll amount to process
+- Since you don’t have to derive from a specific class for your objects to be reusable by the program, you may be asking why you should use inheritance instead of just implementing the desired interface. The following rules may help you:
+  - Use inheritance to reuse an implementation: Your derived classes should leverage most of their base class implementation. They must also model an is a relationship. A Customer class might also have an id and a name, but a Customer is not an Employee, so you should not use inheritance.
+  - Implement an interface to be reused: When you want your class to be reused by a specific part of your application, you implement the required interface in your class, but you don’t need to provide a base class, or inherit from another class.
+- Final snippet:
+  ```python
+  # In hr.py
+
+  class PayrollSystem:
+      def calculate_payroll(self, employees):
+          print('Calculating Payroll')
+          print('===================')
+          for employee in employees:
+              print(f'Payroll for: {employee.id} - {employee.name}')
+              print(f'- Check amount: {employee.calculate_payroll()}')
+              print('')
+
+  class Employee:
+      def __init__(self, id, name):
+          self.id = id
+          self.name = name
+
+  class SalaryEmployee(Employee):
+      def __init__(self, id, name, weekly_salary):
+          super().__init__(id, name)
+          self.weekly_salary = weekly_salary
+
+      def calculate_payroll(self):
+          return self.weekly_salary
+
+  class HourlyEmployee(Employee):
+      def __init__(self, id, name, hours_worked, hour_rate):
+          super().__init__(id, name)
+          self.hours_worked = hours_worked
+          self.hour_rate = hour_rate
+
+      def calculate_payroll(self):
+          return self.hours_worked * self.hour_rate
+
+  class CommissionEmployee(SalaryEmployee):
+      def __init__(self, id, name, weekly_salary, commission):
+          super().__init__(id, name, weekly_salary)
+          self.commission = commission
+
+      def calculate_payroll(self):
+          fixed = super().calculate_payroll()
+          return fixed + self.commission
+  ```
+
+### The Class Explosion Problem
+- If you are not careful, inheritance can lead you to a huge hierarchical structure of classes that is hard to understand and maintain. This is known as the class explosion problem.
+- The ProductivitySystem tracks productivity based on employee roles. There are different employee roles:
+  - Managers: They walk around yelling at people telling them what to do. They are salaried employees and make more money.
+  - Secretaries: They do all the paper work for managers and ensure that everything gets billed and payed on time. They are also salaried employees but make less money.
+  - Sales employees: They make a lot of phone calls to sell products. They have a salary, but they also get commissions for sales.
+  - Factory workers: They manufacture the products for the company. They are paid by the hour.
+- You create an employees module and move the classes there:
+  ```python
+  # In employees.py
+
+  class Employee:
+      def __init__(self, id, name):
+          self.id = id
+          self.name = name
+
+  class SalaryEmployee(Employee):
+      def __init__(self, id, name, weekly_salary):
+          super().__init__(id, name)
+          self.weekly_salary = weekly_salary
+
+      def calculate_payroll(self):
+          return self.weekly_salary
+
+  class HourlyEmployee(Employee):
+      def __init__(self, id, name, hours_worked, hour_rate):
+          super().__init__(id, name)
+          self.hours_worked = hours_worked
+          self.hour_rate = hour_rate
+
+      def calculate_payroll(self):
+          return self.hours_worked * self.hour_rate
+
+  class CommissionEmployee(SalaryEmployee):
+      def __init__(self, id, name, weekly_salary, commission):
+          super().__init__(id, name, weekly_salary)
+          self.commission = commission
+
+      def calculate_payroll(self):
+          fixed = super().calculate_payroll()
+          return fixed + self.commission
+  ```
+- With everything in place, you start adding the new classes:
+  ```python
+  # In employees.py
+
+  class Manager(SalaryEmployee):
+      def work(self, hours):
+          print(f'{self.name} screams and yells for {hours} hours.')
+
+  class Secretary(SalaryEmployee):
+      def work(self, hours):
+          print(f'{self.name} expends {hours} hours doing office paperwork.')
+
+  class SalesPerson(CommissionEmployee):
+      def work(self, hours):
+          print(f'{self.name} expends {hours} hours on the phone.')
+
+  class FactoryWorker(HourlyEmployee):
+      def work(self, hours):
+          print(f'{self.name} manufactures gadgets for {hours} hours.')
+  ```
+- ProductivitySystem class:
+  ```python
+  # In productivity.py
+
+  class ProductivitySystem:
+      def track(self, employees, hours):
+          print('Tracking Employee Productivity')
+          print('==============================')
+          for employee in employees:
+              employee.work(hours)
+          print('')
+  ```
+- PayrollSystem and ProductivitySystem combined:
+  ```python
+  # In program.py
+
+  import hr
+  import employees
+  import productivity
+
+  manager = employees.Manager(1, 'Mary Poppins', 3000)
+  secretary = employees.Secretary(2, 'John Smith', 1500)
+  sales_guy = employees.SalesPerson(3, 'Kevin Bacon', 1000, 250)
+  factory_worker = employees.FactoryWorker(2, 'Jane Doe', 40, 15)
+  employees = [
+      manager,
+      secretary,
+      sales_guy,
+      factory_worker,
+  ]
+  productivity_system = productivity.ProductivitySystem()
+  productivity_system.track(employees, 40)
+  payroll_system = hr.PayrollSystem()
+  payroll_system.calculate_payroll(employees)
+  ```
+- The program works as expected, but you had to add four new classes to support the changes. As new requirements come, your class hierarchy will inevitably grow, leading to the class explosion problem where your hierarchies will become so big that they’ll be hard to understand and maintain.
+- New diagram for the new class hierarchy: <br />
+  ![](https://files.realpython.com/media/ic-class-explosion.a3d42b8c9b91.jpg)
+
+### Inheriting Multiple Classes
+- Multiple inheritance is the ability to derive a class from multiple base classes at the same time.
+- Instead, modern programming languages support the concept of interfaces. In those languages, you inherit from a single base class and then implement multiple interfaces, so your class can be re-used in different situations.
+- Multiple inheritance code:
+  ```python
+  # In employees.py
+
+  class TemporarySecretary(Secretary, HourlyEmployee):
+      pass
+  ```
+- New modification:
+  ```python
+  import hr
+  import employees
+  import productivity
+
+  manager = employees.Manager(1, 'Mary Poppins', 3000)
+  secretary = employees.Secretary(2, 'John Smith', 1500)
+  sales_guy = employees.SalesPerson(3, 'Kevin Bacon', 1000, 250)
+  factory_worker = employees.FactoryWorker(4, 'Jane Doe', 40, 15)
+  temporary_secretary = employees.TemporarySecretary(5, 'Robin Williams', 40, 9)
+  company_employees = [
+      manager,
+      secretary,
+      sales_guy,
+      factory_worker,
+      temporary_secretary,
+  ]
+  productivity_system = productivity.ProductivitySystem()
+  productivity_system.track(company_employees, 40)
+  payroll_system = hr.PayrollSystem()
+  payroll_system.calculate_payroll(company_employees)
+  ```
+- You'll have problem to use the above code.
+- When a method or attribute of a class is accessed, Python uses the class MRO to find it. The MRO is also used by super() to determine which method or attribute to invoke.
 
 
 **[⬆ back to top](#list-of-contents)**
@@ -1940,3 +2166,4 @@ in Python 3.3 and above, any folder (even without a __init__.py file) is conside
 - https://chrisyeh96.github.io/2017/08/08/definitive-guide-python-imports.html#:~:text=root%20test%2F%20folder.-,What%20is%20an%20import%20%3F,made%20available%20to%20the%20importer.
 - https://realpython.com/python-super/
 - https://coderbook.com/@marcus/deep-dive-into-python-mixins-and-multiple-inheritance/
+- https://realpython.com/inheritance-composition-python
