@@ -1,21 +1,24 @@
 def zigzag_conversion(s, numRows):
     n = len(s)
 
-    result = ''
-    for row in range(numRows):
-        skipped = 2 * (numRows-row) - 2
-        ind = row
-        while True:
-            if ind > n:
-                break
-            result += s[ind]
-            if skipped == -1:
-                ind += 2 * numRows - 2
-            else:
-                ind += skipped
-                
-                
-    return result
+    store = [[] for _ in range(numRows)]
+    is_move_down = True
+    row = 0
+    for i in s:
+        store[row] += [i]
+        if is_move_down:
+            row += 1
+        else:
+            row -= 1
+
+        if row == 0:
+            is_move_down = True
+
+        if row == numRows-1:
+            is_move_down = False
+
+    flatened = [''.join(x) for x in store]
+    return ''.join(flatened)
 
 
 # P     I    N
