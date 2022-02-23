@@ -422,6 +422,148 @@
 
 - You'll have problem to use the above code.
 - When a method or attribute of a class is accessed, Python uses the class MRO to find it. The MRO is also used by super() to determine which method or attribute to invoke.
+- Evaluate MRO:
+
+  ```python
+  >>> from employees import TemporarySecretary
+  >>> TemporarySecretary.__mro__
+
+  (<class 'employees.TemporarySecretary'>,
+  <class 'employees.HourlyEmployee'>,
+  <class 'employees.Secretary'>,
+  <class 'employees.SalaryEmployee'>,
+  <class 'employees.Employee'>,
+  <class 'object'>
+  )
+  ```
+
+- The MRO shows the order in which Python is going to look for a matching attribute or method. In the example, this is what happens when we create the TemporarySecretary object:
+  - The TemporarySecretary.**init**(self, id, name, hours_worked, hour_rate) method is called.
+  - The super().**init**(id, name, hours_worked, hour_rate) call matches HourlyEmployee.**init**(self, id, name, hour_worked, hour_rate).
+  - HourlyEmployee calls super().**init**(id, name), which the MRO is going to match to Secretary.**init**(), which is inherited from SalaryEmployee.**init**(self, id, name, weekly_salary).
+- As you can see, multiple inheritance can be confusing, especially when you run into the diamond problem. <br />
+  ![](https://files.realpython.com/media/ic-diamond-problem.8e685f12d3c2.jpg)
+- Still, when you run into the diamond problem, it’s better to re-think the design. You will now make some changes to leverage multiple inheritance, avoiding the diamond problem.
+- Inside productivity.py:
+
+  ```python
+  # In productivity.py
+
+  class ProductivitySystem:
+      def track(self, employees, hours):
+          print('Tracking Employee Productivity')
+          print('==============================')
+          for employee in employees:
+              result = employee.work(hours)
+              print(f'{employee.name}: {result}')
+          print('')
+
+  class ManagerRole:
+      def work(self, hours):
+          return f'screams and yells for {hours} hours.'
+
+  class SecretaryRole:
+      def work(self, hours):
+          return f'expends {hours} hours doing office paperwork.'
+
+  class SalesRole:
+      def work(self, hours):
+          return f'expends {hours} hours on the phone.'
+
+  class FactoryRole:
+      def work(self, hours):
+          return f'manufactures gadgets for {hours} hours.'
+  ```
+
+- Inside hr.py:
+
+  ```python
+  # In hr.py
+
+  class PayrollSystem:
+      def calculate_payroll(self, employees):
+          print('Calculating Payroll')
+          print('===================')
+          for employee in employees:
+              print(f'Payroll for: {employee.id} - {employee.name}')
+              print(f'- Check amount: {employee.calculate_payroll()}')
+              print('')
+
+  class SalaryPolicy:
+      def __init__(self, weekly_salary):
+          self.weekly_salary = weekly_salary
+
+      def calculate_payroll(self):
+          return self.weekly_salary
+
+  class HourlyPolicy:
+      def __init__(self, hours_worked, hour_rate):
+          self.hours_worked = hours_worked
+          self.hour_rate = hour_rate
+
+      def calculate_payroll(self):
+          return self.hours_worked * self.hour_rate
+
+  class CommissionPolicy(SalaryPolicy):
+      def __init__(self, weekly_salary, commission):
+          super().__init__(weekly_salary)
+          self.commission = commission
+
+      def calculate_payroll(self):
+          fixed = super().calculate_payroll()
+          return fixed + self.commission
+  ```
+
+- Inside employees.py:
+
+  ```python
+  # In employees.py
+
+  from hr import (
+      SalaryPolicy,
+      CommissionPolicy,
+      HourlyPolicy
+  )
+  from productivity import (
+      ManagerRole,
+      SecretaryRole,
+      SalesRole,
+      FactoryRole
+  )
+
+  class Employee:
+      def __init__(self, id, name):
+          self.id = id
+          self.name = name
+
+  class Manager(Employee, ManagerRole, SalaryPolicy):
+      def __init__(self, id, name, weekly_salary):
+          SalaryPolicy.__init__(self, weekly_salary)
+          super().__init__(id, name)
+
+  class Secretary(Employee, SecretaryRole, SalaryPolicy):
+      def __init__(self, id, name, weekly_salary):
+          SalaryPolicy.__init__(self, weekly_salary)
+          super().__init__(id, name)
+
+  class SalesPerson(Employee, SalesRole, CommissionPolicy):
+      def __init__(self, id, name, weekly_salary, commission):
+          CommissionPolicy.__init__(self, weekly_salary, commission)
+          super().__init__(id, name)
+
+  class FactoryWorker(Employee, FactoryRole, HourlyPolicy):
+      def __init__(self, id, name, hours_worked, hour_rate):
+          HourlyPolicy.__init__(self, hours_worked, hour_rate)
+          super().__init__(id, name)
+
+  class TemporarySecretary(Employee, SecretaryRole, HourlyPolicy):
+      def __init__(self, id, name, hours_worked, hour_rate):
+          HourlyPolicy.__init__(self, hours_worked, hour_rate)
+          super().__init__(id, name)
+  ```
+
+- UML diagram for the new design: <br />
+  ![](https://files.realpython.com/media/ic-inheritance-policies.0a0de2d42a25.jpg)
 
 **[⬆ back to top](#list-of-contents)**
 
