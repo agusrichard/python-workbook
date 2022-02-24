@@ -565,6 +565,8 @@
 - UML diagram for the new design: <br />
   ![](https://files.realpython.com/media/ic-inheritance-policies.0a0de2d42a25.jpg)
 
+### Composition
+
 **[⬆ back to top](#list-of-contents)**
 
 <br />
