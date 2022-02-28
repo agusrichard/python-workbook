@@ -567,7 +567,7 @@
 
 ### Composition
 
-**[⬆ back to top](#list-of-contents)**
+**[⬆ back to top](#content-1)**
 
 <br />
 
