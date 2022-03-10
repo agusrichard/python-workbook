@@ -565,9 +565,318 @@
 - UML diagram for the new design: <br />
   ![](https://files.realpython.com/media/ic-inheritance-policies.0a0de2d42a25.jpg)
 
-### Composition
+### Composition in Python
 
-**[⬆ back to top](#content-1)**
+- Composition is an object oriented design concept that models a has a relationship.
+- In composition, a class known as composite contains an object of another class known to as component. In other words, a composite class has a component of another class.
+- Composition allows composite classes to reuse the implementation of the components it contains
+- The composition relation between two classes is considered loosely coupled. That means that changes to the component class rarely affect the composite class, and changes to the composite class never affect the component class.
+- When looking at two competing software designs, one based on inheritance and another based on composition, the composition solution usually is the most flexible.
+- You’ve already used composition in our examples. If you look at the Employee class, you’ll see that it contains two attributes:
+  - id to identify an employee.
+  - name to contain the name of the employee.
+  - These two attributes are objects that the Employee class has. Therefore, you can say that an Employee has an id and has a name.
+- Another attribute for an Employee might be an Address:
+
+  ```python
+  # In contacts.py
+
+  class Address:
+      def __init__(self, street, city, state, zipcode, street2=''):
+          self.street = street
+          self.street2 = street2
+          self.city = city
+          self.state = state
+          self.zipcode = zipcode
+
+      def __str__(self):
+          lines = [self.street]
+          if self.street2:
+              lines.append(self.street2)
+          lines.append(f'{self.city}, {self.state} {self.zipcode}')
+          return '\n'.join(lines)
+  ```
+
+- You can now add the Address to the Employee class through composition:
+
+  ```python
+  # In employees.py
+
+  class Employee:
+      def __init__(self, id, name):
+          self.id = id
+          self.name = name
+          self.address = None
+  ```
+
+- Composition is a loosely coupled relationship that often doesn’t require the composite class to have knowledge of the component.
+- The UML Diagram representing the relationship between Employee and Address looks like this: <br />
+  ![](https://files.realpython.com/media/ic-employee-address.240e806b1101.jpg)
+- Leverage address in payroll system:
+
+  ```python
+  # In hr.py
+
+  class PayrollSystem:
+      def calculate_payroll(self, employees):
+          print('Calculating Payroll')
+          print('===================')
+          for employee in employees:
+              print(f'Payroll for: {employee.id} - {employee.name}')
+              print(f'- Check amount: {employee.calculate_payroll()}')
+              if employee.address:
+                  print('- Sent to:')
+                  print(employee.address)
+              print('')
+  ```
+
+### Flexible Designs With Composition
+
+- Composition is more flexible than inheritance because it models a loosely coupled relationship. Changes to a component class have minimal or no effects on the composite class. Designs based on composition are more suitable to change.
+- You can start by implementing the functionality of the ProductivitySystem:
+
+  ```python
+  # In productivity.py
+
+  class ProductivitySystem:
+      def __init__(self):
+          self._roles = {
+              'manager': ManagerRole,
+              'secretary': SecretaryRole,
+              'sales': SalesRole,
+              'factory': FactoryRole,
+          }
+
+      def get_role(self, role_id):
+          role_type = self._roles.get(role_id)
+          if not role_type:
+              raise ValueError('role_id')
+          return role_type()
+
+      def track(self, employees, hours):
+          print('Tracking Employee Productivity')
+          print('==============================')
+          for employee in employees:
+              employee.work(hours)
+          print('')
+  ```
+
+- Implement different role classes:
+
+  ```python
+  # In productivity.py
+
+  class ManagerRole:
+      def perform_duties(self, hours):
+          return f'screams and yells for {hours} hours.'
+
+  class SecretaryRole:
+      def perform_duties(self, hours):
+          return f'does paperwork for {hours} hours.'
+
+  class SalesRole:
+      def perform_duties(self, hours):
+          return f'expends {hours} hours on the phone.'
+
+  class FactoryRole:
+      def perform_duties(self, hours):
+          return f'manufactures gadgets for {hours} hours.'
+  ```
+
+- Implement payroll system:
+
+  ```python
+  # In hr.py
+
+  class PayrollSystem:
+      def __init__(self):
+          self._employee_policies = {
+              1: SalaryPolicy(3000),
+              2: SalaryPolicy(1500),
+              3: CommissionPolicy(1000, 100),
+              4: HourlyPolicy(15),
+              5: HourlyPolicy(9)
+          }
+
+      def get_policy(self, employee_id):
+          policy = self._employee_policies.get(employee_id)
+          if not policy:
+              return ValueError(employee_id)
+          return policy
+
+      def calculate_payroll(self, employees):
+          print('Calculating Payroll')
+          print('===================')
+          for employee in employees:
+              print(f'Payroll for: {employee.id} - {employee.name}')
+              print(f'- Check amount: {employee.calculate_payroll()}')
+              if employee.address:
+                  print('- Sent to:')
+                  print(employee.address)
+              print('')
+  ```
+
+- Payroll policy classes:
+
+  ```python
+  # In hr.py
+
+  class PayrollPolicy:
+      def __init__(self):
+          self.hours_worked = 0
+
+      def track_work(self, hours):
+          self.hours_worked += hours
+
+  class SalaryPolicy(PayrollPolicy):
+      def __init__(self, weekly_salary):
+          super().__init__()
+          self.weekly_salary = weekly_salary
+
+      def calculate_payroll(self):
+          return self.weekly_salary
+
+  class HourlyPolicy(PayrollPolicy):
+      def __init__(self, hour_rate):
+          super().__init__()
+          self.hour_rate = hour_rate
+
+      def calculate_payroll(self):
+          return self.hours_worked * self.hour_rate
+
+  class CommissionPolicy(SalaryPolicy):
+      def __init__(self, weekly_salary, commission_per_sale):
+          super().__init__(weekly_salary)
+          self.commission_per_sale = commission_per_sale
+
+      @property
+      def commission(self):
+          sales = self.hours_worked / 5
+          return sales * self.commission_per_sale
+
+      def calculate_payroll(self):
+          fixed = super().calculate_payroll()
+          return fixed + self.commission
+  ```
+
+- Employee's contacts:
+
+  ```python
+  # In contacts.py
+
+  class Address:
+      def __init__(self, street, city, state, zipcode, street2=''):
+          self.street = street
+          self.street2 = street2
+          self.city = city
+          self.state = state
+          self.zipcode = zipcode
+
+      def __str__(self):
+          lines = [self.street]
+          if self.street2:
+              lines.append(self.street2)
+          lines.append(f'{self.city}, {self.state} {self.zipcode}')
+          return '\n'.join(lines)
+  ```
+
+- Implementing EmployeeDatabase:
+
+  ```python
+  # In employees.py
+
+  from productivity import ProductivitySystem
+  from hr import PayrollSystem
+  from contacts import AddressBook
+
+  class EmployeeDatabase:
+      def __init__(self):
+          self._employees = [
+              {
+                  'id': 1,
+                  'name': 'Mary Poppins',
+                  'role': 'manager'
+              },
+              {
+                  'id': 2,
+                  'name': 'John Smith',
+                  'role': 'secretary'
+              },
+              {
+                  'id': 3,
+                  'name': 'Kevin Bacon',
+                  'role': 'sales'
+              },
+              {
+                  'id': 4,
+                  'name': 'Jane Doe',
+                  'role': 'factory'
+              },
+              {
+                  'id': 5,
+                  'name': 'Robin Williams',
+                  'role': 'secretary'
+              },
+          ]
+          self.productivity = ProductivitySystem()
+          self.payroll = PayrollSystem()
+          self.employee_addresses = AddressBook()
+
+      @property
+      def employees(self):
+          return [self._create_employee(**data) for data in self._employees]
+
+      def _create_employee(self, id, name, role):
+          address = self.employee_addresses.get_employee_address(id)
+          employee_role = self.productivity.get_role(role)
+          payroll_policy = self.payroll.get_policy(id)
+          return Employee(id, name, address, employee_role, payroll_policy)
+  ```
+
+- Employee class:
+
+  ```python
+  # In employees.py
+
+  class Employee:
+      def __init__(self, id, name, address, role, payroll):
+          self.id = id
+          self.name = name
+          self.address = address
+          self.role = role
+          self.payroll = payroll
+
+      def work(self, hours):
+          duties = self.role.perform_duties(hours)
+          print(f'Employee {self.id} - {self.name}:')
+          print(f'- {duties}')
+          print('')
+          self.payroll.track_work(hours)
+
+      def calculate_payroll(self):
+          return self.payroll.calculate_payroll()
+  ```
+
+- UML Diagram of the new design: <br />
+  ![](https://robocrop.realpython.net/?url=https%3A//files.realpython.com/media/ic-policy-based-composition.6e78bdb5824f.jpg&w=609&sig=2a14268f94d82ac5f5c64d115f02f8eeea808580)
+- Usage of the new design:
+
+  ```python
+  # In program.py
+
+  from hr import PayrollSystem
+  from productivity import ProductivitySystem
+  from employees import EmployeeDatabase
+
+  productivity_system = ProductivitySystem()
+  payroll_system = PayrollSystem()
+  employee_database = EmployeeDatabase()
+  employees = employee_database.employees
+  productivity_system.track(employees, 40)
+  payroll_system.calculate_payroll(employees)
+  ```
+
+  **[⬆ back to top](#content-1)**
 
 <br />
 
