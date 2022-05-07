@@ -46,18 +46,43 @@ from unittest import mock
 # else:
 #     assert False
 
-m = mock.Mock()
+# m = mock.Mock()
 
-m.side_effect = ValueError('foo')
+# m.side_effect = ValueError('foo')
 
-try:
-    m(1, foo='bar')
-except ValueError:
-    assert True
-else:
-    assert False
+# try:
+#     m(1, foo='bar')
+# except ValueError:
+#     assert True
+# else:
+#     assert False
 
-assert m.call_args_list == [mock.call(1, foo='bar')]
+# assert m.call_args_list == [mock.call(1, foo='bar')]
 
-m.reset_mock()
-assert m.call_args is None
+# m.reset_mock()
+# assert m.call_args is None
+
+import os
+
+def get_cwd():
+    path = os.getcwd()
+    return path
+
+import random
+
+class Random:
+    def __init__(self, start=0, end=0) -> None:
+        self.start= start
+        self.end = end
+
+    def give_integer(self):
+        return random.randint(self.start, self.end)
+
+
+class Calculator:
+    def __init__(self, start=0, end=10) -> None:
+        self.r = Random(start, end)
+    
+    def double(self):
+        return self.r.give_integer() * 2
+
