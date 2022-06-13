@@ -191,6 +191,144 @@
 
 - This presents more symmetry than the Adapter. Instead of file output being native to the Logger but non-file output requiring an additional class, a functioning logger is now always built by composing an abstraction with an implementation.
 
+### Solution #3: The Decorator Pattern
+
+- What if we wanted to apply two different filters to the same log? Neither of the above solutions supports multiple filters — say, one filtering by priority and the other matching a keyword.
+- Look back at the filters defined in the previous section. The reason we cannot stack two filters is that there’s an asymmetry between the interface they offer and the interface they wrap: they offer a log() method but call their handler’s emit() method. Wrapping one filter in another would result in an AttributeError when the outer filter tried to call the inner filter’s emit().
+- If we instead pivot our filters and handlers to offering the same interface, so that they all alike offer a log() method, then we have arrived at the Decorator Pattern:
+
+  ```python
+  # The loggers all perform real output.
+
+  class FileLogger:
+      def __init__(self, file):
+          self.file = file
+
+      def log(self, message):
+          self.file.write(message + '\n')
+          self.file.flush()
+
+  class SocketLogger:
+      def __init__(self, sock):
+          self.sock = sock
+
+      def log(self, message):
+          self.sock.sendall((message + '\n').encode('ascii'))
+
+  class SyslogLogger:
+      def __init__(self, priority):
+          self.priority = priority
+
+      def log(self, message):
+          syslog.syslog(self.priority, message)
+
+  # The filter calls the same method it offers.
+
+  class LogFilter:
+      def __init__(self, pattern, logger):
+          self.pattern = pattern
+          self.logger = logger
+
+      def log(self, message):
+          if self.pattern in message:
+              self.logger.log(message)
+  ```
+
+- For the first time, the filtering code has moved outside of any particular logger class. Instead, it’s now a stand-alone feature that can be wrapped around any logger we want.
+- As with our first two solutions, filtering can be combined with output at runtime without building any special combined classes:
+
+  ```python
+  log1 = FileLogger(sys.stdout)
+  log2 = LogFilter('Error', log1)
+
+  log1.log('Noisy: this logger always produces output')
+
+  log2.log('Ignored: this will be filtered out')
+  log2.log('Error: this is important and gets printed')
+
+  # output
+  # Noisy: this logger always produces output
+  # Error: this is important and gets printed
+  ```
+
+  ```python
+  log3 = LogFilter('severe', log2)
+
+  log3.log('Error: this is bad, but not that bad')
+  log3.log('Error: this is pretty severe')
+  ```
+
+### Solution #4: Beyond the Gang of Four patterns
+
+- Python’s logging module wanted even more flexibility: not only to support multiple filters, but to support multiple outputs for a single stream of log messages.
+  - The Logger class that callers interact with doesn’t itself implement either filtering or output. Instead, it maintains a list of filters and a list of handlers.
+  - For each log message, the logger calls each of its filters. The message is discarded if any filter rejects it.
+  - For each log message that’s accepted by all the filters, the logger loops over its output handlers and asks every one of them to emit() the message.
+- Or, at least, that’s the core of the idea. The Standard Library’s logging is in fact more complicated. For example, each handler can carry its own list of filters in addition to those listed by its logger. And each handler also specifies a minimum message “level” like INFO or WARN that, rather confusingly, is enforced neither by the handler itself nor by any of the handler’s filters, but instead by an if statement buried deep inside the logger where it loops over the handlers. The total design is thus a bit of a mess.
+- But we can use the Standard Library logger’s basic insight — that a logger’s messages might deserve both multiple filters and multiple outputs — to decouple filter classes and handler classes entirely:
+
+  ```python
+  # There is now only one logger.
+
+  class Logger:
+      def __init__(self, filters, handlers):
+          self.filters = filters
+          self.handlers = handlers
+
+      def log(self, message):
+          if all(f.match(message) for f in self.filters):
+              for h in self.handlers:
+                  h.emit(message)
+
+  # Filters now know only about strings!
+
+  class TextFilter:
+      def __init__(self, pattern):
+          self.pattern = pattern
+
+      def match(self, text):
+          return self.pattern in text
+
+  # Handlers look like “loggers” did in the previous solution.
+
+  class FileHandler:
+      def __init__(self, file):
+          self.file = file
+
+      def emit(self, message):
+          self.file.write(message + '\n')
+          self.file.flush()
+
+  class SocketHandler:
+      def __init__(self, sock):
+          self.sock = sock
+
+      def emit(self, message):
+          self.sock.sendall((message + '\n').encode('ascii'))
+
+  class SyslogHandler:
+      def __init__(self, priority):
+          self.priority = priority
+
+      def emit(self, message):
+          syslog.syslog(self.priority, message)
+  ```
+
+- Usage:
+
+  ```python
+
+  f = TextFilter('Error')
+  h = FileHandler(sys.stdout)
+  logger = Logger([f], [h])
+
+  logger.log('Ignored: this will not be logged')
+  logger.log('Error: this is important')
+  ```
+
+- In fact, the word “log” has dropped entirely away from the name of the filter class, and for a very important reason: there’s no longer anything about it that’s specific to logging! The TextFilter is now entirely reusable in any context that happens to involve strings. Finally decoupled from the specific concept of logging, it will be easier to test and maintain.
+- There’s a crucial lesson here: design principles like Composition Over Inheritance are, in the end, more important than individual patterns like the Adapter or Decorator. Always follow the principle. But don’t always feel constrained to choose a pattern from an official list. The design at which we’ve now arrived is both more flexible and easier to maintain than any of the previous designs, even though they were based on official Gang of Four patterns but this final design is not. Sometimes, yes, you will find an existing Design Pattern that’s a perfect fit for your problem — but if not, your design might be stronger if you move beyond them.
+
 **[⬆ back to top](#list-of-contents)**
 
 <br />
