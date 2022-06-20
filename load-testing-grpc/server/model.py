@@ -6,8 +6,6 @@ Base = declarative_base()
 engine = create_engine("sqlite:///dev.db")
 Session = sessionmaker(bind=engine)
 
-Base.metadata.create_all(engine)
-
 
 class Todo(Base):
     __tablename__ = "todos"
@@ -27,3 +25,6 @@ class Todo(Base):
             "description": self.description,
             "is_completed": self.is_completed,
         }
+
+
+Base.metadata.create_all(engine)
