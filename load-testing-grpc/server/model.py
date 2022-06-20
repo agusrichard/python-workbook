@@ -1,7 +1,12 @@
-from sqlalchemy.orm import declarative_base
-from sqlalchemy import Column, Integer, String, Text, Boolean
+from sqlalchemy.orm import declarative_base, sessionmaker
+from sqlalchemy import create_engine, Column, Integer, String, Text, Boolean
 
 Base = declarative_base()
+
+engine = create_engine("sqlite:///dev.db")
+Session = sessionmaker(bind=engine)
+
+Base.metadata.create_all(engine)
 
 
 class Todo(Base):
@@ -14,3 +19,11 @@ class Todo(Base):
 
     def __repr__(self) -> str:
         return f"<Todo(id={self.id}, title='{self.title}', description='{self.description}')>"
+
+    def to_dict(self):
+        return {
+            "id": str(self.id),
+            "title": self.title,
+            "description": self.description,
+            "is_completed": self.is_completed,
+        }
