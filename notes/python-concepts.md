@@ -22,7 +22,7 @@
 
 ### 9. [Deep Dive into Python Mixins and Multiple Inheritance](#content-9)
 
-### 10. [Inheritance and Composition: A Python OOP Guide](#content-10)
+### 10. [Python: improve your code using named tuple](#content-10)
 
 <br />
 
@@ -1898,6 +1898,34 @@
     view = StoreView(dict(name='My Awesome Store', nums=[0,1,2,3,4]), 10)
     print(StoreView.mro())
     print(view.show())
+  ```
+
+**[⬆ back to top](#list-of-contents)**
+
+<br />
+
+---
+
+## [Python: improve your code using named tuple](https://needablackcoffee.medium.com/python-improve-your-code-using-named-tuple-7faf9d78e0c1) <span id="content-10"></span>
+
+- Named tuple are lightweight object types, similar to struct, or record types but immutable. Let’s check an example:
+  ```python
+  >>> from  collections import namedtuple
+  >>> Point = namedtuple("Point", ["x", "y"])
+  >>> p1 = Point(4, 2)
+  >>> p1.x
+  4
+  >>> p1.y
+  2
+  ```
+- Named tuples assign meaning to each position in a tuple and allow for more readable, self-documenting code. They can be used wherever regular tuples are used, and they add the ability to access fields by name instead of position index.
+- I mentioned earlier that named tuple are lightweight, this is because its instances do not have per-instance dictionary, so they use as much memory as a regular tuple.
+- A nice way to define it using typing.NamedTuple class:
+  ```python
+  class Component(NamedTuple):
+      part_number: int
+      weight: float
+      description: Optional[str] = None
   ```
 
 **[⬆ back to top](#list-of-contents)**
