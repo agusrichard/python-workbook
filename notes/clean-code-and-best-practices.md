@@ -5,29 +5,17 @@
 ## List of Contents:
 
 ### 1. [Python Clean Code: 6 Best Practices to Make Your Python Functions More Readable](#content-1)
-
 ### 2. [Clean Code in Python](#content-2)
-
 ### 3. [Clean Code Python](#content-3)
-
 ### 4. [Python beyond beginner stage](#content-4)
-
 ### 5. [Advanced Python: Consider These 10 Elements When You Define Python Functions](#content-5)
-
 ### 6. [How To Write Clean Code in Python](#content-6)
-
 ### 7. [Best Practices To Follow While Creating Classes In Python](#content-7)
-
 ### 8. [11 Refactoring Patterns To Elevate Your Python Code](#content-8)
-
 ### 9. [Python Refactoring Tips to Write Code in Pythonic Way](#content-9)
-
 ### 10. [12 Of My Favorite Python Practices For Better Functions](#content-10)
-
 ### 11. [Write Clean Python Code Using Pipes](#content-11)
-
-### 12. [Python: Production-Level Coding Practices](#content-12)
-
+### 12. [Python: Production-Level Coding Practices](#content-12)s
 ### 13. [Python Code Quality: Tools & Best Practices](#content-13)
 
 <br />
