@@ -3,11 +3,8 @@
 ## List of Contents:## Contents:
 
 ### 1. [What Are Inheritance and Composition?](#content-1)
-
 ### 2. [An Overview of Inheritance in Python](#content-2)
-
 ### 3. [Composition in Python](#content-3)
-
 ### 4. [Choosing Between Inheritance and Composition in Python](#content-4)
 
 <br />
