@@ -5,23 +5,14 @@
 ## List of Contents:
 
 ### 1. [5 Pairs of Magic Methods in Python That You Should Know](#content-1)
-
 ### 2. [4 Ways To Level Up Your Python Code](#content-2)
-
 ### 3. [10 Advanced Python Concepts To Level Up Your Python Skills](#content-3)
-
 ### 4. [6 Alternatives to Classes in Python](#content-4)
-
 ### 5. [How to Write Awesome Python Classes](#content-5)
-
 ### 6. [The Definitive Guide to Python import Statements](#content-6)
-
 ### 7. [Advanced Object Oriented Features of Python](#content-7)
-
 ### 8. [Supercharge Your Classes With Python super()](#content-8)
-
 ### 9. [Deep Dive into Python Mixins and Multiple Inheritance](#content-9)
-
 ### 10. [Python: improve your code using named tuple](#content-10)
 
 <br />
