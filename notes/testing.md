@@ -20,7 +20,5 @@
 <br />
 
 ---
-
----
 ## References:
 - https://realpython.com/python-testing/
