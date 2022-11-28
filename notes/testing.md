@@ -2,8 +2,10 @@
 
 <br />
 
+
 ## List of Contents:
 ## 1. [Getting Started With Testing in Python](#content-1)
+
 
 ### Testing Your Code
 - Exploratory testing is a form of testing that is done without a plan. In an exploratory test, you’re just exploring the application.
