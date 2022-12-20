@@ -327,9 +327,133 @@
 - When you’re writing tests, it’s often not as simple as looking at the return value of a function. Often, executing a piece of code will alter other things in the environment, such as the attribute of a class, a file on the filesystem, or a value in a database. These are known as side effects and are an important part of testing.
 - If you find that the unit of code you want to test has lots of side effects, you might be breaking the Single Responsibility Principle.
 - Breaking the Single Responsibility Principle means the piece of code is doing too many things and would be better off being refactored.
-- 
 
+### Executing Test Runners
+- Snippet:
+  ```python
+  if __name__ == '__main__':
+      unittest.main()
+  ```
+- Another way is using the unittest command line. Try this:
+  ```shell
+  python -m unittest test
+  ```
+- Add verbosity:
+  ```shell
+  python -m unittest -v test
+  ```
+- Instead of providing the name of a module containing tests, you can request an auto-discovery using the following:
+  ```shell
+  python -m unittest discover
+  ```
+- Lastly, if your source code is not in the directory root and contained in a subdirectory, for example in a folder called src/, you can tell unittest where to execute the tests so that it can import the modules correctly with the -t flag:
+  ```shell
+  python -m unittest discover -s tests -t src 
+  ```
 
+### Advanced Testing Scenarios
+- The three basic steps of every test:
+  - Create your inputs
+  - Execute the code, capturing the output
+  - Compare the output with an expected result
+- The data that you create as an input is known as a fixture. It’s common practice to create fixtures and reuse them.
+- If you’re running the same test and passing different values each time and expecting the same result, this is known as parameterization.
+- There’s a special way to handle expected errors. You can use .assertRaises() as a context-manager, then inside the with block execute the test steps:
+  ```python
+  import unittest
+  
+  from my_sum import sum
+  
+  
+  class TestSum(unittest.TestCase):
+      def test_list_int(self):
+          """
+          Test that it can sum a list of integers
+          """
+          data = [1, 2, 3]
+          result = sum(data)
+          self.assertEqual(result, 6)
+  
+      def test_list_fraction(self):
+          """
+          Test that it can sum a list of fractions
+          """
+          data = [Fraction(1, 4), Fraction(1, 4), Fraction(2, 5)]
+          result = sum(data)
+          self.assertEqual(result, 1)
+  
+      def test_bad_type(self):
+          data = "banana"
+          with self.assertRaises(TypeError):
+              result = sum(data)
+  
+  if __name__ == '__main__':
+      unittest.main()
+  ```
+### Isolating Behaviors in Your Application
+- Avoid having many side effects:
+  - Refactoring code to follow the Single Responsibility Principle
+  - Mocking out any method or function calls to remove side effects
+  - Using integration testing instead of unit testing for this piece of the application 
+
+### Testing Data-Driven Applications
+- Here’s an example of that structure if the data consisted of JSON files:
+  ```
+  project/
+  │
+  ├── my_app/
+  │   └── __init__.py
+  │
+  └── tests/
+      |
+      └── unit/
+      |   ├── __init__.py
+      |   └── test_sum.py
+      |
+      └── integration/
+          |
+          ├── fixtures/
+          |   ├── test_basic.json
+          |   └── test_complex.json
+          |
+          ├── __init__.py
+          └── test_integration.py 
+  ```
+- Test code:
+  ```python
+  import unittest
+  
+  
+  class TestBasic(unittest.TestCase):
+      def setUp(self):
+          # Load test data
+          self.app = App(database='fixtures/test_basic.json')
+  
+      def test_customer_count(self):
+          self.assertEqual(len(self.app.customers), 100)
+  
+      def test_existence_of_customer(self):
+          customer = self.app.get_customer(id=10)
+          self.assertEqual(customer.name, "Org XYZ")
+          self.assertEqual(customer.address, "10 Red Road, Reading")
+  
+  
+  class TestComplexData(unittest.TestCase):
+      def setUp(self):
+          # load test data
+          self.app = App(database='fixtures/test_complex.json')
+  
+      def test_customer_count(self):
+          self.assertEqual(len(self.app.customers), 10000)
+  
+      def test_existence_of_customer(self):
+          customer = self.app.get_customer(id=9999)
+          self.assertEqual(customer.name, u"バナナ")
+          self.assertEqual(customer.address, "10 Red Road, Akihabara, Tokyo")
+  
+  if __name__ == '__main__':
+      unittest.main()
+  ```
 
 **[⬆ back to top](#list-of-contents)**
 
