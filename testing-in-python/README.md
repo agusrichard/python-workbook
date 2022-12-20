@@ -41,7 +41,7 @@
   ```shell
   python -m unittest test_add_fish_to_aquarium.py
   ```
-- TestCase recognizes test methods as any method that begins with test. For example, def test_add_fish_to_aquarium_success(self) is recognized as a test and will be run as such. def example_test(self), conversely, would not be recognized as a test because it does not begin with test. Only methods beginning with test will be run and reported when you run python -m unittest ....
+- TestCase recognizes test methods as any method that begins with test. For example, `def test_add_fish_to_aquarium_success(self)` is recognized as a test and will be run as such. `def example_test(self)`, conversely, would not be recognized as a test because it does not begin with test. Only methods beginning with test will be run and reported when you run `python -m unittest` ....
 
 ### Test for failures
 - Example:
@@ -87,7 +87,7 @@
               "A maximum of 10 fish can be added to the aquarium"
           )
   ```
-- `test_add_fish_to_aquarium_exception` uses the with `self.assertRaises(...)` context manager provided by TestCase to check that add_fish_to_aquarium rejects the inputted list as too long.
+- `test_add_fish_to_aquarium_exception` uses the with `self.assertRaises(...)` context manager provided by TestCase to check that `add_fish_to_aquarium` rejects the inputted list as too long.
 - The first argument to self.assertRaises is the Exception class that we expect to be raised—in this case, ValueError.
 - The `self.assertRaises` context manager is bound to a variable named `exception_context`. The exception attribute on `exception_context` contains the underlying `ValueError` that add_fish_to_aquarium raised. When we call `str()` on that `ValueError` to retrieve its message, it returns the correct exception message we expected.
 

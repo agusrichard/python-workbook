@@ -1,11 +1,11 @@
-from unittest import TestCase
+import unittest
 
 def multiply(a: int, b: int) -> int:
     if a < 0 or b < b:
         raise ValueError('Must be greater than zero')
     return a * b
 
-class TestOne(TestCase):
+class TestOne(unittest.TestCase):
     def setUp(self) -> None:
         print('Setup the test')
 
@@ -21,3 +21,6 @@ class TestOne(TestCase):
         with self.assertRaises(ValueError) as exception_context:
             multiply(-5, -2)
         self.assertEqual(str(exception_context.exception), 'Must be greater than zero')
+
+if __name__ == '__main__':
+    unittest.main()
