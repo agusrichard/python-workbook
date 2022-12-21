@@ -6,7 +6,9 @@
 ### 1. [How To Use unittest to Write a Test Case for a Function in Python](#content-1)
 ### 2. [Unit Testing in Python](#content-2)
 ### 3. [Getting Started With Testing in Python](#content-3)
-
+### 4. [Pytest - Get Started](#content-4)
+### 5. [10 Pytest Best Practices](#content-5)
+### 6. [5 Pytest Best Practices for Writing Great Python Tests](#content-6)
 
 
 <br />
@@ -148,7 +150,7 @@
           self.assertEqual(contents, "shark, tuna")
   ```
 
-**[⬆ back to top](#list-of-contents)**
+**[⬆ back to top](#list-of-contents-)**
 
 <br />
 
@@ -215,7 +217,7 @@
 
 
 
-**[⬆ back to top](#list-of-contents)**
+**[⬆ back to top](#list-of-contents-)**
 
 <br />
 
@@ -455,7 +457,382 @@
       unittest.main()
   ```
 
-**[⬆ back to top](#list-of-contents)**
+**[⬆ back to top](#list-of-contents-)**
+
+<br />
+
+---
+
+## [Pytest - Get Started](https://docs.pytest.org/en/7.2.x/getting-started.html#get-started) <span id="content-4"></span>
+
+### Run multiple tests
+- Snippet:
+  ```python
+  # content of test_sysexit.py
+  import pytest
+  
+  
+  def f():
+      raise SystemExit(1)
+  
+  
+  def test_mytest():
+      with pytest.raises(SystemExit):
+          f()
+  ```
+- Execute the test function with “quiet” reporting mode:
+  ```shell
+  $ pytest -q test_sysexit.py
+  ```
+- The -q/--quiet flag keeps the output brief in this and following examples.
+
+### Group multiple tests in a class
+- Snippet:
+  ```python
+  # content of test_class.py
+  class TestClass:
+      def test_one(self):
+          x = "this"
+          assert "h" in x
+  
+      def test_two(self):
+          x = "hello"
+          assert hasattr(x, "check")
+  ```
+- pytest discovers all tests following its Conventions for Python test discovery, so it finds both test_ prefixed functions. There is no need to subclass anything, but make sure to prefix your class with Test otherwise the class will be skipped.
+- Something to be aware of when grouping tests inside classes is that each test has a unique instance of the class. Having each test share the same class instance would be very detrimental to test isolation and would promote poor test practices.
+
+**[⬆ back to top](#list-of-contents-)**
+
+<br />
+
+---
+
+## [10 Pytest Best Practices](https://climbtheladder.com/10-pytest-best-practices/) <span id="content-5"></span>
+
+### 1. Use assert instead of the assertEquals built-in
+- It's pretty much self-explanatory
+
+### 2. Test one thing in each test
+- By testing only one thing in each test, it’s much easier to pinpoint which test is failing and why.
+
+### 3. Make tests easy to read and maintain
+- Use clear and concise names
+- Organize them into logical groups
+- Each test only performs a single assertion
+
+### 4. Write short, isolated unit tests
+- Isolated unit tests are easier to write, understand, and maintain. They’re also less likely to break when code changes, making them more robust.
+- Test one thing at a time
+- Unit tests are short, if they are too long and complex. Probably they're doing too much
+- This means each test should set up its own data and not depend on any side effects from other tests. Isolation makes tests more reliable and easier to debug.
+
+### 5. Avoid setup and teardown code
+- Use fixtures (functions that are called before and after each test)
+
+### 6. Use pytest fixtures for complex set up
+- Using fixtures makes your tests more readable and easier to maintain
+
+### 7. Use parametrize for multiple inputs
+- If you have a test that needs to be run with different input values, using parametrize allows you to write the test once and then specify the input values as parameters. This is much more efficient than writing separate tests for each input value.
+- To use parametrize, simply add @pytest.mark.parametrize as a decorator above your test function, and then specify the input values as arguments.
+
+### 8. Use @pytest.mark decorators to run subsets of tests
+- By using @pytest.mark decorators, you can specify which tests should be run in which situations.
+
+### 9. Run only failed tests with –lf or –ff
+- If you use –lf or –ff, pytest will only run the failed test (or the first failing test)
+
+### 10. Keep your test suite fast
+- There are a few things you can do to keep your test suite fast:
+  - Run tests in parallel: This can be done using pytest-xdist or pytest-parallel.
+  - Use fixture caching: This can speed up tests that rely on expensive setup operations, such as connecting to a database.
+  - Filter out tests that don’t need to be run: You can use pytest’s -k option to specify which tests to run.
+
+**[⬆ back to top](#list-of-contents-)**
+
+<br />
+
+---
+
+## [5 Pytest Best Practices for Writing Great Python Tests](https://www.nerdwallet.com/blog/engineering/5-pytest-best-practices/) <span id="content-6"></span>
+
+### Fixtures
+- Fixtures are how test setups (and any other helpers) are shared between tests. 
+- Fixtures are the basic building blocks that unlock the full power of pytest.
+- Some of the most useful fixtures tend to be context fixtures, or yield fixtures.
+- The code before the yield is executed as setup for the fixture, while the code after the yield is executed as clean-up. The value yielded is the fixture value received by the user.
+- Like all contexts, when yield fixtures depend on each other they are entered and exited in stack, or Last In First Out (LIFO) order. That is, the last fixture to be entered is the first to be exited.
+  ```python
+  import pytest
+  
+  @pytest.fixture
+  def first():
+      print("Set up first fixture")
+      yield
+      print("Clean up first fixture")
+  
+  
+  @pytest.fixture
+  def second(first):
+      print("Set up second fixture")
+      yield
+      print("Clean up second fixture")
+  
+  
+  def test_context_fixture_order(second):
+      print("In the test")
+      assert False
+  ```
+  
+### Parametrize
+- Parametrizing tests and fixtures allows us to generate multiple copies of them easily.
+- Parametrizing tests has an obvious use: to test multiple inputs to a function and verify that they return the expected output. It’s really useful to thoroughly test edge cases.
+- Parametrizing fixtures is subtly different, incredibly powerful, and a more advanced pattern. It models that wherever the fixture is used, all parametrized values can be used interchangeably. Parametrizing a fixture indirectly parametrizes every dependent fixture and function.
+
+### Lifecycle of a Test Run -- Collection
+- During test collection, every test module, test class, and test function that matches certain conditions is picked up and added to a list of candidate tests.
+- In parallel, every fixture is also parsed by inspecting conftest.py files as well as test modules.
+- Finally, parametrization rules are applied to generate the final list of functions, and their argument (and fixture) values.
+- In this phase, the test files are imported and parsed; however, only the meta-programming code – i.e, the code the operates on fixtures and functions – is actually executed. 
+- The idea here is that pytest needs to understand all the tests that actually have to execute, and it can’t do that without executing things like parametrize.
+- For pytest to resolve and collect all the combinations of fixtures in tests, it needs to resolve the fixture DAG. Therefore, the inter-fixture dependencies are resolved at collection time but none of the fixtures themselves are executed.
+
+### Lifecycle of a Test Run -- Execution
+- After test collection has concluded successfully, all collected tests are run.
+- But before the actual test code is run, the fixture code is first executed, in order, from the root of the DAG to the end fixtures:
+  - session scoped fixtures are executed if they have not already been executed in this test run. Otherwise, the results of previous execution are used.
+  - module scoped fixtures are executed if they have not already been executed as part of this test module in this test run. Otherwise, the results of previous execution are used.
+  - class scoped fixtures are executed if they have not already been executed as part of this class in this test run. Otherwise, the results of previous execution are used.
+  - function scoped fixtures are executed.
+- Finally, the test function is called with the values for the fixtures filled in. Note that the parametrized arguments have already been “filled in” as part of collection.
+
+### Patterns and Anti-Patterns
+- Prefer mocker over mock
+- Parametrize the same behavior, have different tests for different behaviors
+- Don’t modify fixture values in other fixtures
+- Prefer responses over mocking outbound HTTP requests
+- Prefer tmpdir over global test artifacts
+
+### Prefer mocker over mock
+- Snippet:
+```python
+"""Add this to <project-root>/mocker_over_mock.py"""
+
+import pytest
+
+try:
+    import mock  # fails on Python 3
+except ImportError:
+    from unittest import mock
+
+
+def first_test_fn():
+    return 42
+
+
+def another_test_fn():
+    return 42
+
+
+class TestManualMocking(object):
+    """This is dangerous because we could forget to call ``stop``,
+    or the test could error out; both would leak state across tests
+    """
+
+    @pytest.mark.xfail(strict=True, msg="We want this test to fail.")
+    def test_manual(self):
+        patcher = mock.patch("mocker_over_mock.first_test_fn", return_value=84)
+        patcher.start()
+        assert first_test_fn() == 42
+        assert False
+        patcher.stop()
+
+    def test_manual_follow_up(self):
+        assert first_test_fn() == 42, "Looks like someone leaked state!"
+
+
+class TestDecoratorMocking(object):
+    """This is better, but:
+        1. Confusing when we start layering ``pytest`` decorators like
+        ``@pytest.mark`` with ``@mock.patch``.
+        2. Doesn't work when used with fixtures.
+        3. Forces you to accept `mock_fn` as an argument even when the
+        mock is just set up and never used in your test - more boilerplate.
+    """
+
+    @pytest.mark.xfail(strict=True, msg="We want this test to fail.")
+    @mock.patch("mocker_over_mock.another_test_fn", return_value=84)
+    def test_decorator(self, mock_fn):
+        assert another_test_fn() == 84
+        assert False
+
+    def test_decorator_follow_up(self):
+        assert another_test_fn() == 42
+
+    @pytest.fixture
+    @mock.patch("mocker_over_mock.another_test_fn", return_value=84)
+    def mock_fn(self, _):
+        return
+
+    def test_decorator_with_fixture(self, mock_fn):
+        assert another_test_fn() == 84, "@mock and fixtures don't mix!"
+
+
+class TestMockerFixture(object):
+    """This is best; the mocker fixture reduces boilerplate and
+    stays out of the declarative pytest syntax.
+    """
+
+    @pytest.mark.xfail(strict=True, msg="We want this test to fail.")
+    def test_mocker(self, mocker):
+        mocker.patch("mocker_over_mock.another_test_fn", return_value=84)
+        assert another_test_fn() == 84
+        assert False
+
+    def test_mocker_follow_up(self):
+        assert another_test_fn() == 42    
+
+    @pytest.fixture
+    def mock_fn(self, mocker):
+        return mocker.patch("mocker_over_mock.test_basic.another_test_fn", return_value=84)
+
+    def test_mocker_with_fixture(self, mock_fn):
+        assert another_test_fn() == 84
+```
+
+### Parametrize the same behavior, have different tests for different behaviors
+- Parametrize when asserting the same behavior with various inputs and expected outputs. Make separate tests for distinct behaviors. Use ids to describe individual test cases.
+- Snippet:
+```python
+import pytest
+
+
+def divide(a, b):
+    return a / b
+
+
+@pytest.mark.parametrize("a, b, expected, is_error", [
+    (1, 1, 1, False),
+    (42, 1, 42, False),
+    (84, 2, 42, False),
+    (42, "b", TypeError, True),
+    ("a", 42, TypeError, True),
+    (42, 0, ZeroDivisionError, True),
+])
+def test_divide_antipattern(a, b, expected, is_error):
+    if is_error:
+        with pytest.raises(expected):
+            divide(a, b)
+    else:
+        assert divide(a, b) == expected
+
+
+@pytest.mark.parametrize("a, b, expected", [
+    (1, 1, 1),
+    (42, 1, 42),
+    (84, 2, 42),
+])
+def test_divide_ok(a, b, expected):
+    assert divide(a, b) == expected
+
+
+@pytest.mark.parametrize("a, b, expected", [
+    (42, "b", TypeError),
+    ("a", 42, TypeError),
+    (42, 0, ZeroDivisionError),
+])
+def test_divide_error(a, b, expected):
+    with pytest.raises(expected):
+        divide(a, b)
+```
+
+### Don’t modify fixture values in other fixtures
+- Modify and build on top of fixture values in tests; never modify a fixture value in another fixture – use deepcopy instead.
+- For a given test, fixtures are executed only once. However, multiple fixtures may depend on the same upstream fixture. If any one of these modifies the upstream fixture’s value, all others will also see the modified value; this will lead to unexpected behavior.
+- Snippet:
+```python
+from copy import deepcopy
+
+import pytest
+
+
+@pytest.fixture
+def alex():
+    return {
+        "name": "Alex",
+        "team": "Green",
+    }
+
+
+@pytest.fixture
+def bala(alex):
+    alex["name"] = "Bala"
+    return alex
+
+
+@pytest.fixture
+def carlos(alex):
+    _carlos = deepcopy(alex)
+    _carlos["name"] = "Carlos"
+    return _carlos
+
+
+def test_antipattern(alex, bala):
+    assert alex == {"name": "Alex", "team": "Green"}
+    assert bala == {"name": "Bala", "team": "Green"}
+
+
+def test_pattern(alex, carlos):
+    assert alex == {"name": "Alex", "team": "Green"}
+    assert carlos == {"name": "Carlos", "team": "Green"}
+```
+
+### Prefer responses over mocking outbound HTTP requests
+- Never manually create Response objects for tests; instead use the responses library to define what the expected raw API response is.
+- You can read the README of responses for the examples
+
+### Prefer tmpdir over global test artifacts
+- Don’t create files in a global tests/artifacts directory for every test that needs a file-system interface. Instead, use the tmpdir fixture to create files on-the-fly and pass those in.
+- Global artifacts are removed from the tests that use them, which makes them difficult to maintain. They’re also static and can’t leverage fixtures and other great techniques. Creating files from fixture data just before a test is run provides a cleaner dev experience.
+- Snippet:
+  ```python
+  import pytest
+  
+  
+  def process_file(fp):
+      """Toy function that returns an array of line lengths."""
+      return [len(l.strip()) for l in fp.readlines()]
+  
+  
+  @pytest.mark.parametrize("filename, expected", [
+      ("first.txt", [3, 3, 3]),
+      ("second.txt", [5, 5]),
+  ])
+  def test_antipattern(filename, expected):
+      with open("resources/" + filename) as fp:
+          assert process_file(fp) == expected
+  
+  
+  @pytest.mark.parametrize("contents, expected", [
+      ("foo\nbar\nbaz", [3, 3, 3]),
+      ("hello\nworld", [5, 5]),
+  ])
+  def test_pattern(tmpdir, contents, expected):
+      tmp_file = tmpdir.join("testfile.txt")
+      tmp_file.write(contents)
+      with tmp_file.open() as fp:
+          assert process_file(fp) == expected
+  ```
+  
+### Bonus: A Word of Caution
+- I always ask myself these questions before writing a test:
+  - Am I testing the code as frozen in time, or testing the functionality that lets underlying code evolve?
+  - Am I testing my functionality, or the language constructs themselves?
+  - Is the cost of writing and maintaining this test more than the cost of the functionality breaking?
+- 
+
+**[⬆ back to top](#list-of-contents-)**
 
 <br />
 
@@ -465,3 +842,6 @@
 - https://www.digitalocean.com/community/tutorials/how-to-use-unittest-to-write-a-test-case-for-a-function-in-python
 - https://www.datacamp.com/community/tutorials/unit-testing-python
 - https://realpython.com/python-testing/
+- https://docs.pytest.org/en/7.2.x/getting-started.html#get-started
+- https://climbtheladder.com/10-pytest-best-practices/
+- https://www.nerdwallet.com/blog/engineering/5-pytest-best-practices/
