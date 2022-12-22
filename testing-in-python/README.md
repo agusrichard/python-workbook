@@ -830,7 +830,7 @@ def test_pattern(alex, carlos):
   - Am I testing the code as frozen in time, or testing the functionality that lets underlying code evolve?
   - Am I testing my functionality, or the language constructs themselves?
   - Is the cost of writing and maintaining this test more than the cost of the functionality breaking?
-- 
+
 
 **[⬆ back to top](#list-of-contents-)**
 
