@@ -17,6 +17,7 @@
 - A unit test checks a small component in your application.
 
 There should be some notes regarding tests
+There is another note about testing in a different folder.
 
 **[⬆ back to top](#list-of-contents)**
 
