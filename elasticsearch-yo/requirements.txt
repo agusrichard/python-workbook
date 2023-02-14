@@ -13,7 +13,7 @@ multidict==5.1.0
 pycodestyle==2.7.0
 pydantic==1.8.2
 requests==2.25.1
-starlette==0.14.2
+starlette==0.25.0
 toml==0.10.2
 typing-extensions==3.10.0.0
 urllib3==1.26.5
