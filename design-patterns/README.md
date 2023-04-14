@@ -329,6 +329,7 @@
 - In fact, the word “log” has dropped entirely away from the name of the filter class, and for a very important reason: there’s no longer anything about it that’s specific to logging! The TextFilter is now entirely reusable in any context that happens to involve strings. Finally decoupled from the specific concept of logging, it will be easier to test and maintain.
 - There’s a crucial lesson here: design principles like Composition Over Inheritance are, in the end, more important than individual patterns like the Adapter or Decorator. Always follow the principle. But don’t always feel constrained to choose a pattern from an official list. The design at which we’ve now arrived is both more flexible and easier to maintain than any of the previous designs, even though they were based on official Gang of Four patterns but this final design is not. Sometimes, yes, you will find an existing Design Pattern that’s a perfect fit for your problem — but if not, your design might be stronger if you move beyond them.
 
+### Dodge: “if” statements
 Revisiting Design Pattern in Python
 
 **[⬆ back to top](#list-of-contents)**
