@@ -331,6 +331,7 @@
 
 ### Dodge: “if” statements
 Revisiting Design Pattern in Python
+It's a very interesting topic to talk
 
 **[⬆ back to top](#list-of-contents)**
 
