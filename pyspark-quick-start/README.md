@@ -16,6 +16,23 @@
 
 ### Run PySpark in Docker (with Jupyter)
 - Pull the image with `docker pull quay.io/jupyter/pyspark-notebook`
+- Or have this docker-compose.yaml:
+  ```text
+  version: "3.7"
+  
+  services:
+    pyspark:
+      image: quay.io/jupyter/pyspark-notebook
+      container_name: pyspark-quick-start
+      environment:
+        JUPYTER_ENABLE_LAB: "yes"
+      ports:
+        - "8888:8888"
+      volumes:
+        - ./:/home/jovyan/work
+  ```
+
+
 
 
 
