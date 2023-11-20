@@ -10,3 +10,4 @@ services:
       - "8888:8888"
     volumes:
       - ./:/home/jovyan/work
+    working_dir: /home/jovyan/work
