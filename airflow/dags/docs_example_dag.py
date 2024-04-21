@@ -4,7 +4,7 @@ import requests
 
 
 doc_md_DAG = """
-### The Activity DAG
+### The Activity DAG: great thing
 
 This DAG will help me decide what to do today. It uses the [BoredAPI](https://www.boredapi.com/) to do so. Very cool!
 
