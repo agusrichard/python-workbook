@@ -141,6 +141,7 @@ psutil @ file:///home/conda/feedstock_root/build_artifacts/psutil_1695367241927/
 ptyprocess @ file:///home/conda/feedstock_root/build_artifacts/ptyprocess_1609419310487/work/dist/ptyprocess-0.7.0-py2.py3-none-any.whl
 pure-eval @ file:///home/conda/feedstock_root/build_artifacts/pure_eval_1642875951954/work
 py-cpuinfo @ file:///home/conda/feedstock_root/build_artifacts/py-cpuinfo_1666774466606/work
+py4j==0.10.9.7
 pyarrow==14.0.1
 pyarrow-hotfix @ file:///home/conda/feedstock_root/build_artifacts/pyarrow-hotfix_1699987431348/work
 pycosat @ file:///home/conda/feedstock_root/build_artifacts/pycosat_1696355785893/work
@@ -151,6 +152,7 @@ PyJWT @ file:///home/conda/feedstock_root/build_artifacts/pyjwt_1689721553971/wo
 pyOpenSSL @ file:///home/conda/feedstock_root/build_artifacts/pyopenssl_1698795453264/work
 pyparsing @ file:///home/conda/feedstock_root/build_artifacts/pyparsing_1690737849915/work
 PySocks @ file:///home/conda/feedstock_root/build_artifacts/pysocks_1661604839144/work
+pyspark==3.5.0
 python-dateutil @ file:///home/conda/feedstock_root/build_artifacts/python-dateutil_1626286286081/work
 python-json-logger @ file:///home/conda/feedstock_root/build_artifacts/python-json-logger_1677079630776/work
 pytz @ file:///home/conda/feedstock_root/build_artifacts/pytz_1693930252784/work
